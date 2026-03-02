@@ -1,0 +1,58 @@
+{
+    // =========================
+    // Python 运行与环境
+    // =========================
+    "python.terminal.activateEnvironment": true,
+    "python.envFile": "${workspaceFolder}/.env",
+    // =========================
+    // 编辑体验（像 PyCharm 一样顺）
+    // =========================
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": false,
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.rulers": [
+        88
+    ],
+    "editor.minimap.enabled": false,
+    // =========================
+    // Import / 自动修复
+    // =========================
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit"
+    },
+    // =========================
+    // Python 语义分析（Pylance）
+    // =========================
+    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.diagnosticMode": "workspace",
+    "python.analysis.useLibraryCodeForTypes": true,
+    // =========================
+    // 测试（pytest）
+    // =========================
+    "python.testing.pytestEnabled": true,
+    "python.testing.unittestEnabled": false,
+    "python.testing.autoTestDiscoverOnSaveEnabled": false,
+    // =========================
+    // 文件/目录管理
+    // =========================
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/.pytest_cache": true,
+        "**/.ruff_cache": true,
+        "**/.mypy_cache": true
+    },
+    // =========================
+    // 搜索与性能
+    // =========================
+    "search.exclude": {
+        "**/__pycache__": true,
+        "**/.venv": true
+    },
+    // =========================
+    // 视觉风格（干净、不浮夸）
+    // =========================
+    "workbench.editor.labelFormat": "short",
+    "breadcrumbs.enabled": true
+}

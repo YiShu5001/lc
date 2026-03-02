@@ -1,0 +1,32 @@
+[project]
+# --- 项目的基本信息 ---
+name = "lc"
+version = "0.1.0"
+description = "基础的强化学习算法实现"
+readme = "README.md"
+requires-python = ">=3.10"
+
+# --- 你的项目依赖哪些包 ---
+dependencies = [
+    "gym>=0.26.2",
+    "gymnasium>=1.2.3",
+    "loguru>=0.7.3",
+    "numpy>=2.2.6",
+    "pandas>=2.3.3",
+    "torch>=2.10.0",
+]
+
+# --- 谁负责打包构建 (上面解释过的) ---
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
+
+
+# --- uv 的专用配置 (可选) ---
+#[tool.uv]
+#dev-dependencies = [
+#    "pytest",  # 开发时才用的测试工具
+#]

@@ -1,0 +1,8 @@
+{
+    "name": "Run current file",
+    "type": "python",
+    "request": "launch",
+    "program": "${file}",
+    "cwd": "${workspaceFolder}",
+    "console": "integratedTerminal"
+}
