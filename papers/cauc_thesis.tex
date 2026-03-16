@@ -1,0 +1,149 @@
+\documentclass[
+	% Basic information
+	StudentName     = ,
+	StudentNameEng	= {{Name of Graduate (such as HAN Bao-cheng)}},
+	AdvisorName     = {{姓名 职称}},
+        AdvisorNameOut     = {{姓名 职称}},
+	AdvisorNameEng	= {{Name of Supervisor and Title (such as Prof. FENG Chang-gen)}},
+        AdvisorNameEngOut = {{Name of Second Supervisor and Title}},
+	StudentID		= xxxxx,
+	Major           = {{电子信息硕士}},
+	ResearchInterest= {{计算机技术}},
+	Department		= XXXX学院,
+	DepartmentEng	= {{Name of Department (or School)}},
+	% Time
+	SubmitYear		= 202X,
+	SubmitMonth		= X,
+	SubmitDay		= XX,
+	DefenseYear		= 202X,
+	DefenseMonth	= X,
+	DefenseDay		= XX,
+	DefenseDateEng  = {{Date of Submit (such as April 2002)}},
+	% Title
+	Title           = {{基于深度强化学习的多无人机协同控制研究}},
+	TitleEng        = {{English Title}},
+	% Other information
+	CLCNumber		= TD235,
+	UDCNumber		= 624.152.5
+]{cauc_thesis}
+
+
+% 导入页面命令
+\newcommand{\inputpage}[1]{
+	\input{settings/#1}
+}
+\linespread{1.5}
+
+
+\begin{document}
+\inputpage{cover}
+
+% =================摘要==================
+\newpage
+\setlength{\headsep}{1.224cm}
+{\centering\chapter*{\zihao{3}\heiti 摘\quad\quad 要}}
+\thispagestyle{fancy}
+\setcounter{page}{1}
+\pagenumbering{Roman}
+\chead{\zihao{-5}中国民航大学硕士学位论文}
+
+\addcontentsline{toc}{chapter}{\texorpdfstring{摘\quad\quad 要}{摘\quad\quad 要}}
+\zihao{-4}
+
+
+\setlength{\baselineskip}{20pt}
+% ---------------摘要主体---------------
+    文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本。
+ 
+    文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本。文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本文本。
+\newline
+\zihao{-4}{\bfseries 关键词：}\zihao{-4} 关键词1；关键词2；关键词3；关键词4
+% ---------------摘要主体-------------
+
+% ==============Abstract==============
+\newpage
+\setlength{\headsep}{1.224cm}
+{\centering\chapter*{\zihao{3}\textbf{Abstract}}}
+\thispagestyle{fancy}
+\addcontentsline{toc}{chapter}{Abstract}
+\zihao{-4}
+% -----------Abstract main body----------
+    Text text text text text text text text text text text text text text text, text text text text text text text, text text text text text text text text text text text text text text. Text text text text text text text text text text text text text text text, text text text text text text text, text text text text text text text text text text text text text text. Text text text text text text text text text text text text text text text, text text text text text text text, text text text text text text text text text text text text text text. Text text text text text text text text text text text text text text text, text text text text text text text, text text text text text text text text text text text text text text. Text text text text text text text text text text text text text text text, text text text text text text text, text text text text text text text text text text text text text text.
+
+    Second paragraph text text text text text text text text text text text text text text, text text text text text text text, text text text text text text text text text text text text text text. Text text text text text text text text text text text text text text text, text text text text text. Second paragraph text text text text text text text text text text text text text text, text text text text text text text, text text text text text text text text text text text text text text. Text text text text text text text text text text text text text text text, text text text text text.
+\newline
+\zihao{-4}\textbf{Key words: }\zihao{-4}\songti keyword1; keyword2; keyword3; keyword4;
+% -----------Abstract main body----------
+
+% ==================目录==================
+\clearpage
+\newpage
+\fancypagestyle{plain}{
+    \pagestyle{fancy}
+}
+\pagestyle{fancy}
+\chead{\zihao{-5}中国民航大学硕士学位论文}
+\titlecontents{toc}
+[0pt] % 左边缩进
+{\vspace{-50pt}\centering\Large\bfseries} % 是上方间距
+{}
+{}
+{\vspace{20pt}} % 下方间距
+\phantomsection
+% \addcontentsline{toc}{chapter}{\texorpdfstring{目\quad 录}{}}
+\tableofcontents
+
+\newpage
+\setcounter{page}{1}
+\pagenumbering{arabic}
+
+\setlength{\headsep}{0.624cm}
+\fancypagestyle{plain}{
+    \pagestyle{fancy}
+}%在章节页也显示页眉
+% **********正文开始**************
+\pagestyle{fancy}
+\setlength{\baselineskip}{23.4pt}
+
+\include{chapters/ch1_intro}
+\include{chapters/ch2_theory}
+\include{chapters/ch3_control}
+\include{chapters/ch4_planning}
+\include{chapters/ch5_conclusion}
+
+{\centering \chapter *{结\quad\quad 论}}
+\addcontentsline{toc}{chapter}{\texorpdfstring{结\qquad 论}{结\qquad 论}}
+正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字。
+
+正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字。
+
+
+%	------------致谢-------------
+{\centering \chapter *{致\qquad 谢}}
+
+\addcontentsline{toc}{chapter}{\texorpdfstring{致\qquad 谢}{致\qquad 谢}}
+正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字。
+
+正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字正文文字。
+
+
+\addcontentsline{toc}{chapter}{参考文献}%将“参考文献加入目录中”
+\nocite{*}%如果需要只显示引用的参考文献请删除这行
+{\centering 
+	\bibliographystyle{unsrt}
+	\bibliography{reference.bib}}
+
+{\centering \chapter *{附\qquad 录}}
+\addcontentsline{toc}{chapter}{\texorpdfstring{附\qquad 录}{附\qquad 录}}
+
+
+
+{\centering \chapter*{作者简介}}
+\addcontentsline{toc}{chapter}{作者简介}
+
+
+
+
+
+
+\end{document}
