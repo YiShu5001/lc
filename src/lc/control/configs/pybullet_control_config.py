@@ -16,11 +16,11 @@ class AxisTrainingConfig:
     axis: str
     initial_position: tuple[float, float, float] = (0.0, 0.0, 1.0)
     fixed_axes: tuple[float, float] = (0.0, 1.0)
-    primary_speed_range: tuple[float, float] = (0.3, 0.7)
-    reverse_speed_range: tuple[float, float] = (-0.5, -0.2)
-    stage_duration_range: tuple[float, float] = (0.8, 1.6)
-    include_disturbance: bool = True
-    disturbance_scale: float = 0.12
+    primary_speed_range: tuple[float, float] = (0.08, 0.18)
+    reverse_speed_range: tuple[float, float] = (-0.18, -0.08)
+    stage_duration_range: tuple[float, float] = (1.4, 2.4)
+    include_disturbance: bool = False
+    disturbance_scale: float = 0.0
     disturbance_axis_bias: float = 1.0
     stage_count: int = 4
 
@@ -85,9 +85,9 @@ class AxisTuningResult:
 class PyBulletControlExperimentConfig:
     drone_model: str = "cf2x"
     simulation_freq_hz: int = 240
-    control_freq_hz: int = 60
-    rl_freq_hz: int = 10
-    duration_sec: float = 5.0
+    control_freq_hz: int = 48
+    rl_freq_hz: int = 8
+    duration_sec: float = 8.0
     gui: bool = False
     seed: int = 7
     warmup_steps: int = 32
@@ -110,9 +110,36 @@ class PyBulletControlExperimentConfig:
     )
     axis_configs: tuple[AxisTrainingConfig, ...] = field(
         default_factory=lambda: (
-            AxisTrainingConfig(axis="x", initial_position=(0.0, 0.0, 1.0), fixed_axes=(0.0, 1.0)),
-            AxisTrainingConfig(axis="y", initial_position=(0.0, 0.0, 1.0), fixed_axes=(0.0, 1.0)),
-            AxisTrainingConfig(axis="z", initial_position=(0.0, 0.0, 1.0), fixed_axes=(0.0, 0.0)),
+            AxisTrainingConfig(
+                axis="x",
+                initial_position=(0.0, 0.0, 1.0),
+                fixed_axes=(0.0, 1.0),
+                primary_speed_range=(0.08, 0.16),
+                reverse_speed_range=(-0.14, -0.08),
+                stage_duration_range=(1.6, 2.8),
+                include_disturbance=False,
+                disturbance_scale=0.0,
+            ),
+            AxisTrainingConfig(
+                axis="y",
+                initial_position=(0.0, 0.0, 1.0),
+                fixed_axes=(0.0, 1.0),
+                primary_speed_range=(0.08, 0.16),
+                reverse_speed_range=(-0.14, -0.08),
+                stage_duration_range=(1.6, 2.8),
+                include_disturbance=False,
+                disturbance_scale=0.0,
+            ),
+            AxisTrainingConfig(
+                axis="z",
+                initial_position=(0.0, 0.0, 1.0),
+                fixed_axes=(0.0, 0.0),
+                primary_speed_range=(0.04, 0.08),
+                reverse_speed_range=(-0.08, -0.04),
+                stage_duration_range=(1.8, 3.0),
+                include_disturbance=False,
+                disturbance_scale=0.0,
+            ),
         )
     )
 

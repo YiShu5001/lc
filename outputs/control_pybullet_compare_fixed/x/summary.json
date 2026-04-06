@@ -1,0 +1,36 @@
+{
+  "axis": "x",
+  "pid_controller": "pid_pos_att",
+  "ladrc_controller": "ladrc_x_pos_pid_att",
+  "pid_metrics": {
+    "mae": 0.004066976778606938,
+    "rmse": 0.005818929511705242,
+    "iae": 1.5617190829850642,
+    "overshoot": 0.01300300657749176,
+    "settling_time": 0.0,
+    "steady_state_error": 0.003932857395786988,
+    "control_energy": 80347735648.62901,
+    "disturbance_recovery_time": 0.0,
+    "control_variation": 0.86805569720953,
+    "velocity_rmse": 0.026426032030002735,
+    "reward": -0.2872066091840663,
+    "backend": "gym_env"
+  },
+  "ladrc_metrics": {
+    "mae": 0.10367915655498665,
+    "rmse": 0.14442723039662125,
+    "iae": 39.81279611711487,
+    "overshoot": 0.3105422705411911,
+    "settling_time": 383.0,
+    "steady_state_error": 0.08858799114118722,
+    "control_energy": 80355275805.01108,
+    "disturbance_recovery_time": 383.0,
+    "control_variation": 0.6844491983518277,
+    "velocity_rmse": 0.18089623340487185,
+    "reward": -0.39710814130276145,
+    "backend": "gym_env"
+  },
+  "figure": "C:\\Users\\lucy\\.codex\\worktrees\\8f9a\\lc\\outputs\\control_pybullet_compare_fixed\\x\\figures\\pid_vs_best_ladrc_time_response.png",
+  "backend_pid": "gym_env",
+  "backend_ladrc": "gym_env"
+}

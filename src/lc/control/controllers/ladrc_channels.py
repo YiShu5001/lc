@@ -9,6 +9,7 @@ class SingleChannelLADRCConfig:
     b0: float
     omega_c: float
     k: float
+    r: float = 50.0
 
     @property
     def omega_o(self) -> float:
@@ -33,18 +34,25 @@ class AxiswiseLADRCParameterSet:
 
 
 def load_default_ladrc_parameter_set(variant: str) -> AxiswiseLADRCParameterSet:
-    if variant == "ladrc_pos_att":
-        attitude = SingleChannelLADRCConfig(b0=250.0, omega_c=6.0, k=30.0 / 6.0)
-    else:
-        attitude = SingleChannelLADRCConfig(b0=250.0, omega_c=6.0, k=30.0 / 6.0)
-    return AxiswiseLADRCParameterSet(
-        x=SingleChannelLADRCConfig(b0=220.0, omega_c=1.1, k=9.6 / 1.1),
-        y=SingleChannelLADRCConfig(b0=220.0, omega_c=1.3, k=9.6 / 1.3),
-        z=SingleChannelLADRCConfig(b0=300.0, omega_c=15.0, k=110.0 / 15.0),
-        roll=SingleChannelLADRCConfig(b0=attitude.b0, omega_c=attitude.omega_c, k=attitude.k),
-        pitch=SingleChannelLADRCConfig(b0=attitude.b0, omega_c=attitude.omega_c, k=attitude.k),
-        yaw=SingleChannelLADRCConfig(b0=150.0, omega_c=1.2, k=6.0 / 1.2),
+    attitude = SingleChannelLADRCConfig(b0=250.0, omega_c=6.0, k=30.0 / 6.0, r=50.0)
+    base = AxiswiseLADRCParameterSet(
+        x=SingleChannelLADRCConfig(b0=220.0, omega_c=1.1, k=9.6 / 1.1, r=30.0),
+        y=SingleChannelLADRCConfig(b0=220.0, omega_c=1.3, k=9.6 / 1.3, r=30.0),
+        z=SingleChannelLADRCConfig(b0=300.0, omega_c=15.0, k=110.0 / 15.0, r=30.0),
+        roll=SingleChannelLADRCConfig(b0=attitude.b0, omega_c=attitude.omega_c, k=attitude.k, r=attitude.r),
+        pitch=SingleChannelLADRCConfig(b0=attitude.b0, omega_c=attitude.omega_c, k=attitude.k, r=attitude.r),
+        yaw=SingleChannelLADRCConfig(b0=150.0, omega_c=1.2, k=6.0 / 1.2, r=50.0),
     )
+    if variant in {
+        "pid_pos_att",
+        "ladrc_pos_pid_att",
+        "ladrc_pos_att",
+        "ladrc_x_pos_pid_att",
+        "ladrc_y_pos_pid_att",
+        "ladrc_z_pos_pid_att",
+    }:
+        return base
+    raise KeyError(f"Unsupported LADRC parameter set variant: {variant}")
 
 
 def clone_parameter_set(parameter_set: AxiswiseLADRCParameterSet) -> AxiswiseLADRCParameterSet:
