@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="900" viewBox="0 0 1500 900">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,3 L0,6 z" fill="#355c7d" />
+    </marker>
+    <style>
+      .title { font: 700 28px 'Microsoft YaHei', sans-serif; fill: #1f2937; }
+      .subtitle { font: 600 18px 'Microsoft YaHei', sans-serif; fill: #4b5563; }
+      .label { font: 600 18px 'Microsoft YaHei', sans-serif; fill: #111827; }
+      .small { font: 500 16px 'Microsoft YaHei', sans-serif; fill: #374151; }
+      .boxA { fill: #eef6ff; stroke: #4f81bd; stroke-width: 2; rx: 16; ry: 16; }
+      .boxB { fill: #effaf1; stroke: #4d8f5a; stroke-width: 2; rx: 16; ry: 16; }
+      .boxC { fill: #fff7e8; stroke: #d28b26; stroke-width: 2; rx: 16; ry: 16; }
+      .boxD { fill: #f7f1ff; stroke: #8b5fbf; stroke-width: 2; rx: 16; ry: 16; }
+      .compare { fill: #fff1f2; stroke: #d9465f; stroke-width: 2; rx: 16; ry: 16; }
+      .line { stroke: #355c7d; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect width="100%" height="100%" fill="#ffffff"/>
+  <text x="750" y="48" text-anchor="middle" class="title">图3-y mDDPG增强机制示意图</text>
+
+  <rect x="70" y="95" width="380" height="150" class="compare"/>
+  <text x="170" y="135" class="label">DDPG-LADRC</text>
+  <text x="120" y="175" class="small">单步状态</text>
+  <text x="120" y="205" class="small">每步动作更新</text>
+  <text x="120" y="235" class="small">1-step回报</text>
+
+  <rect x="1050" y="95" width="380" height="150" class="compare"/>
+  <text x="1150" y="135" class="label">mDDPG-LADRC</text>
+  <text x="1100" y="175" class="small">n步状态堆叠</text>
+  <text x="1100" y="205" class="small">动作保持</text>
+  <text x="1100" y="235" class="small">n-step回报</text>
+
+  <text x="260" y="300" text-anchor="middle" class="subtitle">基础 DDPG-LADRC</text>
+  <rect x="110" y="330" width="310" height="85" class="boxD"/>
+  <text x="265" y="368" text-anchor="middle" class="label">Actor 输入</text>
+  <text x="265" y="397" text-anchor="middle" class="small">基础状态观测</text>
+
+  <rect x="110" y="465" width="310" height="85" class="boxD"/>
+  <text x="265" y="503" text-anchor="middle" class="label">Actor 输出</text>
+  <text x="265" y="532" text-anchor="middle" class="small">参数动作每步更新</text>
+
+  <rect x="110" y="600" width="310" height="85" class="boxD"/>
+  <text x="265" y="638" text-anchor="middle" class="label">1-step 回报</text>
+  <text x="265" y="667" text-anchor="middle" class="small">即时奖励 + 单步目标</text>
+
+  <text x="765" y="300" text-anchor="middle" class="subtitle">三项增强机制</text>
+
+  <rect x="510" y="320" width="300" height="120" class="boxA"/>
+  <text x="660" y="360" text-anchor="middle" class="label">状态增强</text>
+  <text x="660" y="395" text-anchor="middle" class="small">过去 n 个状态</text>
+  <text x="660" y="422" text-anchor="middle" class="small">将过去n个时刻状态拼接为策略输入</text>
+
+  <rect x="850" y="320" width="300" height="120" class="boxB"/>
+  <text x="1000" y="360" text-anchor="middle" class="label">动作保持</text>
+  <text x="1000" y="395" text-anchor="middle" class="small">动作保持 n 个采样时刻</text>
+  <text x="1000" y="422" text-anchor="middle" class="small">同一参数动作保持n个采样时刻</text>
+
+  <rect x="680" y="490" width="300" height="120" class="boxC"/>
+  <text x="830" y="530" text-anchor="middle" class="label">奖励自举</text>
+  <text x="830" y="565" text-anchor="middle" class="small">过去 n 步奖励</text>
+  <text x="830" y="592" text-anchor="middle" class="small">基于过去n个时刻奖励构造n-step目标</text>
+
+  <rect x="1210" y="345" width="200" height="90" class="boxB"/>
+  <text x="1310" y="383" text-anchor="middle" class="label">LADRC 参数持续生效</text>
+  <text x="1310" y="412" text-anchor="middle" class="small">平滑执行</text>
+
+  <rect x="1165" y="520" width="245" height="95" class="boxA"/>
+  <text x="1287" y="560" text-anchor="middle" class="label">增强经验样本</text>
+  <text x="1287" y="590" text-anchor="middle" class="small">状态堆叠 + 动作保持 + n-step目标</text>
+
+  <rect x="1090" y="690" width="165" height="90" class="boxD"/>
+  <text x="1172" y="730" text-anchor="middle" class="label">Replay Buffer</text>
+  <text x="1172" y="760" text-anchor="middle" class="small">经验回放</text>
+
+  <rect x="1290" y="690" width="140" height="90" class="boxD"/>
+  <text x="1360" y="730" text-anchor="middle" class="label">Actor/Critic</text>
+  <text x="1360" y="760" text-anchor="middle" class="small">更新</text>
+
+  <path d="M265 415 L265 465" class="line"/>
+  <path d="M265 550 L265 600" class="line"/>
+
+  <path d="M420 372 L510 372" class="line"/>
+  <path d="M810 380 L850 380" class="line"/>
+  <path d="M1150 380 L1210 380" class="line"/>
+  <path d="M660 440 L660 550 L680 550" class="line"/>
+  <path d="M1000 440 L1000 560 L980 560" class="line"/>
+  <path d="M830 610 L830 567 L1165 567" class="line"/>
+  <path d="M1310 435 L1310 520" class="line"/>
+  <path d="M1287 615 L1172 690" class="line"/>
+  <path d="M1255 735 L1290 735" class="line"/>
+
+  <text x="1287" y="645" text-anchor="middle" class="subtitle">增强后更新链路</text>
+
+  <rect x="70" y="815" width="1360" height="60" fill="#f9fafb" stroke="#d1d5db" stroke-width="1.5" rx="14" ry="14"/>
+  <text x="92" y="850" class="subtitle">图注：</text>
+  <text x="150" y="850" class="small">mDDPG在基础DDPG-LADRC框架上引入状态堆叠、动作保持和n-step回报三项增强机制，以提升策略对短时历史信息、控制平滑性与时序收益的利用能力。</text>
+</svg>

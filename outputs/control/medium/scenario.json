@@ -1,0 +1,12 @@
+{
+  "difficulty": "medium",
+  "target_motion": "linear",
+  "disturbance_level": 0.1,
+  "control_frequency_hz": 100,
+  "rl_frequency_hz": 10,
+  "num_obstacles": 5,
+  "dynamic_obstacles": false,
+  "obstacle_layout": "corridor",
+  "world_scale": 1.5,
+  "density": 0.35
+}

@@ -1,199 +1,182 @@
-"""
-SAC (Soft Actor-Critic) 算法实现
-SAC-v2版本，支持自动温度调整
-适配BaseAlgo接口（需要OffPolicyTrainer支持）
-"""
-from __future__ import annotations
-from dataclasses import dataclass
-from typing import Dict, Optional
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.distributions import Normal
+import copy
 
-from Reinforce_learning.Basealgos import BaseAlgo, AlgoConfig
+from Reinforce_learning.Basealgos import BaseAlgo
 
-
-@dataclass
-class SACConfig(AlgoConfig):
+class Actor(nn.Module):
     """
-    SAC算法配置
+    SAC 随机策略 Actor (Squashed Gaussian Policy)
+    输出均值(mu)和对数标准差(log_std)，并且将采样的动作经过 tanh 映射(Squashing)，保证动作在有界空间内。
     """
-    learning_rate: float = 3e-4
-    tau: float = 0.005                      # 软更新系数
-    alpha: Optional[float] = None           # 温度参数（None表示自动调整）
-    target_entropy: Optional[float] = None   # 目标熵（用于自动调整alpha）
-    alpha_lr: float = 3e-4                  # alpha的学习率
-    gamma: float = 0.99                    # 折扣因子
-    target_update_interval: int = 1         # 目标网络更新间隔
-    device: str = "cpu"
+    def __init__(self, state_dim, action_dim, max_action):
+        super(Actor, self).__init__()
+        self.net = nn.Sequential(
+            nn.Linear(state_dim, 256),
+            nn.ReLU(),
+            nn.Linear(256, 256),
+            nn.ReLU(),
+        )
+        self.mu_layer = nn.Linear(256, action_dim)
+        self.log_std_layer = nn.Linear(256, action_dim)
+        
+        self.max_action = max_action
+        
+        self.LOG_STD_MAX = 2
+        self.LOG_STD_MIN = -20
 
+    def forward(self, state):
+        x = self.net(state)
+        mu = self.mu_layer(x)
+        log_std = self.log_std_layer(x)
+        log_std = torch.clamp(log_std, self.LOG_STD_MIN, self.LOG_STD_MAX)
+        return mu, log_std
 
-class SACAlgo(BaseAlgo):
+    def sample(self, state):
+        """ 在重参数化(Reparameterization Trick)下采样动作，并计算对数概率 """
+        mu, log_std = self.forward(state)
+        std = log_std.exp()
+        
+        normal = Normal(mu, std)
+        x_t = normal.rsample() # rsample 允许反向传播通过采样过程
+        y_t = torch.tanh(x_t)  # 将动作压扁(squash)到 [-1, 1]
+        action = y_t * self.max_action
+        
+        # 计算采用 tanh 后的修正对数概率 (Enforcing Action Bounds)
+        log_prob = normal.log_prob(x_t)
+        # log \pi(a|s) = log p(x|s) - \sum \log(1 - \tanh^2(x))
+        log_prob -= torch.log(self.max_action * (1 - y_t.pow(2)) + 1e-6)
+        log_prob = log_prob.sum(1, keepdim=True)
+        
+        return action, log_prob, torch.tanh(mu) * self.max_action
+
+class Critic(nn.Module):
+    """ SAC 的双 Q 网络架构 """
+    def __init__(self, state_dim, action_dim):
+        super(Critic, self).__init__()
+
+        # Q1 architecture
+        self.q1 = nn.Sequential(
+            nn.Linear(state_dim + action_dim, 256),
+            nn.ReLU(),
+            nn.Linear(256, 256),
+            nn.ReLU(),
+            nn.Linear(256, 1)
+        )
+
+        # Q2 architecture
+        self.q2 = nn.Sequential(
+            nn.Linear(state_dim + action_dim, 256),
+            nn.ReLU(),
+            nn.Linear(256, 256),
+            nn.ReLU(),
+            nn.Linear(256, 1)
+        )
+
+    def forward(self, state, action):
+        sa = torch.cat([state, action], 1)
+        return self.q1(sa), self.q2(sa)
+
+class SAC(BaseAlgo):
     """
-    SAC算法实现
+    柔性Actor-Critic (Soft Actor-Critic, SAC)
     
-    核心思想：
-    1. 最大熵强化学习，平衡探索和利用
-    2. 双Q网络减少过估计
-    3. 自动调整温度参数alpha
-    4. 软更新目标网络
+    核心思想: 
+    基于最大熵强化学习 (Maximum Entropy RL) 框架。
+    智能体不仅仅要最大化期望回报，还要最大化其策略的熵 (Entropy) $\mathcal{H}(\pi(\cdot|s))$，
+    这极大地增强了探索能力并防止收敛到局部最优。
     
-    注意：SAC是off-policy算法，需要OffPolicyTrainer支持
+    关键技术:
+    1. 最大熵目标: $J(\pi) = \sum \mathbb{E}[ r_t + \alpha \mathcal{H}(\pi) ]$
+    2. 双 Q 网络 (同 TD3 的 Clipped Double Q-Learning)。
+    3. 重参数化技巧 (Reparameterization Trick) 用于随机策略梯度的回传。
+    4. 自动温度调节 (Automatic Entropy Adjustment, 可学习的 $\alpha$)。
     """
-    
-    def __init__(self, cfg: SACConfig):
-        """
-        Args:
-            cfg: SAC配置
-        """
-        super().__init__(cfg)
-        self.cfg: SACConfig = cfg
-        self.device = torch.device(cfg.device)
+    def __init__(self, state_dim, action_dim, max_action=1.0, lr=3e-4, gamma=0.99, tau=0.005, alpha=0.2):
+        super().__init__(state_dim, action_dim, max_action)
         
-        # 自动调整alpha
-        self.automatic_entropy_tuning = cfg.alpha is None
-        if self.automatic_entropy_tuning:
-            if cfg.target_entropy is None:
-                # 默认目标熵为-action_dim（启发式）
-                # 这里需要从环境获取，暂时设为-1
-                self.target_entropy = -1.0
-            else:
-                self.target_entropy = cfg.target_entropy
-            
-            self.log_alpha = torch.zeros(1, requires_grad=True, device=self.device)
-            self.alpha_optimizer = torch.optim.Adam([self.log_alpha], lr=cfg.alpha_lr)
-        else:
-            self.alpha = cfg.alpha
-    
-    def get_alpha(self) -> float:
-        """获取当前alpha值"""
-        if self.automatic_entropy_tuning:
-            return self.log_alpha.exp().item()
-        return self.alpha
-    
-    def update(
-        self,
-        model: nn.Module,
-        optimizer: torch.optim.Optimizer,
-        batch: "SACBatch"  # 自定义batch类型，包含next_obs和dones
-    ) -> Dict[str, float]:
-        """
-        执行SAC更新
+        self.actor = Actor(state_dim, action_dim, max_action)
+        self.actor_optimizer = torch.optim.Adam(self.actor.parameters(), lr=lr)
+
+        self.critic = Critic(state_dim, action_dim)
+        self.critic_target = copy.deepcopy(self.critic)
+        self.critic_optimizer = torch.optim.Adam(self.critic.parameters(), lr=lr)
+
+        self.gamma = gamma
+        self.tau = tau
         
-        Args:
-            model: 策略模型（需要支持SAC的特殊接口）
-            optimizer: 优化器
-            batch: 经验批次（需要包含next_obs）
+        # 自动熵调节配置
+        self.target_entropy = -torch.prod(torch.Tensor([action_dim]).to("cpu")).item()
+        self.log_alpha = torch.zeros(1, requires_grad=True, device="cpu")
+        self.alpha_optim = torch.optim.Adam([self.log_alpha], lr=lr)
+        self.alpha = alpha
         
-        Returns:
-            metrics: 包含loss、policy_loss、q1_loss、q2_loss、alpha等指标
-        """
-        # SAC需要特殊的模型接口：
-        # - model.q1(obs, action): Q1值
-        # - model.q2(obs, action): Q2值
-        # - model.q1_target(obs, action): 目标Q1值
-        # - model.q2_target(obs, action): 目标Q2值
-        # - model.actor(obs): 动作分布
-        
-        states = batch.obs
-        actions = batch.actions
-        rewards = batch.rewards
-        next_states = batch.next_obs
-        dones = batch.dones
-        
-        # 获取当前alpha
-        alpha = self.get_alpha()
-        
-        # 计算目标Q值
+        # 注册模型
+        self.models = {"actor": self.actor, "critic": self.critic}
+
+    def select_action(self, state, evaluate=False):
+        """ 交互过程动作选择 """
+        state = torch.FloatTensor(state).unsqueeze(0)
         with torch.no_grad():
-            # 从目标策略采样下一个动作
-            next_dist = model.forward_dist(next_states)
-            next_actions = next_dist.sample()
-            next_logprobs = next_dist.log_prob(next_actions)
+            action, _, mean = self.actor.sample(state)
+        # 测试时使用确定的均值(mean)，训练时使用采样动作(action)
+        return mean.numpy().flatten() if evaluate else action.numpy().flatten()
+
+    def update(self, replay_buffer, batch_size=256):
+        """ SAC 网络更新 """
+        state, action, next_state, reward, not_done = replay_buffer.sample(batch_size)
+
+        # -----------------------------
+        # 1. 更新 Critic (价值网络)
+        # -----------------------------
+        with torch.no_grad():
+            next_action, next_log_prob, _ = self.actor.sample(next_state)
             
-            # 计算目标Q值（取两个Q的最小值）
-            target_q1 = model.q1_target(next_states, next_actions)
-            target_q2 = model.q2_target(next_states, next_actions)
-            target_q = torch.min(target_q1, target_q2)
-            
-            # SAC目标：Q_target = r + gamma * (Q - alpha * log_prob)
-            target_q = rewards + (1 - dones) * self.cfg.gamma * (
-                target_q - alpha * next_logprobs.unsqueeze(1)
-            )
-        
-        # 更新Q网络
-        current_q1 = model.q1(states, actions)
-        current_q2 = model.q2(states, actions)
-        
-        q1_loss = F.mse_loss(current_q1, target_q)
-        q2_loss = F.mse_loss(current_q2, target_q)
-        q_loss = q1_loss + q2_loss
-        
-        # 更新策略网络
-        dist = model.forward_dist(states)
-        new_actions = dist.sample()
-        new_logprobs = dist.log_prob(new_actions)
-        
-        q1_new = model.q1(states, new_actions)
-        q2_new = model.q2(states, new_actions)
-        q_new = torch.min(q1_new, q2_new)
-        
-        policy_loss = (alpha * new_logprobs.unsqueeze(1) - q_new).mean()
-        
-        # 总损失
-        total_loss = q_loss + policy_loss
-        
-        # 反向传播
-        optimizer.zero_grad()
-        total_loss.backward()
-        optimizer.step()
-        
-        # 更新alpha（如果自动调整）
-        alpha_loss = None
-        if self.automatic_entropy_tuning:
-            alpha_loss = -(self.log_alpha * (new_logprobs + self.target_entropy).detach()).mean()
-            self.alpha_optimizer.zero_grad()
-            alpha_loss.backward()
-            self.alpha_optimizer.step()
-        
-        # 软更新目标网络
-        self._soft_update_target_networks(model)
-        
-        metrics = {
-            "loss": total_loss.item(),
-            "q1_loss": q1_loss.item(),
-            "q2_loss": q2_loss.item(),
-            "policy_loss": policy_loss.item(),
-            "alpha": self.get_alpha(),
+            target_Q1, target_Q2 = self.critic_target(next_state, next_action)
+            target_Q = torch.min(target_Q1, target_Q2) - self.alpha * next_log_prob
+            target_Q = reward + not_done * self.gamma * target_Q
+
+        current_Q1, current_Q2 = self.critic(state, action)
+        critic_loss = F.mse_loss(current_Q1, target_Q) + F.mse_loss(current_Q2, target_Q)
+
+        self.critic_optimizer.zero_grad()
+        critic_loss.backward()
+        self.critic_optimizer.step()
+
+        # -----------------------------
+        # 2. 更新 Actor (策略网络)
+        # -----------------------------
+        pi, log_pi, _ = self.actor.sample(state)
+        q1_pi, q2_pi = self.critic(state, pi)
+        min_q_pi = torch.min(q1_pi, q2_pi)
+
+        actor_loss = ((self.alpha * log_pi) - min_q_pi).mean()
+
+        self.actor_optimizer.zero_grad()
+        actor_loss.backward()
+        self.actor_optimizer.step()
+
+        # -----------------------------
+        # 3. 更新 Alpha (温度参数 - 动态调整熵的权重)
+        # -----------------------------
+        alpha_loss = -(self.log_alpha * (log_pi + self.target_entropy).detach()).mean()
+
+        self.alpha_optim.zero_grad()
+        alpha_loss.backward()
+        self.alpha_optim.step()
+
+        self.alpha = self.log_alpha.exp()
+
+        # -----------------------------
+        # 4. 软更新目标网络
+        # -----------------------------
+        for param, target_param in zip(self.critic.parameters(), self.critic_target.parameters()):
+            target_param.data.copy_(self.tau * param.data + (1 - self.tau) * target_param.data)
+
+        return {
+            "critic_loss": critic_loss.item(),
+            "actor_loss": actor_loss.item(),
+            "alpha": self.alpha.item()
         }
-        
-        if alpha_loss is not None:
-            metrics["alpha_loss"] = alpha_loss.item()
-        
-        return metrics
-    
-    def _soft_update_target_networks(self, model: nn.Module):
-        """软更新目标网络"""
-        # 这里需要模型提供target网络的更新方法
-        # 或者直接在这里更新
-        if hasattr(model, 'update_target_networks'):
-            model.update_target_networks(self.cfg.tau)
-        else:
-            # 手动更新（如果模型有q1_target和q2_target属性）
-            for param, target_param in zip(model.q1.parameters(), model.q1_target.parameters()):
-                target_param.data.copy_(self.cfg.tau * param.data + (1 - self.cfg.tau) * target_param.data)
-            
-            for param, target_param in zip(model.q2.parameters(), model.q2_target.parameters()):
-                target_param.data.copy_(self.cfg.tau * param.data + (1 - self.cfg.tau) * target_param.data)
-
-
-# SAC需要特殊的batch类型
-@dataclass
-class SACBatch:
-    """SAC算法的batch类型"""
-    obs: torch.Tensor
-    actions: torch.Tensor
-    rewards: torch.Tensor
-    next_obs: torch.Tensor
-    dones: torch.Tensor

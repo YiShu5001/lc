@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="420">
+<rect width="100%" height="100%" fill="white" />
+<line x1="50" y1="370" x2="630" y2="370" stroke="#333" />
+<line x1="50" y1="50" x2="50" y2="370" stroke="#333" />
+<text x="340.0" y="28" text-anchor="middle" font-size="18">Success Collision Curve</text>
+<polyline fill="none" stroke="#2ca25f" stroke-width="3" points="50.0,370.0 243.3,370.0 436.7,370.0 630.0,370.0" />
+<polyline fill="none" stroke="#de2d26" stroke-width="3" points="50.0,370.0 243.3,370.0 436.7,370.0 630.0,370.0" />
+<text x="510" y="30" font-size="12" fill="#2ca25f">success_rate</text>
+<text x="510" y="48" font-size="12" fill="#de2d26">collision_rate</text>
+</svg>

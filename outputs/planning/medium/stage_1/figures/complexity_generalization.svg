@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="420">
+<rect width="100%" height="100%" fill="white" />
+<line x1="60" y1="360" x2="580" y2="360" stroke="#333" />
+<line x1="60" y1="60" x2="60" y2="360" stroke="#333" />
+<rect x="60" y="60" width="62" height="300" fill="#dd8452" />
+<rect x="153" y="184" width="62" height="176" fill="#dd8452" />
+<rect x="246" y="127" width="62" height="233" fill="#dd8452" />
+<rect x="339" y="131" width="62" height="229" fill="#dd8452" />
+<rect x="432" y="76" width="62" height="284" fill="#dd8452" />
+<text x="320.0" y="28" text-anchor="middle" font-size="18">Complexity generalization reward</text>
+<text x="91.0" y="380" text-anchor="middle" font-size="12">uav_count_variation</text>
+<text x="91.0" y="52" text-anchor="middle" font-size="12">34.641</text>
+<text x="184.0" y="380" text-anchor="middle" font-size="12">obstacle_count_variation</text>
+<text x="184.0" y="176" text-anchor="middle" font-size="12">20.355</text>
+<text x="277.0" y="380" text-anchor="middle" font-size="12">obstacle_dynamics_variation</text>
+<text x="277.0" y="119" text-anchor="middle" font-size="12">26.998</text>
+<text x="370.0" y="380" text-anchor="middle" font-size="12">target_dynamics_variation</text>
+<text x="370.0" y="123" text-anchor="middle" font-size="12">26.558</text>
+<text x="463.0" y="380" text-anchor="middle" font-size="12">curriculum_stage_variation</text>
+<text x="463.0" y="68" text-anchor="middle" font-size="12">32.890</text>
+</svg>

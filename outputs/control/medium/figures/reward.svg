@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="420">
+<rect width="100%" height="100%" fill="white" />
+<line x1="60" y1="360" x2="580" y2="360" stroke="#333" />
+<line x1="60" y1="60" x2="60" y2="360" stroke="#333" />
+<rect x="60" y="2225019812" width="78" height="-2225019452" fill="#4f81bd" />
+<rect x="177" y="1255982708" width="78" height="-1255982348" fill="#4f81bd" />
+<rect x="294" y="1111237757" width="78" height="-1111237397" fill="#4f81bd" />
+<rect x="411" y="361375068" width="78" height="-361374708" fill="#4f81bd" />
+<text x="320.0" y="28" text-anchor="middle" font-size="18">Control comparison: reward</text>
+<text x="99.0" y="380" text-anchor="middle" font-size="12">pid</text>
+<text x="99.0" y="2225019804" text-anchor="middle" font-size="12">-7.417</text>
+<text x="216.0" y="380" text-anchor="middle" font-size="12">ladrc</text>
+<text x="216.0" y="1255982700" text-anchor="middle" font-size="12">-4.187</text>
+<text x="333.0" y="380" text-anchor="middle" font-size="12">ddpg_ladrc</text>
+<text x="333.0" y="1111237749" text-anchor="middle" font-size="12">-3.704</text>
+<text x="450.0" y="380" text-anchor="middle" font-size="12">mddpg_ladrc</text>
+<text x="450.0" y="361375060" text-anchor="middle" font-size="12">-1.205</text>
+</svg>

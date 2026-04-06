@@ -1,0 +1,33 @@
+{
+  "axis": "z",
+  "controller_variant": "ladrc_pos_pid_att",
+  "backend": "gym_env",
+  "checkpoint_path": "outputs\\control_pybullet_smoke\\train\\ladrc_pos_pid_att\\z\\20260406_194435\\checkpoints\\z_policy.pt",
+  "best_reward": -70.40747271490625,
+  "reference_segments": [
+    {
+      "stage": 0.0,
+      "start": 0.0,
+      "stop": 17.0,
+      "velocity": 0.0
+    },
+    {
+      "stage": 1.0,
+      "start": 17.0,
+      "stop": 37.0,
+      "velocity": 0.4200665056705475
+    },
+    {
+      "stage": 2.0,
+      "start": 37.0,
+      "stop": 56.0,
+      "velocity": 0.0
+    },
+    {
+      "stage": 3.0,
+      "start": 56.0,
+      "stop": 72.0,
+      "velocity": -0.2379339635372162
+    }
+  ]
+}

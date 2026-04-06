@@ -159,6 +159,8 @@ class BaseAviary(gym.Env):
                 for i in range(4):
                     self.SLIDERS[i] = p.addUserDebugParameter("Propeller "+str(i)+" RPM", 0, self.MAX_RPM, self.HOVER_RPM, physicsClientId=self.CLIENT)
                 self.INPUT_SWITCH = p.addUserDebugParameter("Use GUI RPM", 9999, -1, 0, physicsClientId=self.CLIENT)
+        else:
+            self.CLIENT = p.connect(p.DIRECT)
 
         #### 设定初始位置状态 #####################################
         if initial_xyzs is None:    # 初始位置 0->4*L（臂展的距离）----> 4*L*   num ，  高度 0.5*L  ，  偏移量 0.1

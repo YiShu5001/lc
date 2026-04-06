@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="420">
+<rect width="100%" height="100%" fill="white" />
+<text x="360.0" y="24" text-anchor="middle" font-size="18">Controller Comparison (RMSE)</text>
+<line x1="50" y1="370" x2="670" y2="370" stroke="#333" />
+<line x1="50" y1="50" x2="50" y2="370" stroke="#333" />
+<rect x="50" y="50" width="113" height="320" fill="#4f81bd" />
+<text x="106.5" y="388" font-size="12" text-anchor="middle">pid_pos_att</text>
+<text x="106.5" y="44" font-size="12" text-anchor="middle">0.070</text>
+<rect x="193" y="58" width="113" height="312" fill="#4f81bd" />
+<text x="249.5" y="388" font-size="12" text-anchor="middle">ladrc_pos_pid_att</text>
+<text x="249.5" y="52" font-size="12" text-anchor="middle">0.069</text>
+<rect x="336" y="51" width="113" height="319" fill="#4f81bd" />
+<text x="392.5" y="388" font-size="12" text-anchor="middle">ladrc_pos_att</text>
+<text x="392.5" y="45" font-size="12" text-anchor="middle">0.070</text>
+</svg>

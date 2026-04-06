@@ -3,7 +3,7 @@
 > **Role**: AI Architect / Lead Developer
 > **Goal**: Implement the "Hierarchical Guided Curriculum RL" (HGC-RL) framework for UAV swarms.
 > **Philosophy**: Focus on interfaces, data flow, and mechanism design. Let the coding agent handle the implementation details.
-
+ 
 ---
 
 ## 1. System Architecture Overview

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="300">
+<rect width="100%" height="100%" fill="white" />
+<text x="340.0" y="24" text-anchor="middle" font-size="18">Curriculum stage transitions</text>
+<line x1="40" y1="260" x2="640" y2="260" stroke="#333" />
+<line x1="40" y1="40" x2="40" y2="260" stroke="#333" />
+<polyline fill="none" stroke="#88419d" stroke-width="3" points="40.0,260.0 240.0,260.0 440.0,260.0 640.0,260.0" />
+</svg>

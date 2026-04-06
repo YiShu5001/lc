@@ -1,0 +1,27 @@
+{
+  "primary_method": "ddpg_ladrc",
+  "difficulty": "easy",
+  "difficulty_levels": [
+    "easy",
+    "medium"
+  ],
+  "axes": [
+    "x",
+    "y",
+    "z"
+  ],
+  "episode_length": 100,
+  "episodes": 1,
+  "seed": 7,
+  "seed_runs": 1,
+  "compare_episodes": 1,
+  "train_episodes": 1,
+  "warmup_steps": 32,
+  "batch_size": 16,
+  "updates_per_step": 1,
+  "enhanced_stack_size": 4,
+  "enhanced_n_step": 4,
+  "enhanced_action_hold_steps": 4,
+  "export_reference_preview": true,
+  "reference_profile_mode": "piecewise_constant_velocity"
+}

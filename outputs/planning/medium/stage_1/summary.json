@@ -1,0 +1,2925 @@
+{
+  "difficulty": "medium",
+  "stage_index": 1,
+  "results": {
+    "task_decomposed": {
+      "success_rate": 0.0,
+      "collision_rate": 0.0,
+      "occupancy_error": 1.6194814372062682,
+      "formation_error": 0.7473558869361878,
+      "reward": 36.544140619395826,
+      "recovery_score": 0.7999999999999998,
+      "stage_index": 1.0,
+      "curriculum_env": "avoidance_A2",
+      "target_reward": -0.0009739347696304324,
+      "avoidance_reward": 0.8839120463132858,
+      "collaboration_reward": 0.9647474961042403,
+      "recovery_reward": 2.104864457309246,
+      "smoothness_penalty": 0.0001602030027288311,
+      "consistency_penalty": 0.0,
+      "success_bonus": 0.0,
+      "final_actor_loss": -1.506147403717041,
+      "final_critic_loss": 0.03666148014366627
+    },
+    "single_stream_mlp": {
+      "success_rate": 0.0,
+      "collision_rate": 0.0,
+      "occupancy_error": 3.1843309116363527,
+      "formation_error": 0.7896115474700928,
+      "reward": 38.52650863863733,
+      "recovery_score": 0.7999999999999998,
+      "stage_index": 1.0,
+      "curriculum_env": "avoidance_A2",
+      "target_reward": -0.006792524814605714,
+      "avoidance_reward": 0.9475747109413146,
+      "collaboration_reward": 0.9288301846504211,
+      "recovery_reward": 2.1810134202837945,
+      "smoothness_penalty": 0.0010005933018841476,
+      "consistency_penalty": 0.0,
+      "success_bonus": 0.0,
+      "final_actor_loss": -1.2964295959472656,
+      "final_critic_loss": 0.025265128733590245
+    },
+    "without_curriculum": {
+      "success_rate": 0.0,
+      "collision_rate": 0.0,
+      "occupancy_error": 1.4970643043518066,
+      "formation_error": 0.6402197666168213,
+      "reward": 38.747814660509796,
+      "recovery_score": 0.8007928476333618,
+      "stage_index": 1.0,
+      "curriculum_env": "avoidance_A2",
+      "target_reward": -0.008686022579669953,
+      "avoidance_reward": 0.9466695694684982,
+      "collaboration_reward": 1.055813198375702,
+      "recovery_reward": 2.2173331305980684,
+      "smoothness_penalty": 0.0018285963425116428,
+      "consistency_penalty": 0.0,
+      "success_bonus": 0.0,
+      "final_actor_loss": -1.6401113080978393,
+      "final_critic_loss": 0.030332714784890413
+    },
+    "without_pyramid_per": {
+      "success_rate": 0.0,
+      "collision_rate": 0.0,
+      "occupancy_error": 2.640133275985718,
+      "formation_error": 0.27317715835571293,
+      "reward": 35.824034104041274,
+      "recovery_score": 0.7999999999999998,
+      "stage_index": 1.0,
+      "curriculum_env": "avoidance_A2",
+      "target_reward": 0.0039393091201782235,
+      "avoidance_reward": 0.8528460752964021,
+      "collaboration_reward": 1.3687842426776888,
+      "recovery_reward": 2.097548123955727,
+      "smoothness_penalty": 0.0011524806936535935,
+      "consistency_penalty": 0.0,
+      "success_bonus": 0.0,
+      "final_actor_loss": -1.3700096368789674,
+      "final_critic_loss": 0.019260679497383536
+    },
+    "uniform_replay": {
+      "success_rate": 0.0,
+      "collision_rate": 0.0,
+      "occupancy_error": 2.2835760259628297,
+      "formation_error": 0.18116014957427976,
+      "reward": 31.369207464865497,
+      "recovery_score": 0.7900447706985473,
+      "stage_index": 1.0,
+      "curriculum_env": "avoidance_A2",
+      "target_reward": 0.006171823501586914,
+      "avoidance_reward": 0.677190760731697,
+      "collaboration_reward": 1.4475568287372587,
+      "recovery_reward": 2.0494991524815562,
+      "smoothness_penalty": 0.0006061462408180029,
+      "consistency_penalty": 0.0,
+      "success_bonus": 0.0,
+      "final_actor_loss": -1.3574699687957763,
+      "final_critic_loss": 0.02353118557482958
+    },
+    "td_only_priority": {
+      "success_rate": 0.0,
+      "collision_rate": 0.0,
+      "occupancy_error": 1.6335565257072449,
+      "formation_error": 0.02137456512451172,
+      "reward": 31.55217832624693,
+      "recovery_score": 0.7935442612671852,
+      "stage_index": 1.0,
+      "curriculum_env": "avoidance_A2",
+      "target_reward": 0.017801765918731685,
+      "avoidance_reward": 0.6768927619457245,
+      "collaboration_reward": 1.5862820611238482,
+      "recovery_reward": 2.0532930225133894,
+      "smoothness_penalty": 0.000930992797565706,
+      "consistency_penalty": 0.0,
+      "success_bonus": 0.0,
+      "final_actor_loss": -1.7114002418518066,
+      "final_critic_loss": 0.0472335615940392
+    },
+    "high_old_mix": {
+      "success_rate": 0.0,
+      "collision_rate": 0.0,
+      "occupancy_error": 1.2230668306350707,
+      "formation_error": 0.0707113356590271,
+      "reward": 35.603369531878734,
+      "recovery_score": 0.7968783932209013,
+      "stage_index": 1.0,
+      "curriculum_env": "avoidance_A2",
+      "target_reward": 0.020091032266616824,
+      "avoidance_reward": 0.8217062431240082,
+      "collaboration_reward": 1.5452826258420944,
+      "recovery_reward": 2.136297467827797,
+      "smoothness_penalty": 0.002558160494142003,
+      "consistency_penalty": 0.0,
+      "success_bonus": 0.0,
+      "final_actor_loss": -1.144730019569397,
+      "final_critic_loss": 0.016109495870769024
+    },
+    "contribution_only_priority": {
+      "success_rate": 0.0,
+      "collision_rate": 0.0,
+      "occupancy_error": 1.050057713985443,
+      "formation_error": 0.14135220766067505,
+      "reward": 32.742624297974764,
+      "recovery_score": 0.801370979309082,
+      "stage_index": 1.0,
+      "curriculum_env": "avoidance_A2",
+      "target_reward": 0.01010923671722412,
+      "avoidance_reward": 0.7287343225479124,
+      "collaboration_reward": 1.4813496981859209,
+      "recovery_reward": 2.063758300304413,
+      "smoothness_penalty": 0.0005872120563518397,
+      "consistency_penalty": 0.0,
+      "success_bonus": 0.0,
+      "final_actor_loss": -1.2947964477539062,
+      "final_critic_loss": 0.020194796808063985
+    },
+    "rare_only_priority": {
+      "success_rate": 0.0,
+      "collision_rate": 0.0,
+      "occupancy_error": 1.8520566892623902,
+      "formation_error": 0.26133732914924623,
+      "reward": 34.580911667346946,
+      "recovery_score": 0.7999999999999998,
+      "stage_index": 1.0,
+      "curriculum_env": "avoidance_A2",
+      "target_reward": 0.0035675587654113773,
+      "avoidance_reward": 0.804468687415123,
+      "collaboration_reward": 1.3787730373740195,
+      "recovery_reward": 2.084009880483151,
+      "smoothness_penalty": 0.0010306033119565408,
+      "consistency_penalty": 0.0,
+      "success_bonus": 0.0,
+      "final_actor_loss": -1.2887934589385985,
+      "final_critic_loss": 0.02863161588087678
+    },
+    "balanced_sample_ratio": {
+      "success_rate": 0.0,
+      "collision_rate": 0.0,
+      "occupancy_error": 1.0471080839633942,
+      "formation_error": 0.7999889650344849,
+      "reward": 38.067786973806655,
+      "recovery_score": 0.8060595638751981,
+      "stage_index": 1.0,
+      "curriculum_env": "avoidance_A2",
+      "target_reward": 0.014502575576305387,
+      "avoidance_reward": 0.9313979916143418,
+      "collaboration_reward": 0.920009379720688,
+      "recovery_reward": 2.130543699026108,
+      "smoothness_penalty": 0.0005449074736150912,
+      "consistency_penalty": 0.0,
+      "success_bonus": 0.0,
+      "final_actor_loss": -1.2106909990310668,
+      "final_critic_loss": 0.02077983310446143
+    },
+    "low_old_mix": {
+      "success_rate": 0.0,
+      "collision_rate": 1.0,
+      "occupancy_error": 0.7739204296043941,
+      "formation_error": 0.02995100702558245,
+      "reward": 7.813404667742282,
+      "recovery_score": 0.8050383977357832,
+      "stage_index": 1.0,
+      "curriculum_env": "avoidance_A2",
+      "target_reward": 0.178228930916105,
+      "avoidance_reward": 0.43067471271753316,
+      "collaboration_reward": 1.58518694119794,
+      "recovery_reward": 2.042762102139848,
+      "smoothness_penalty": 0.00793996930705061,
+      "consistency_penalty": 0.0,
+      "success_bonus": 0.0,
+      "final_actor_loss": -1.0378349423408508,
+      "final_critic_loss": 0.009047100476454944
+    },
+    "high_rare_ratio": {
+      "success_rate": 0.0,
+      "collision_rate": 0.0,
+      "occupancy_error": 1.0383909833431244,
+      "formation_error": 0.024453447818756104,
+      "reward": 39.26509734538352,
+      "recovery_score": 0.8283093383312226,
+      "stage_index": 1.0,
+      "curriculum_env": "avoidance_A2",
+      "target_reward": 0.11783304876089094,
+      "avoidance_reward": 0.9106263699960709,
+      "collaboration_reward": 1.5878790204167366,
+      "recovery_reward": 2.163604766845703,
+      "smoothness_penalty": 0.002830195879845678,
+      "consistency_penalty": 0.0,
+      "success_bonus": 0.0,
+      "final_actor_loss": -1.1532684636116028,
+      "final_critic_loss": 0.017351190028712153
+    }
+  },
+  "training": {
+    "task_decomposed": {
+      "final_metrics": {
+        "success_rate": 0.0,
+        "collision_rate": 0.0,
+        "occupancy_error": 1.0289440727233887,
+        "formation_error": 0.4126138678789139,
+        "episode": 3.0,
+        "reward": 26.364169309930368,
+        "actor_loss": -1.506147403717041,
+        "critic_loss": 0.03666148014366627,
+        "stage_index": 0.0,
+        "stage_name": "guidance",
+        "curriculum_env": "guidance_G1",
+        "recovery_score": 0.7999999999999998,
+        "target_reward": 0.0007950053215026855,
+        "avoidance_reward": 0.9602556102275852,
+        "collaboration_reward": 1.2495764242351055,
+        "recovery_reward": 4.431468618750576,
+        "smoothness_penalty": 0.019345747536612744,
+        "consistency_penalty": 0.08793980200035426,
+        "success_bonus": 0.0
+      },
+      "stage_history": [
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.6495472509265936,
+          "reward_std": 0.0,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.6395459276391495,
+          "reward_std": 0.01000132328744413,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.6030978973726313,
+          "reward_std": 0.05218814168261509,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.5841442695791254,
+          "reward_std": 0.055860734141414715,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        }
+      ],
+      "stage_averages": {
+        "guidance": {
+          "reward": 0.5841442695791254,
+          "success_rate": 0.0,
+          "collision_rate": 0.0,
+          "occupancy_error": 0.9440162092447281
+        }
+      },
+      "env_averages": {
+        "guidance_G1": {
+          "reward": 0.5841442695791254,
+          "success_rate": 0.0,
+          "collision_rate": 0.0,
+          "occupancy_error": 0.9440162092447281
+        }
+      },
+      "replay_stats": {
+        "guidance": {
+          "buffer_size": 200,
+          "old_pool_size": 0,
+          "sample_counts": {
+            "current": 4416,
+            "old_pool": 0
+          },
+          "old_pool_hit_rate": 0.0,
+          "current_hit_rate": 1.0,
+          "priority_mean": 0.18308022185927256
+        },
+        "avoidance": {
+          "bucket_sizes": {
+            "td_layer": 0,
+            "filtered_layer": 0,
+            "rare_layer": 0
+          },
+          "bucket_fractions": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sampling_counts": {
+            "td_layer": 0,
+            "filtered_layer": 0,
+            "rare_layer": 0
+          },
+          "sampling_fractions": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "old_pool_size": 0,
+          "old_pool_sample_count": 0,
+          "old_pool_hit_rate": 0.0,
+          "priority_means": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sample_ratio": [
+            6,
+            3,
+            1
+          ],
+          "secondary_priority_mode": "hybrid",
+          "rare_priority_mode": "hybrid"
+        },
+        "cooperation": {
+          "bucket_sizes": {
+            "td_layer": 0,
+            "contribution_layer": 0,
+            "rare_layer": 0
+          },
+          "bucket_fractions": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sampling_counts": {
+            "td_layer": 0,
+            "contribution_layer": 0,
+            "rare_layer": 0
+          },
+          "sampling_fractions": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "old_pool_size": 0,
+          "old_pool_sample_count": 0,
+          "old_pool_hit_rate": 0.0,
+          "priority_means": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sample_ratio": [
+            5,
+            3,
+            2
+          ],
+          "secondary_priority_mode": "hybrid",
+          "rare_priority_mode": "hybrid"
+        },
+        "config": {
+          "avoidance_old_fraction": 0.1,
+          "cooperation_old_fraction": 0.2,
+          "avoidance_sample_ratio": [
+            6,
+            3,
+            1
+          ],
+          "cooperation_sample_ratio": [
+            5,
+            3,
+            2
+          ],
+          "avoidance_priority_mode": "hybrid",
+          "cooperation_priority_mode": "hybrid",
+          "rare_priority_mode": "hybrid"
+        },
+        "current_replay_type": "guidance_base_replay",
+        "last_sample_sources": {
+          "guidance_current": 32
+        },
+        "last_sample_source_fractions": {
+          "guidance_current": 1.0
+        }
+      },
+      "stage_transition_summary": [],
+      "trainer_overrides": {},
+      "train_overrides": {
+        "actor_variant": "task_decomposed",
+        "use_curriculum": true,
+        "use_pyramid_per": true,
+        "use_uniform_replay": false
+      }
+    },
+    "single_stream_mlp": {
+      "final_metrics": {
+        "success_rate": 0.0,
+        "collision_rate": 0.0,
+        "occupancy_error": 0.6974170410633087,
+        "formation_error": 0.6407745395898821,
+        "episode": 3.0,
+        "reward": 32.88351964737527,
+        "actor_loss": -1.2964295959472656,
+        "critic_loss": 0.025265128733590245,
+        "stage_index": 0.0,
+        "stage_name": "guidance",
+        "curriculum_env": "guidance_G1",
+        "recovery_score": 0.8605165917873383,
+        "target_reward": 0.1803078832626343,
+        "avoidance_reward": 0.960052651762963,
+        "collaboration_reward": 1.05540306840539,
+        "recovery_reward": 4.431096528232102,
+        "smoothness_penalty": 0.019881630030655083,
+        "consistency_penalty": 0.057308399674768695,
+        "success_bonus": 0.0
+      },
+      "stage_history": [
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.5263952152582245,
+          "reward_std": 0.0,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.5282474266019479,
+          "reward_std": 0.001852211343723431,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.5290186707661135,
+          "reward_std": 0.0018646071157388847,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.5611816013114616,
+          "reward_std": 0.05573122888979468,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        }
+      ],
+      "stage_averages": {
+        "guidance": {
+          "reward": 0.5611816013114616,
+          "success_rate": 0.0,
+          "collision_rate": 0.0,
+          "occupancy_error": 1.1422845801711083
+        }
+      },
+      "env_averages": {
+        "guidance_G1": {
+          "reward": 0.5611816013114616,
+          "success_rate": 0.0,
+          "collision_rate": 0.0,
+          "occupancy_error": 1.1422845801711083
+        }
+      },
+      "replay_stats": {
+        "guidance": {
+          "buffer_size": 200,
+          "old_pool_size": 0,
+          "sample_counts": {
+            "current": 4416,
+            "old_pool": 0
+          },
+          "old_pool_hit_rate": 0.0,
+          "current_hit_rate": 1.0,
+          "priority_mean": 0.14718358741607518
+        },
+        "avoidance": {
+          "bucket_sizes": {
+            "td_layer": 0,
+            "filtered_layer": 0,
+            "rare_layer": 0
+          },
+          "bucket_fractions": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sampling_counts": {
+            "td_layer": 0,
+            "filtered_layer": 0,
+            "rare_layer": 0
+          },
+          "sampling_fractions": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "old_pool_size": 0,
+          "old_pool_sample_count": 0,
+          "old_pool_hit_rate": 0.0,
+          "priority_means": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sample_ratio": [
+            6,
+            3,
+            1
+          ],
+          "secondary_priority_mode": "hybrid",
+          "rare_priority_mode": "hybrid"
+        },
+        "cooperation": {
+          "bucket_sizes": {
+            "td_layer": 0,
+            "contribution_layer": 0,
+            "rare_layer": 0
+          },
+          "bucket_fractions": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sampling_counts": {
+            "td_layer": 0,
+            "contribution_layer": 0,
+            "rare_layer": 0
+          },
+          "sampling_fractions": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "old_pool_size": 0,
+          "old_pool_sample_count": 0,
+          "old_pool_hit_rate": 0.0,
+          "priority_means": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sample_ratio": [
+            5,
+            3,
+            2
+          ],
+          "secondary_priority_mode": "hybrid",
+          "rare_priority_mode": "hybrid"
+        },
+        "config": {
+          "avoidance_old_fraction": 0.1,
+          "cooperation_old_fraction": 0.2,
+          "avoidance_sample_ratio": [
+            6,
+            3,
+            1
+          ],
+          "cooperation_sample_ratio": [
+            5,
+            3,
+            2
+          ],
+          "avoidance_priority_mode": "hybrid",
+          "cooperation_priority_mode": "hybrid",
+          "rare_priority_mode": "hybrid"
+        },
+        "current_replay_type": "guidance_base_replay",
+        "last_sample_sources": {
+          "guidance_current": 32
+        },
+        "last_sample_source_fractions": {
+          "guidance_current": 1.0
+        }
+      },
+      "stage_transition_summary": [],
+      "trainer_overrides": {},
+      "train_overrides": {
+        "actor_variant": "single_stream_mlp",
+        "use_curriculum": true,
+        "use_pyramid_per": true,
+        "use_uniform_replay": false
+      }
+    },
+    "without_curriculum": {
+      "final_metrics": {
+        "success_rate": 0.0,
+        "collision_rate": 0.0,
+        "occupancy_error": 2.0730524277687072,
+        "formation_error": 0.7360898070335388,
+        "episode": 3.0,
+        "reward": 38.472826692042986,
+        "actor_loss": -1.6401113080978393,
+        "critic_loss": 0.030332714784890413,
+        "stage_index": 1.0,
+        "stage_name": "avoidance",
+        "curriculum_env": "avoidance_A2",
+        "recovery_score": 0.7999999999999998,
+        "target_reward": -0.011071569800376893,
+        "avoidance_reward": 0.9448442564964301,
+        "collaboration_reward": 0.9743236640214922,
+        "recovery_reward": 2.1983493540287005,
+        "smoothness_penalty": 0.015907878408272555,
+        "consistency_penalty": 0.0,
+        "success_bonus": 0.0
+      },
+      "stage_history": [],
+      "stage_averages": {},
+      "env_averages": {},
+      "replay_stats": {
+        "guidance": {
+          "buffer_size": 0,
+          "old_pool_size": 0,
+          "sample_counts": {
+            "current": 0,
+            "old_pool": 0
+          },
+          "old_pool_hit_rate": 0.0,
+          "current_hit_rate": 0.0,
+          "priority_mean": 0.0
+        },
+        "avoidance": {
+          "bucket_sizes": {
+            "td_layer": 200,
+            "filtered_layer": 11,
+            "rare_layer": 0
+          },
+          "bucket_fractions": {
+            "td_layer": 0.9478672985781991,
+            "filtered_layer": 0.052132701421800945,
+            "rare_layer": 0.0
+          },
+          "sampling_counts": {
+            "td_layer": 2346,
+            "filtered_layer": 1242,
+            "rare_layer": 0
+          },
+          "sampling_fractions": {
+            "td_layer": 0.6538461538461539,
+            "filtered_layer": 0.34615384615384615,
+            "rare_layer": 0.0
+          },
+          "old_pool_size": 0,
+          "old_pool_sample_count": 0,
+          "old_pool_hit_rate": 0.0,
+          "priority_means": {
+            "td_layer": 0.1289393489889335,
+            "filtered_layer": 0.4003258157860149,
+            "rare_layer": 0.0
+          },
+          "sample_ratio": [
+            6,
+            3,
+            1
+          ],
+          "secondary_priority_mode": "hybrid",
+          "rare_priority_mode": "hybrid"
+        },
+        "cooperation": {
+          "bucket_sizes": {
+            "td_layer": 0,
+            "contribution_layer": 0,
+            "rare_layer": 0
+          },
+          "bucket_fractions": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sampling_counts": {
+            "td_layer": 0,
+            "contribution_layer": 0,
+            "rare_layer": 0
+          },
+          "sampling_fractions": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "old_pool_size": 0,
+          "old_pool_sample_count": 0,
+          "old_pool_hit_rate": 0.0,
+          "priority_means": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sample_ratio": [
+            5,
+            3,
+            2
+          ],
+          "secondary_priority_mode": "hybrid",
+          "rare_priority_mode": "hybrid"
+        },
+        "config": {
+          "avoidance_old_fraction": 0.1,
+          "cooperation_old_fraction": 0.2,
+          "avoidance_sample_ratio": [
+            6,
+            3,
+            1
+          ],
+          "cooperation_sample_ratio": [
+            5,
+            3,
+            2
+          ],
+          "avoidance_priority_mode": "hybrid",
+          "cooperation_priority_mode": "hybrid",
+          "rare_priority_mode": "hybrid"
+        },
+        "current_replay_type": "avoidance_pyramid",
+        "last_sample_sources": {
+          "avoidance_current": 26
+        },
+        "last_sample_source_fractions": {
+          "avoidance_current": 1.0
+        }
+      },
+      "stage_transition_summary": [],
+      "trainer_overrides": {},
+      "train_overrides": {
+        "actor_variant": "task_decomposed",
+        "use_curriculum": false,
+        "use_pyramid_per": true,
+        "use_uniform_replay": false
+      }
+    },
+    "without_pyramid_per": {
+      "final_metrics": {
+        "success_rate": 0.0,
+        "collision_rate": 0.0,
+        "occupancy_error": 1.3124728465080262,
+        "formation_error": 0.06308129990100861,
+        "episode": 3.0,
+        "reward": 26.844995191399818,
+        "actor_loss": -1.3700096368789674,
+        "critic_loss": 0.019260679497383536,
+        "stage_index": 0.0,
+        "stage_name": "guidance",
+        "curriculum_env": "guidance_G1",
+        "recovery_score": 0.7999999999999998,
+        "target_reward": 0.00867949080467224,
+        "avoidance_reward": 0.9618606362342835,
+        "collaboration_reward": 1.5485516373574735,
+        "recovery_reward": 4.43441116642952,
+        "smoothness_penalty": 0.01746403929153523,
+        "consistency_penalty": 0.0020386594896862607,
+        "success_bonus": 0.0
+      },
+      "stage_history": [
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.7030223825185611,
+          "reward_std": 0.0,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.6195320871076726,
+          "reward_std": 0.08349029541088848,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.6415325018562371,
+          "reward_std": 0.07493412295754182,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.6153743523491769,
+          "reward_std": 0.07914599449411915,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        }
+      ],
+      "stage_averages": {
+        "guidance": {
+          "reward": 0.6153743523491769,
+          "success_rate": 0.0,
+          "collision_rate": 0.0,
+          "occupancy_error": 0.990013374388218
+        }
+      },
+      "env_averages": {
+        "guidance_G1": {
+          "reward": 0.6153743523491769,
+          "success_rate": 0.0,
+          "collision_rate": 0.0,
+          "occupancy_error": 0.990013374388218
+        }
+      },
+      "replay_stats": {
+        "guidance": {
+          "buffer_size": 200,
+          "old_pool_size": 0,
+          "sample_counts": {
+            "current": 4416,
+            "old_pool": 0
+          },
+          "old_pool_hit_rate": 0.0,
+          "current_hit_rate": 1.0,
+          "priority_mean": 0.16049409945495427
+        },
+        "avoidance": {
+          "bucket_sizes": {
+            "td_layer": 0,
+            "filtered_layer": 0,
+            "rare_layer": 0
+          },
+          "bucket_fractions": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sampling_counts": {
+            "td_layer": 0,
+            "filtered_layer": 0,
+            "rare_layer": 0
+          },
+          "sampling_fractions": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "old_pool_size": 0,
+          "old_pool_sample_count": 0,
+          "old_pool_hit_rate": 0.0,
+          "priority_means": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sample_ratio": [
+            6,
+            3,
+            1
+          ],
+          "secondary_priority_mode": "hybrid",
+          "rare_priority_mode": "hybrid"
+        },
+        "cooperation": {
+          "bucket_sizes": {
+            "td_layer": 0,
+            "contribution_layer": 0,
+            "rare_layer": 0
+          },
+          "bucket_fractions": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sampling_counts": {
+            "td_layer": 0,
+            "contribution_layer": 0,
+            "rare_layer": 0
+          },
+          "sampling_fractions": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "old_pool_size": 0,
+          "old_pool_sample_count": 0,
+          "old_pool_hit_rate": 0.0,
+          "priority_means": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sample_ratio": [
+            5,
+            3,
+            2
+          ],
+          "secondary_priority_mode": "hybrid",
+          "rare_priority_mode": "hybrid"
+        },
+        "config": {
+          "avoidance_old_fraction": 0.1,
+          "cooperation_old_fraction": 0.2,
+          "avoidance_sample_ratio": [
+            6,
+            3,
+            1
+          ],
+          "cooperation_sample_ratio": [
+            5,
+            3,
+            2
+          ],
+          "avoidance_priority_mode": "hybrid",
+          "cooperation_priority_mode": "hybrid",
+          "rare_priority_mode": "hybrid"
+        },
+        "current_replay_type": "guidance_base_replay",
+        "last_sample_sources": {
+          "guidance_current": 32
+        },
+        "last_sample_source_fractions": {
+          "guidance_current": 1.0
+        }
+      },
+      "stage_transition_summary": [],
+      "trainer_overrides": {},
+      "train_overrides": {
+        "actor_variant": "task_decomposed",
+        "use_curriculum": true,
+        "use_pyramid_per": false,
+        "use_uniform_replay": false
+      }
+    },
+    "uniform_replay": {
+      "final_metrics": {
+        "success_rate": 0.0,
+        "collision_rate": 0.0,
+        "occupancy_error": 0.9738105797767639,
+        "formation_error": 0.3642966700792314,
+        "episode": 3.0,
+        "reward": 27.08967547347809,
+        "actor_loss": -1.3574699687957763,
+        "critic_loss": 0.02353118557482958,
+        "stage_index": 0.0,
+        "stage_name": "guidance",
+        "curriculum_env": "guidance_G1",
+        "recovery_score": 0.8052378840446474,
+        "target_reward": 0.01601183360815048,
+        "avoidance_reward": 0.9601791003942494,
+        "collaboration_reward": 1.2905567808926106,
+        "recovery_reward": 4.431328350722791,
+        "smoothness_penalty": 0.01868016018801468,
+        "consistency_penalty": 0.0,
+        "success_bonus": 0.0
+      },
+      "stage_history": [
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.5338691984119978,
+          "reward_std": 0.0,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.6325808061362204,
+          "reward_std": 0.09871160772422255,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.649371950692784,
+          "reward_std": 0.08402304884597257,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.6224773403869784,
+          "reward_std": 0.08639944874553855,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        }
+      ],
+      "stage_averages": {
+        "guidance": {
+          "reward": 0.6224773403869784,
+          "success_rate": 0.0,
+          "collision_rate": 0.0,
+          "occupancy_error": 0.8407825502753257
+        }
+      },
+      "env_averages": {
+        "guidance_G1": {
+          "reward": 0.6224773403869784,
+          "success_rate": 0.0,
+          "collision_rate": 0.0,
+          "occupancy_error": 0.8407825502753257
+        }
+      },
+      "replay_stats": {
+        "guidance": {
+          "buffer_size": 200,
+          "old_pool_size": 0,
+          "sample_counts": {
+            "current": 4416,
+            "old_pool": 0
+          },
+          "old_pool_hit_rate": 0.0,
+          "current_hit_rate": 1.0,
+          "priority_mean": 0.16849187958287076
+        },
+        "avoidance": {
+          "bucket_sizes": {
+            "td_layer": 0,
+            "filtered_layer": 0,
+            "rare_layer": 0
+          },
+          "bucket_fractions": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sampling_counts": {
+            "td_layer": 0,
+            "filtered_layer": 0,
+            "rare_layer": 0
+          },
+          "sampling_fractions": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "old_pool_size": 0,
+          "old_pool_sample_count": 0,
+          "old_pool_hit_rate": 0.0,
+          "priority_means": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sample_ratio": [
+            6,
+            3,
+            1
+          ],
+          "secondary_priority_mode": "hybrid",
+          "rare_priority_mode": "hybrid"
+        },
+        "cooperation": {
+          "bucket_sizes": {
+            "td_layer": 0,
+            "contribution_layer": 0,
+            "rare_layer": 0
+          },
+          "bucket_fractions": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sampling_counts": {
+            "td_layer": 0,
+            "contribution_layer": 0,
+            "rare_layer": 0
+          },
+          "sampling_fractions": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "old_pool_size": 0,
+          "old_pool_sample_count": 0,
+          "old_pool_hit_rate": 0.0,
+          "priority_means": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sample_ratio": [
+            5,
+            3,
+            2
+          ],
+          "secondary_priority_mode": "hybrid",
+          "rare_priority_mode": "hybrid"
+        },
+        "config": {
+          "avoidance_old_fraction": 0.1,
+          "cooperation_old_fraction": 0.2,
+          "avoidance_sample_ratio": [
+            6,
+            3,
+            1
+          ],
+          "cooperation_sample_ratio": [
+            5,
+            3,
+            2
+          ],
+          "avoidance_priority_mode": "hybrid",
+          "cooperation_priority_mode": "hybrid",
+          "rare_priority_mode": "hybrid"
+        },
+        "current_replay_type": "guidance_base_replay",
+        "last_sample_sources": {
+          "guidance_current": 32
+        },
+        "last_sample_source_fractions": {
+          "guidance_current": 1.0
+        }
+      },
+      "stage_transition_summary": [],
+      "trainer_overrides": {},
+      "train_overrides": {
+        "actor_variant": "task_decomposed",
+        "use_curriculum": true,
+        "use_pyramid_per": true,
+        "use_uniform_replay": true
+      }
+    },
+    "td_only_priority": {
+      "final_metrics": {
+        "success_rate": 0.0,
+        "collision_rate": 0.0,
+        "occupancy_error": 0.8105640995502472,
+        "formation_error": 0.03529856252670288,
+        "episode": 3.0,
+        "reward": 31.232533962037582,
+        "actor_loss": -1.7114002418518066,
+        "critic_loss": 0.0472335615940392,
+        "stage_index": 0.0,
+        "stage_name": "guidance",
+        "curriculum_env": "guidance_G1",
+        "recovery_score": 0.838864886045456,
+        "target_reward": 0.1305233163833618,
+        "avoidance_reward": 0.9629847124814986,
+        "collaboration_reward": 1.5734783864140511,
+        "recovery_reward": 4.436471972882748,
+        "smoothness_penalty": 0.02128431626498165,
+        "consistency_penalty": 0.0,
+        "success_bonus": 0.0
+      },
+      "stage_history": [
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.5360134666051103,
+          "reward_std": 0.0,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.7294892652666116,
+          "reward_std": 0.19347579866150127,
+          "success_mean": 0.5,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.6659109107526179,
+          "reward_std": 0.1817681786522364,
+          "success_mean": 0.3333333333333333,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.6555958528746513,
+          "reward_std": 0.15842649505367115,
+          "success_mean": 0.25,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        }
+      ],
+      "stage_averages": {
+        "guidance": {
+          "reward": 0.6555958528746513,
+          "success_rate": 0.25,
+          "collision_rate": 0.0,
+          "occupancy_error": 1.0636457001045347
+        }
+      },
+      "env_averages": {
+        "guidance_G1": {
+          "reward": 0.6555958528746513,
+          "success_rate": 0.25,
+          "collision_rate": 0.0,
+          "occupancy_error": 1.0636457001045347
+        }
+      },
+      "replay_stats": {
+        "guidance": {
+          "buffer_size": 200,
+          "old_pool_size": 0,
+          "sample_counts": {
+            "current": 4416,
+            "old_pool": 0
+          },
+          "old_pool_hit_rate": 0.0,
+          "current_hit_rate": 1.0,
+          "priority_mean": 0.2227433565631509
+        },
+        "avoidance": {
+          "bucket_sizes": {
+            "td_layer": 0,
+            "filtered_layer": 0,
+            "rare_layer": 0
+          },
+          "bucket_fractions": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sampling_counts": {
+            "td_layer": 0,
+            "filtered_layer": 0,
+            "rare_layer": 0
+          },
+          "sampling_fractions": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "old_pool_size": 0,
+          "old_pool_sample_count": 0,
+          "old_pool_hit_rate": 0.0,
+          "priority_means": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sample_ratio": [
+            6,
+            3,
+            1
+          ],
+          "secondary_priority_mode": "td_only",
+          "rare_priority_mode": "rare_only"
+        },
+        "cooperation": {
+          "bucket_sizes": {
+            "td_layer": 0,
+            "contribution_layer": 0,
+            "rare_layer": 0
+          },
+          "bucket_fractions": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sampling_counts": {
+            "td_layer": 0,
+            "contribution_layer": 0,
+            "rare_layer": 0
+          },
+          "sampling_fractions": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "old_pool_size": 0,
+          "old_pool_sample_count": 0,
+          "old_pool_hit_rate": 0.0,
+          "priority_means": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sample_ratio": [
+            5,
+            3,
+            2
+          ],
+          "secondary_priority_mode": "td_only",
+          "rare_priority_mode": "rare_only"
+        },
+        "config": {
+          "avoidance_old_fraction": 0.1,
+          "cooperation_old_fraction": 0.2,
+          "avoidance_sample_ratio": [
+            6,
+            3,
+            1
+          ],
+          "cooperation_sample_ratio": [
+            5,
+            3,
+            2
+          ],
+          "avoidance_priority_mode": "td_only",
+          "cooperation_priority_mode": "td_only",
+          "rare_priority_mode": "rare_only"
+        },
+        "current_replay_type": "guidance_base_replay",
+        "last_sample_sources": {
+          "guidance_current": 32
+        },
+        "last_sample_source_fractions": {
+          "guidance_current": 1.0
+        }
+      },
+      "stage_transition_summary": [],
+      "trainer_overrides": {
+        "avoidance_priority_mode": "td_only",
+        "cooperation_priority_mode": "td_only",
+        "rare_priority_mode": "rare_only"
+      },
+      "train_overrides": {
+        "actor_variant": "task_decomposed",
+        "use_curriculum": true,
+        "use_pyramid_per": true,
+        "use_uniform_replay": false
+      }
+    },
+    "high_old_mix": {
+      "final_metrics": {
+        "success_rate": 0.0,
+        "collision_rate": 0.0,
+        "occupancy_error": 0.8511206901073456,
+        "formation_error": 0.09350933694839479,
+        "episode": 3.0,
+        "reward": 30.313690024324664,
+        "actor_loss": -1.144730019569397,
+        "critic_loss": 0.016109495870769024,
+        "stage_index": 0.0,
+        "stage_name": "guidance",
+        "curriculum_env": "guidance_G1",
+        "recovery_score": 0.8314070370197296,
+        "target_reward": 0.10452750688791271,
+        "avoidance_reward": 0.9622660084962849,
+        "collaboration_reward": 1.523160740172863,
+        "recovery_reward": 4.435154348909857,
+        "smoothness_penalty": 0.015056579274830801,
+        "consistency_penalty": 0.0,
+        "success_bonus": 0.0
+      },
+      "stage_history": [
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.5384415063067987,
+          "reward_std": 0.0,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.6281565358744992,
+          "reward_std": 0.08971502956770044,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.5954810223404633,
+          "reward_std": 0.08660967645889707,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.5981792168769708,
+          "reward_std": 0.07515163207480353,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        }
+      ],
+      "stage_averages": {
+        "guidance": {
+          "reward": 0.5981792168769708,
+          "success_rate": 0.0,
+          "collision_rate": 0.0,
+          "occupancy_error": 1.029238706678152
+        }
+      },
+      "env_averages": {
+        "guidance_G1": {
+          "reward": 0.5981792168769708,
+          "success_rate": 0.0,
+          "collision_rate": 0.0,
+          "occupancy_error": 1.029238706678152
+        }
+      },
+      "replay_stats": {
+        "guidance": {
+          "buffer_size": 200,
+          "old_pool_size": 0,
+          "sample_counts": {
+            "current": 4416,
+            "old_pool": 0
+          },
+          "old_pool_hit_rate": 0.0,
+          "current_hit_rate": 1.0,
+          "priority_mean": 0.14620005186647178
+        },
+        "avoidance": {
+          "bucket_sizes": {
+            "td_layer": 0,
+            "filtered_layer": 0,
+            "rare_layer": 0
+          },
+          "bucket_fractions": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sampling_counts": {
+            "td_layer": 0,
+            "filtered_layer": 0,
+            "rare_layer": 0
+          },
+          "sampling_fractions": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "old_pool_size": 0,
+          "old_pool_sample_count": 0,
+          "old_pool_hit_rate": 0.0,
+          "priority_means": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sample_ratio": [
+            6,
+            3,
+            1
+          ],
+          "secondary_priority_mode": "hybrid",
+          "rare_priority_mode": "hybrid"
+        },
+        "cooperation": {
+          "bucket_sizes": {
+            "td_layer": 0,
+            "contribution_layer": 0,
+            "rare_layer": 0
+          },
+          "bucket_fractions": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sampling_counts": {
+            "td_layer": 0,
+            "contribution_layer": 0,
+            "rare_layer": 0
+          },
+          "sampling_fractions": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "old_pool_size": 0,
+          "old_pool_sample_count": 0,
+          "old_pool_hit_rate": 0.0,
+          "priority_means": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sample_ratio": [
+            5,
+            3,
+            2
+          ],
+          "secondary_priority_mode": "hybrid",
+          "rare_priority_mode": "hybrid"
+        },
+        "config": {
+          "avoidance_old_fraction": 0.2,
+          "cooperation_old_fraction": 0.35,
+          "avoidance_sample_ratio": [
+            6,
+            3,
+            1
+          ],
+          "cooperation_sample_ratio": [
+            5,
+            3,
+            2
+          ],
+          "avoidance_priority_mode": "hybrid",
+          "cooperation_priority_mode": "hybrid",
+          "rare_priority_mode": "hybrid"
+        },
+        "current_replay_type": "guidance_base_replay",
+        "last_sample_sources": {
+          "guidance_current": 32
+        },
+        "last_sample_source_fractions": {
+          "guidance_current": 1.0
+        }
+      },
+      "stage_transition_summary": [],
+      "trainer_overrides": {
+        "avoidance_old_fraction": 0.2,
+        "cooperation_old_fraction": 0.35
+      },
+      "train_overrides": {
+        "actor_variant": "task_decomposed",
+        "use_curriculum": true,
+        "use_pyramid_per": true,
+        "use_uniform_replay": false
+      }
+    },
+    "contribution_only_priority": {
+      "final_metrics": {
+        "success_rate": 0.0,
+        "collision_rate": 0.0,
+        "occupancy_error": 0.5510877597332001,
+        "formation_error": 0.22553104799985887,
+        "episode": 3.0,
+        "reward": 36.305796712146005,
+        "actor_loss": -1.2947964477539062,
+        "critic_loss": 0.020194796808063985,
+        "stage_index": 0.0,
+        "stage_name": "guidance",
+        "curriculum_env": "guidance_G1",
+        "recovery_score": 0.8897824480533599,
+        "target_reward": 0.2717332982420921,
+        "avoidance_reward": 0.9605550169944767,
+        "collaboration_reward": 1.4089461290270087,
+        "recovery_reward": 4.432017531156541,
+        "smoothness_penalty": 0.016254075049810735,
+        "consistency_penalty": 0.0018454556546551443,
+        "success_bonus": 0.0
+      },
+      "stage_history": [
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.676293721766305,
+          "reward_std": 0.0,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.608609256799638,
+          "reward_std": 0.06768446496666708,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.6320349500296147,
+          "reward_std": 0.06443330457529413,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.6555551960829411,
+          "reward_std": 0.06908939120513731,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        }
+      ],
+      "stage_averages": {
+        "guidance": {
+          "reward": 0.6555551960829411,
+          "success_rate": 0.0,
+          "collision_rate": 0.0,
+          "occupancy_error": 0.8730367106199265
+        }
+      },
+      "env_averages": {
+        "guidance_G1": {
+          "reward": 0.6555551960829411,
+          "success_rate": 0.0,
+          "collision_rate": 0.0,
+          "occupancy_error": 0.8730367106199265
+        }
+      },
+      "replay_stats": {
+        "guidance": {
+          "buffer_size": 200,
+          "old_pool_size": 0,
+          "sample_counts": {
+            "current": 4416,
+            "old_pool": 0
+          },
+          "old_pool_hit_rate": 0.0,
+          "current_hit_rate": 1.0,
+          "priority_mean": 0.14881251408252866
+        },
+        "avoidance": {
+          "bucket_sizes": {
+            "td_layer": 0,
+            "filtered_layer": 0,
+            "rare_layer": 0
+          },
+          "bucket_fractions": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sampling_counts": {
+            "td_layer": 0,
+            "filtered_layer": 0,
+            "rare_layer": 0
+          },
+          "sampling_fractions": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "old_pool_size": 0,
+          "old_pool_sample_count": 0,
+          "old_pool_hit_rate": 0.0,
+          "priority_means": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sample_ratio": [
+            6,
+            3,
+            1
+          ],
+          "secondary_priority_mode": "contribution_only",
+          "rare_priority_mode": "hybrid"
+        },
+        "cooperation": {
+          "bucket_sizes": {
+            "td_layer": 0,
+            "contribution_layer": 0,
+            "rare_layer": 0
+          },
+          "bucket_fractions": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sampling_counts": {
+            "td_layer": 0,
+            "contribution_layer": 0,
+            "rare_layer": 0
+          },
+          "sampling_fractions": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "old_pool_size": 0,
+          "old_pool_sample_count": 0,
+          "old_pool_hit_rate": 0.0,
+          "priority_means": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sample_ratio": [
+            5,
+            3,
+            2
+          ],
+          "secondary_priority_mode": "contribution_only",
+          "rare_priority_mode": "hybrid"
+        },
+        "config": {
+          "avoidance_old_fraction": 0.1,
+          "cooperation_old_fraction": 0.2,
+          "avoidance_sample_ratio": [
+            6,
+            3,
+            1
+          ],
+          "cooperation_sample_ratio": [
+            5,
+            3,
+            2
+          ],
+          "avoidance_priority_mode": "contribution_only",
+          "cooperation_priority_mode": "contribution_only",
+          "rare_priority_mode": "hybrid"
+        },
+        "current_replay_type": "guidance_base_replay",
+        "last_sample_sources": {
+          "guidance_current": 32
+        },
+        "last_sample_source_fractions": {
+          "guidance_current": 1.0
+        }
+      },
+      "stage_transition_summary": [],
+      "trainer_overrides": {
+        "avoidance_priority_mode": "contribution_only",
+        "cooperation_priority_mode": "contribution_only"
+      },
+      "train_overrides": {
+        "actor_variant": "task_decomposed",
+        "use_curriculum": true,
+        "use_pyramid_per": true,
+        "use_uniform_replay": false
+      }
+    },
+    "rare_only_priority": {
+      "final_metrics": {
+        "success_rate": 0.0,
+        "collision_rate": 0.0,
+        "occupancy_error": 1.1246579968929291,
+        "formation_error": 0.02681794357299805,
+        "episode": 3.0,
+        "reward": 27.07483796402644,
+        "actor_loss": -1.2887934589385985,
+        "critic_loss": 0.02863161588087678,
+        "stage_index": 0.0,
+        "stage_name": "guidance",
+        "curriculum_env": "guidance_G1",
+        "recovery_score": 0.8013308284282684,
+        "target_reward": 0.014791217088699338,
+        "avoidance_reward": 0.9623140139579767,
+        "collaboration_reward": 1.5799044309139245,
+        "recovery_reward": 4.435242358922959,
+        "smoothness_penalty": 0.01666469510668407,
+        "consistency_penalty": 0.0012206121388750803,
+        "success_bonus": 0.0
+      },
+      "stage_history": [
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.534460787936954,
+          "reward_std": 0.0,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.5356227712541763,
+          "reward_std": 0.001161983317222448,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.5358060943278087,
+          "reward_std": 0.0009835402982698923,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.5372287605659887,
+          "reward_std": 0.0026071922281474553,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        }
+      ],
+      "stage_averages": {
+        "guidance": {
+          "reward": 0.5372287605659887,
+          "success_rate": 0.0,
+          "collision_rate": 0.0,
+          "occupancy_error": 1.2845461383461954
+        }
+      },
+      "env_averages": {
+        "guidance_G1": {
+          "reward": 0.5372287605659887,
+          "success_rate": 0.0,
+          "collision_rate": 0.0,
+          "occupancy_error": 1.2845461383461954
+        }
+      },
+      "replay_stats": {
+        "guidance": {
+          "buffer_size": 200,
+          "old_pool_size": 0,
+          "sample_counts": {
+            "current": 4416,
+            "old_pool": 0
+          },
+          "old_pool_hit_rate": 0.0,
+          "current_hit_rate": 1.0,
+          "priority_mean": 0.1415720312157646
+        },
+        "avoidance": {
+          "bucket_sizes": {
+            "td_layer": 0,
+            "filtered_layer": 0,
+            "rare_layer": 0
+          },
+          "bucket_fractions": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sampling_counts": {
+            "td_layer": 0,
+            "filtered_layer": 0,
+            "rare_layer": 0
+          },
+          "sampling_fractions": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "old_pool_size": 0,
+          "old_pool_sample_count": 0,
+          "old_pool_hit_rate": 0.0,
+          "priority_means": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sample_ratio": [
+            6,
+            3,
+            1
+          ],
+          "secondary_priority_mode": "hybrid",
+          "rare_priority_mode": "rare_only"
+        },
+        "cooperation": {
+          "bucket_sizes": {
+            "td_layer": 0,
+            "contribution_layer": 0,
+            "rare_layer": 0
+          },
+          "bucket_fractions": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sampling_counts": {
+            "td_layer": 0,
+            "contribution_layer": 0,
+            "rare_layer": 0
+          },
+          "sampling_fractions": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "old_pool_size": 0,
+          "old_pool_sample_count": 0,
+          "old_pool_hit_rate": 0.0,
+          "priority_means": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sample_ratio": [
+            5,
+            3,
+            2
+          ],
+          "secondary_priority_mode": "hybrid",
+          "rare_priority_mode": "rare_only"
+        },
+        "config": {
+          "avoidance_old_fraction": 0.1,
+          "cooperation_old_fraction": 0.2,
+          "avoidance_sample_ratio": [
+            6,
+            3,
+            1
+          ],
+          "cooperation_sample_ratio": [
+            5,
+            3,
+            2
+          ],
+          "avoidance_priority_mode": "hybrid",
+          "cooperation_priority_mode": "hybrid",
+          "rare_priority_mode": "rare_only"
+        },
+        "current_replay_type": "guidance_base_replay",
+        "last_sample_sources": {
+          "guidance_current": 32
+        },
+        "last_sample_source_fractions": {
+          "guidance_current": 1.0
+        }
+      },
+      "stage_transition_summary": [],
+      "trainer_overrides": {
+        "rare_priority_mode": "rare_only"
+      },
+      "train_overrides": {
+        "actor_variant": "task_decomposed",
+        "use_curriculum": true,
+        "use_pyramid_per": true,
+        "use_uniform_replay": false
+      }
+    },
+    "balanced_sample_ratio": {
+      "final_metrics": {
+        "success_rate": 0.0,
+        "collision_rate": 0.0,
+        "occupancy_error": 1.6829748964309692,
+        "formation_error": 0.7495635821819306,
+        "episode": 3.0,
+        "reward": 26.421544046589894,
+        "actor_loss": -1.2106909990310668,
+        "critic_loss": 0.02077983310446143,
+        "stage_index": 0.0,
+        "stage_name": "guidance",
+        "curriculum_env": "guidance_G1",
+        "recovery_score": 0.7999999999999998,
+        "target_reward": -0.002382261872291565,
+        "avoidance_reward": 0.9600000000000007,
+        "collaboration_reward": 0.9628709551453589,
+        "recovery_reward": 4.4310000000000045,
+        "smoothness_penalty": 0.019294774183375017,
+        "consistency_penalty": 0.0007577146370576715,
+        "success_bonus": 0.0
+      },
+      "stage_history": [
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.5284175181894715,
+          "reward_std": 0.0,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.5267866869535063,
+          "reward_std": 0.0016308312359651356,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.5334263777935885,
+          "reward_std": 0.009483884361582788,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.5321775035781409,
+          "reward_std": 0.008493356660115942,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        }
+      ],
+      "stage_averages": {
+        "guidance": {
+          "reward": 0.5321775035781409,
+          "success_rate": 0.0,
+          "collision_rate": 0.0,
+          "occupancy_error": 1.397068166732788
+        }
+      },
+      "env_averages": {
+        "guidance_G1": {
+          "reward": 0.5321775035781409,
+          "success_rate": 0.0,
+          "collision_rate": 0.0,
+          "occupancy_error": 1.397068166732788
+        }
+      },
+      "replay_stats": {
+        "guidance": {
+          "buffer_size": 200,
+          "old_pool_size": 0,
+          "sample_counts": {
+            "current": 4416,
+            "old_pool": 0
+          },
+          "old_pool_hit_rate": 0.0,
+          "current_hit_rate": 1.0,
+          "priority_mean": 0.11691796756349504
+        },
+        "avoidance": {
+          "bucket_sizes": {
+            "td_layer": 0,
+            "filtered_layer": 0,
+            "rare_layer": 0
+          },
+          "bucket_fractions": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sampling_counts": {
+            "td_layer": 0,
+            "filtered_layer": 0,
+            "rare_layer": 0
+          },
+          "sampling_fractions": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "old_pool_size": 0,
+          "old_pool_sample_count": 0,
+          "old_pool_hit_rate": 0.0,
+          "priority_means": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sample_ratio": [
+            1,
+            1,
+            1
+          ],
+          "secondary_priority_mode": "hybrid",
+          "rare_priority_mode": "hybrid"
+        },
+        "cooperation": {
+          "bucket_sizes": {
+            "td_layer": 0,
+            "contribution_layer": 0,
+            "rare_layer": 0
+          },
+          "bucket_fractions": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sampling_counts": {
+            "td_layer": 0,
+            "contribution_layer": 0,
+            "rare_layer": 0
+          },
+          "sampling_fractions": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "old_pool_size": 0,
+          "old_pool_sample_count": 0,
+          "old_pool_hit_rate": 0.0,
+          "priority_means": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sample_ratio": [
+            1,
+            1,
+            1
+          ],
+          "secondary_priority_mode": "hybrid",
+          "rare_priority_mode": "hybrid"
+        },
+        "config": {
+          "avoidance_old_fraction": 0.1,
+          "cooperation_old_fraction": 0.2,
+          "avoidance_sample_ratio": [
+            1,
+            1,
+            1
+          ],
+          "cooperation_sample_ratio": [
+            1,
+            1,
+            1
+          ],
+          "avoidance_priority_mode": "hybrid",
+          "cooperation_priority_mode": "hybrid",
+          "rare_priority_mode": "hybrid"
+        },
+        "current_replay_type": "guidance_base_replay",
+        "last_sample_sources": {
+          "guidance_current": 32
+        },
+        "last_sample_source_fractions": {
+          "guidance_current": 1.0
+        }
+      },
+      "stage_transition_summary": [],
+      "trainer_overrides": {
+        "avoidance_sample_ratio": [
+          1,
+          1,
+          1
+        ],
+        "cooperation_sample_ratio": [
+          1,
+          1,
+          1
+        ]
+      },
+      "train_overrides": {
+        "actor_variant": "task_decomposed",
+        "use_curriculum": true,
+        "use_pyramid_per": true,
+        "use_uniform_replay": false
+      }
+    },
+    "low_old_mix": {
+      "final_metrics": {
+        "success_rate": 1.0,
+        "collision_rate": 0.0,
+        "occupancy_error": 0.5588577432930469,
+        "formation_error": 0.013882862567901612,
+        "episode": 3.0,
+        "reward": 39.74683629505101,
+        "actor_loss": -1.0378349423408508,
+        "critic_loss": 0.009047100476454944,
+        "stage_index": 0.0,
+        "stage_name": "guidance",
+        "curriculum_env": "guidance_G1",
+        "recovery_score": 0.8883802863061427,
+        "target_reward": 0.2913636192679405,
+        "avoidance_reward": 0.9656191629320382,
+        "collaboration_reward": 1.5947552569046615,
+        "recovery_reward": 4.521301798708738,
+        "smoothness_penalty": 0.017516197711817196,
+        "consistency_penalty": 0.0,
+        "success_bonus": 0.2
+      },
+      "stage_history": [
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.5304201632561416,
+          "reward_std": 0.0,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.531768342260714,
+          "reward_std": 0.001348179004572403,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.5512304525292029,
+          "reward_std": 0.02754558397682927,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.6121570208721572,
+          "reward_std": 0.10819061691114658,
+          "success_mean": 0.25,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        }
+      ],
+      "stage_averages": {
+        "guidance": {
+          "reward": 0.6121570208721572,
+          "success_rate": 0.25,
+          "collision_rate": 0.0,
+          "occupancy_error": 1.184945653565228
+        }
+      },
+      "env_averages": {
+        "guidance_G1": {
+          "reward": 0.6121570208721572,
+          "success_rate": 0.25,
+          "collision_rate": 0.0,
+          "occupancy_error": 1.184945653565228
+        }
+      },
+      "replay_stats": {
+        "guidance": {
+          "buffer_size": 200,
+          "old_pool_size": 0,
+          "sample_counts": {
+            "current": 4416,
+            "old_pool": 0
+          },
+          "old_pool_hit_rate": 0.0,
+          "current_hit_rate": 1.0,
+          "priority_mean": 0.16767054020427166
+        },
+        "avoidance": {
+          "bucket_sizes": {
+            "td_layer": 0,
+            "filtered_layer": 0,
+            "rare_layer": 0
+          },
+          "bucket_fractions": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sampling_counts": {
+            "td_layer": 0,
+            "filtered_layer": 0,
+            "rare_layer": 0
+          },
+          "sampling_fractions": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "old_pool_size": 0,
+          "old_pool_sample_count": 0,
+          "old_pool_hit_rate": 0.0,
+          "priority_means": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sample_ratio": [
+            6,
+            3,
+            1
+          ],
+          "secondary_priority_mode": "hybrid",
+          "rare_priority_mode": "hybrid"
+        },
+        "cooperation": {
+          "bucket_sizes": {
+            "td_layer": 0,
+            "contribution_layer": 0,
+            "rare_layer": 0
+          },
+          "bucket_fractions": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sampling_counts": {
+            "td_layer": 0,
+            "contribution_layer": 0,
+            "rare_layer": 0
+          },
+          "sampling_fractions": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "old_pool_size": 0,
+          "old_pool_sample_count": 0,
+          "old_pool_hit_rate": 0.0,
+          "priority_means": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sample_ratio": [
+            5,
+            3,
+            2
+          ],
+          "secondary_priority_mode": "hybrid",
+          "rare_priority_mode": "hybrid"
+        },
+        "config": {
+          "avoidance_old_fraction": 0.05,
+          "cooperation_old_fraction": 0.1,
+          "avoidance_sample_ratio": [
+            6,
+            3,
+            1
+          ],
+          "cooperation_sample_ratio": [
+            5,
+            3,
+            2
+          ],
+          "avoidance_priority_mode": "hybrid",
+          "cooperation_priority_mode": "hybrid",
+          "rare_priority_mode": "hybrid"
+        },
+        "current_replay_type": "guidance_base_replay",
+        "last_sample_sources": {
+          "guidance_current": 32
+        },
+        "last_sample_source_fractions": {
+          "guidance_current": 1.0
+        }
+      },
+      "stage_transition_summary": [],
+      "trainer_overrides": {
+        "avoidance_old_fraction": 0.05,
+        "cooperation_old_fraction": 0.1
+      },
+      "train_overrides": {
+        "actor_variant": "task_decomposed",
+        "use_curriculum": true,
+        "use_pyramid_per": true,
+        "use_uniform_replay": false
+      }
+    },
+    "high_rare_ratio": {
+      "final_metrics": {
+        "success_rate": 0.0,
+        "collision_rate": 0.0,
+        "occupancy_error": 0.8264361941814422,
+        "formation_error": 0.12399950265884402,
+        "episode": 3.0,
+        "reward": 30.47388443474377,
+        "actor_loss": -1.1532684636116028,
+        "critic_loss": 0.017351190028712153,
+        "stage_index": 0.0,
+        "stage_name": "guidance",
+        "curriculum_env": "guidance_G1",
+        "recovery_score": 0.8347564947605132,
+        "target_reward": 0.10945813792943956,
+        "avoidance_reward": 0.9616568244695668,
+        "collaboration_reward": 1.496533384621143,
+        "recovery_reward": 4.434037511527543,
+        "smoothness_penalty": 0.017708399970321347,
+        "consistency_penalty": 0.0,
+        "success_bonus": 0.0
+      },
+      "stage_history": [
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.5330858942253325,
+          "reward_std": 0.0,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.5711585238637484,
+          "reward_std": 0.038072629638415956,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.5609853005946293,
+          "reward_std": 0.0342540366734008,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        },
+        {
+          "previous_env": "guidance_G1",
+          "previous_stage_name": "guidance",
+          "previous_stage_index": 0,
+          "previous_stage": 0,
+          "new_env": "guidance_G1",
+          "new_stage_name": "guidance",
+          "new_stage": 0,
+          "new_stage_index": 0,
+          "reward_mean": 0.5731083976196908,
+          "reward_std": 0.036344362915783544,
+          "success_mean": 0.0,
+          "promoted": 0.0,
+          "rolled_back": 0.0
+        }
+      ],
+      "stage_averages": {
+        "guidance": {
+          "reward": 0.5731083976196908,
+          "success_rate": 0.0,
+          "collision_rate": 0.0,
+          "occupancy_error": 1.001548421382904
+        }
+      },
+      "env_averages": {
+        "guidance_G1": {
+          "reward": 0.5731083976196908,
+          "success_rate": 0.0,
+          "collision_rate": 0.0,
+          "occupancy_error": 1.001548421382904
+        }
+      },
+      "replay_stats": {
+        "guidance": {
+          "buffer_size": 200,
+          "old_pool_size": 0,
+          "sample_counts": {
+            "current": 4416,
+            "old_pool": 0
+          },
+          "old_pool_hit_rate": 0.0,
+          "current_hit_rate": 1.0,
+          "priority_mean": 0.14289101132424548
+        },
+        "avoidance": {
+          "bucket_sizes": {
+            "td_layer": 0,
+            "filtered_layer": 0,
+            "rare_layer": 0
+          },
+          "bucket_fractions": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sampling_counts": {
+            "td_layer": 0,
+            "filtered_layer": 0,
+            "rare_layer": 0
+          },
+          "sampling_fractions": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "old_pool_size": 0,
+          "old_pool_sample_count": 0,
+          "old_pool_hit_rate": 0.0,
+          "priority_means": {
+            "td_layer": 0.0,
+            "filtered_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sample_ratio": [
+            4,
+            2,
+            4
+          ],
+          "secondary_priority_mode": "hybrid",
+          "rare_priority_mode": "hybrid"
+        },
+        "cooperation": {
+          "bucket_sizes": {
+            "td_layer": 0,
+            "contribution_layer": 0,
+            "rare_layer": 0
+          },
+          "bucket_fractions": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sampling_counts": {
+            "td_layer": 0,
+            "contribution_layer": 0,
+            "rare_layer": 0
+          },
+          "sampling_fractions": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "old_pool_size": 0,
+          "old_pool_sample_count": 0,
+          "old_pool_hit_rate": 0.0,
+          "priority_means": {
+            "td_layer": 0.0,
+            "contribution_layer": 0.0,
+            "rare_layer": 0.0
+          },
+          "sample_ratio": [
+            3,
+            2,
+            5
+          ],
+          "secondary_priority_mode": "hybrid",
+          "rare_priority_mode": "hybrid"
+        },
+        "config": {
+          "avoidance_old_fraction": 0.1,
+          "cooperation_old_fraction": 0.2,
+          "avoidance_sample_ratio": [
+            4,
+            2,
+            4
+          ],
+          "cooperation_sample_ratio": [
+            3,
+            2,
+            5
+          ],
+          "avoidance_priority_mode": "hybrid",
+          "cooperation_priority_mode": "hybrid",
+          "rare_priority_mode": "hybrid"
+        },
+        "current_replay_type": "guidance_base_replay",
+        "last_sample_sources": {
+          "guidance_current": 32
+        },
+        "last_sample_source_fractions": {
+          "guidance_current": 1.0
+        }
+      },
+      "stage_transition_summary": [],
+      "trainer_overrides": {
+        "avoidance_sample_ratio": [
+          4,
+          2,
+          4
+        ],
+        "cooperation_sample_ratio": [
+          3,
+          2,
+          5
+        ]
+      },
+      "train_overrides": {
+        "actor_variant": "task_decomposed",
+        "use_curriculum": true,
+        "use_pyramid_per": true,
+        "use_uniform_replay": false
+      }
+    }
+  },
+  "complexity_generalization": {
+    "uav_count_variation": {
+      "success_rate": 0.0,
+      "collision_rate": 0.0,
+      "occupancy_error": 0.6265294361114502,
+      "formation_error": 0.6333099994659424,
+      "reward": 34.64082222104205,
+      "recovery_score": 0.8746941127777099,
+      "stage_index": 0.0,
+      "curriculum_env": "guidance_G1",
+      "target_reward": 0.22375783127546314,
+      "avoidance_reward": 0.96,
+      "collaboration_reward": 1.061686500453949,
+      "recovery_reward": 4.431000000000001,
+      "smoothness_penalty": 0.00011492621865327276,
+      "consistency_penalty": 0.0,
+      "success_bonus": 0.0
+    },
+    "obstacle_count_variation": {
+      "success_rate": 0.0,
+      "collision_rate": 0.0,
+      "occupancy_error": 0.6313916504383087,
+      "formation_error": 0.542239881515503,
+      "reward": 20.355293250807755,
+      "recovery_score": 0.8737216699123384,
+      "stage_index": 0.0,
+      "curriculum_env": "guidance_G1",
+      "target_reward": 0.22098792976140977,
+      "avoidance_reward": 0.7464677041769028,
+      "collaboration_reward": 1.1390961007118225,
+      "recovery_reward": 2.0666854733824733,
+      "smoothness_penalty": 9.626522445673907e-05,
+      "consistency_penalty": 0.0,
+      "success_bonus": 0.0
+    },
+    "obstacle_dynamics_variation": {
+      "success_rate": 0.0,
+      "collision_rate": 0.0,
+      "occupancy_error": 0.9802914690971375,
+      "formation_error": 0.6143087005615235,
+      "reward": 26.998430277595936,
+      "recovery_score": 0.803942232131958,
+      "stage_index": 0.0,
+      "curriculum_env": "guidance_G1",
+      "target_reward": 0.011471360564231875,
+      "avoidance_reward": 0.96,
+      "collaboration_reward": 1.0778376045227052,
+      "recovery_reward": 4.431000000000001,
+      "smoothness_penalty": 0.00013467567910395052,
+      "consistency_penalty": 0.0,
+      "success_bonus": 0.0
+    },
+    "target_dynamics_variation": {
+      "success_rate": 0.0,
+      "collision_rate": 0.0,
+      "occupancy_error": 1.6759206867218017,
+      "formation_error": 0.734308551311493,
+      "reward": 26.5578163125946,
+      "recovery_score": 0.7999999999999998,
+      "stage_index": 0.0,
+      "curriculum_env": "guidance_G1",
+      "target_reward": -0.000761005997657776,
+      "avoidance_reward": 0.96,
+      "collaboration_reward": 0.975837731385231,
+      "recovery_reward": 4.431000000000001,
+      "smoothness_penalty": 0.0001968678724293329,
+      "consistency_penalty": 0.0,
+      "success_bonus": 0.0
+    },
+    "curriculum_stage_variation": {
+      "success_rate": 0.0,
+      "collision_rate": 0.0,
+      "occupancy_error": 5.025608348846435,
+      "formation_error": 0.44670471489429475,
+      "reward": 32.88980286021526,
+      "recovery_score": 0.7999999999999998,
+      "stage_index": 2.0,
+      "curriculum_env": "cooperation_C3",
+      "target_reward": -0.0071676821708679195,
+      "avoidance_reward": 0.96,
+      "collaboration_reward": 0.7601813878472192,
+      "recovery_reward": 1.0890604040622711,
+      "smoothness_penalty": 0.0004787379983489471,
+      "consistency_penalty": 0.0,
+      "success_bonus": 0.0
+    }
+  }
+}

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="420">
+<rect width="100%" height="100%" fill="white" />
+<line x1="60" y1="360" x2="660" y2="360" stroke="#333" />
+<line x1="60" y1="60" x2="60" y2="360" stroke="#333" />
+<polyline fill="none" stroke="#4f81bd" stroke-width="2" points="60.0,360.0" />
+<polyline fill="none" stroke="#c0504d" stroke-width="2" points="60.0,60.0" />
+<text x="360.0" y="28" text-anchor="middle" font-size="18">Training curve: critic_loss</text>
+<text x="540" y="50" font-size="12" fill="#4f81bd">ddpg_ladrc</text>
+<text x="540" y="68" font-size="12" fill="#c0504d">mddpg_ladrc</text>
+</svg>

@@ -1,0 +1,9 @@
+{
+  "planning_output_dir": "outputs\\planning\\medium\\stage_1",
+  "control_output_dir": "outputs\\control\\medium",
+  "sample_planning_action": [
+    0.35,
+    -0.15
+  ],
+  "mapped_control_reference": 0.13749999999999998
+}

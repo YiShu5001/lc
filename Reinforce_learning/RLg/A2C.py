@@ -1,106 +1,141 @@
-"""
-A2C (Advantage Actor-Critic) 算法实现
-适配BaseAlgo接口
-"""
-from __future__ import annotations
-from dataclasses import dataclass
-from typing import Dict
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.distributions import Normal
 
-from Reinforce_learning.Basealgos import BaseAlgo, AlgoConfig, RolloutBatch
+from Reinforce_learning.Basealgos import BaseAlgo
 
-
-@dataclass
-class A2CConfig(AlgoConfig):
+class ActorCritic(nn.Module):
     """
-    A2C算法配置
+    A2C 的网络结构：策略网络 Actor (均值, 标差) + 价值网络 Critic
+    通常共享基础特征层，或者拆分成独立的 MLP (这里为了简化结构使用独立的网络)。
     """
-    learning_rate: float = 3e-4
-    value_coef: float = 0.5                # 价值函数损失系数
-    entropy_coef: float = 0.01             # 熵正则化系数
-    max_grad_norm: float = 0.5             # 梯度裁剪
-    n_steps: int = 5                       # n-step returns（通常由Trainer处理）
-
-
-class A2CAlgo(BaseAlgo):
-    """
-    A2C算法实现
-    
-    核心思想：
-    1. 使用优势函数（Advantage）而非return
-    2. 同时更新Actor和Critic
-    3. 支持n-step returns
-    """
-    
-    def __init__(self, cfg: A2CConfig):
-        """
-        Args:
-            cfg: A2C配置
-        """
-        super().__init__(cfg)
-        self.cfg: A2CConfig = cfg
-    
-    def update(
-        self,
-        model: nn.Module,
-        optimizer: torch.optim.Optimizer,
-        batch: RolloutBatch
-    ) -> Dict[str, float]:
-        """
-        执行A2C更新
+    def __init__(self, state_dim, action_dim, max_action):
+        super(ActorCritic, self).__init__()
         
-        Args:
-            model: 策略模型（BaseRLModel）
-            optimizer: 优化器
-            batch: 经验批次
-        
-        Returns:
-            metrics: 包含loss、policy_loss、value_loss、entropy等指标
-        """
-        # 评估当前策略
-        eval_output = model.evaluate(batch.obs, batch.actions)
-        new_logprobs = eval_output.logprobs
-        values = eval_output.values
-        entropies = eval_output.entropies
-        
-        # 优势函数（已经由Trainer计算好）
-        advantages = batch.advantages
-        advantages_normalized = (advantages - advantages.mean()) / (advantages.std() + 1e-8)
-        
-        # 策略损失（使用优势函数）
-        policy_loss = -(new_logprobs * advantages_normalized).mean()
-        
-        # 价值函数损失
-        value_loss = F.mse_loss(values, batch.returns)
-        
-        # 熵损失（鼓励探索）
-        entropy_loss = -entropies.mean()
-        
-        # 总损失
-        total_loss = (
-            policy_loss
-            + self.cfg.value_coef * value_loss
-            + self.cfg.entropy_coef * entropy_loss
+        # Actor
+        self.actor_mu = nn.Sequential(
+            nn.Linear(state_dim, 128),
+            nn.ReLU(),
+            nn.Linear(128, action_dim),
+            nn.Tanh()
         )
+        self.actor_log_std = nn.Parameter(torch.zeros(1, action_dim))
+        self.max_action = max_action
+
+        # Critic
+        self.critic = nn.Sequential(
+            nn.Linear(state_dim, 128),
+            nn.ReLU(),
+            nn.Linear(128, 1)
+        )
+
+    def forward(self, state):
+        # 状态价值
+        value = self.critic(state)
         
-        # 反向传播
-        optimizer.zero_grad()
-        total_loss.backward()
+        # 动作分布
+        mu = self.actor_mu(state) * self.max_action
+        std = self.actor_log_std.exp().expand_as(mu)
+        dist = Normal(mu, std)
         
-        # 梯度裁剪
-        torch.nn.utils.clip_grad_norm_(model.parameters(), self.cfg.max_grad_norm)
+        return dist, value
+
+class A2C(BaseAlgo):
+    """
+    优势行动者-评论家 (Advantage Actor-Critic, A2C)
+    
+    核心思想:
+    PPO 的前身，属于经典同策略 (On-policy) 算法。
+    Critic 用于估计状态价值 $V(s)$，从而计算 Advantage ($A(s,a) = Q(s,a) - V(s)$)。
+    Actor 根据 Advantage 来指引策略更新：Advantage > 0 说明动作比平均要好，增加其出现概率。
+    
+    关键技术:
+    1. 同步并行 (Synchronous) 更新架构。
+    2. 引入 Advantage 减少了策略梯度更新时的方差 (Variance)。
+    """
+    def __init__(self, state_dim, action_dim, max_action=1.0, lr=1e-3, gamma=0.99, entropy_coef=0.01):
+        super().__init__(state_dim, action_dim, max_action)
         
-        optimizer.step()
+        self.policy = ActorCritic(state_dim, action_dim, max_action)
+        self.optimizer = torch.optim.Adam(self.policy.parameters(), lr=lr)
         
-        # 计算指标
-        metrics = {
-            "loss": total_loss.item(),
-            "policy_loss": policy_loss.item(),
-            "value_loss": value_loss.item(),
-            "entropy": entropies.mean().item(),
+        self.gamma = gamma
+        self.entropy_coef = entropy_coef
+        
+        # 记录单个回合的数据
+        self.saved_log_probs = []
+        self.saved_values = []
+        self.rewards = []
+        
+        self.models = {"policy": self.policy}
+
+    def select_action(self, state, evaluate=False):
+        """ 动作选择，同时缓存 log_prob 和 value 用于一整个回合作更新 """
+        state = torch.FloatTensor(state).unsqueeze(0)
+        dist, value = self.policy(state)
+        
+        if evaluate:
+            # 评估模式直接返回均值，不记录信息
+            return (self.policy.actor_mu(state) * self.max_action).detach().numpy().flatten()
+            
+        action = dist.sample()
+        
+        self.saved_log_probs.append(dist.log_prob(action).sum(dim=-1))
+        self.saved_values.append(value)
+        
+        return action.flatten().numpy()
+
+    def store_reward(self, reward):
+        """ 记录单步奖励 """
+        self.rewards.append(reward)
+
+    def update(self):
+        """ 
+        A2C 更新过程 (通常在一个 Episode 结束后，或者 N 步后进行) 
+        """
+        if not self.rewards:
+            return {"loss": 0.0}
+
+        # 计算折扣回报 R_t = \sum_{k=0} \gamma^k r_{t+k}
+        returns = []
+        R = 0
+        for r in self.rewards[::-1]:
+            R = r + self.gamma * R
+            returns.insert(0, R)
+        returns = torch.tensor(returns)
+        returns = (returns - returns.mean()) / (returns.std() + 1e-8) # 归一化
+
+        policy_losses = []
+        value_losses = []
+        
+        # 将缓存的数据堆叠
+        saved_values = torch.cat(self.saved_values)
+        saved_log_probs = torch.cat(self.saved_log_probs)
+        
+        # Advantage = Return - Baseline (这里 Baseline 是 Critic 给出的 Value)
+        advantages = returns.detach() - saved_values.squeeze()
+
+        for log_prob, advantage in zip(saved_log_probs, advantages):
+            # 策略梯度：最大化 \log \pi(a|s) * Advantage
+            policy_losses.append(-log_prob * advantage.detach())
+            
+        # 价值损失：均方误差 MSE(V(s), Return)
+        value_loss = F.mse_loss(saved_values.squeeze(), returns)
+
+        # 综合损失 (可扩展加熵正则项)
+        loss = torch.stack(policy_losses).sum() + value_loss
+        
+        self.optimizer.zero_grad()
+        loss.backward()
+        self.optimizer.step()
+
+        # 清空当前回合缓存
+        del self.saved_log_probs[:]
+        del self.saved_values[:]
+        del self.rewards[:]
+
+        return {
+            "policy_loss": torch.stack(policy_losses).sum().item(),
+            "value_loss": value_loss.item()
         }
-        
-        return metrics

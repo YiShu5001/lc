@@ -1,0 +1,82 @@
+{
+  "axis": "y",
+  "backend": "gym_env",
+  "controllers": [
+    "pid_pos_att",
+    "ladrc_pos_pid_att",
+    "ladrc_pos_att"
+  ],
+  "reference_segments": [
+    {
+      "stage": 0.0,
+      "start": 0.0,
+      "stop": 22.0,
+      "velocity": 0.0
+    },
+    {
+      "stage": 1.0,
+      "start": 22.0,
+      "stop": 41.0,
+      "velocity": 0.3960435688495636
+    },
+    {
+      "stage": 2.0,
+      "start": 41.0,
+      "stop": 54.0,
+      "velocity": 0.0
+    },
+    {
+      "stage": 3.0,
+      "start": 54.0,
+      "stop": 72.0,
+      "velocity": -0.4772493541240692
+    }
+  ],
+  "metrics": [
+    {
+      "mae": 0.05147194968734446,
+      "rmse": 0.07119772046870168,
+      "iae": 3.7059803774888014,
+      "overshoot": 0.013003528350964189,
+      "settling_time": 64.0,
+      "steady_state_error": 0.016017817642672787,
+      "control_energy": 1585802505.8295193,
+      "disturbance_recovery_time": 64.0,
+      "control_variation": 20.108283244388204,
+      "velocity_rmse": 0.3087157787400359,
+      "reward": -0.11438994757768405,
+      "backend": "gym_env",
+      "controller": "pid_pos_att"
+    },
+    {
+      "mae": 0.05508608842016353,
+      "rmse": 0.07587489373661468,
+      "iae": 3.966198366251774,
+      "overshoot": 0.006071861367672682,
+      "settling_time": 64.0,
+      "steady_state_error": 0.019524877674744597,
+      "control_energy": 2181907629.7071095,
+      "disturbance_recovery_time": 64.0,
+      "control_variation": 18.309859154929576,
+      "velocity_rmse": 0.3154157489681875,
+      "reward": -0.10336414689993666,
+      "backend": "gym_env",
+      "controller": "ladrc_pos_pid_att"
+    },
+    {
+      "mae": 0.05063579906161979,
+      "rmse": 0.07009771821407002,
+      "iae": 3.645777532436625,
+      "overshoot": 0.014660596381872892,
+      "settling_time": 63.0,
+      "steady_state_error": 0.015306406770832837,
+      "control_energy": 2160310828.700885,
+      "disturbance_recovery_time": 63.0,
+      "control_variation": 76.7658622634243,
+      "velocity_rmse": 0.30896364721444064,
+      "reward": -0.14406916044208082,
+      "backend": "gym_env",
+      "controller": "ladrc_pos_att"
+    }
+  ]
+}

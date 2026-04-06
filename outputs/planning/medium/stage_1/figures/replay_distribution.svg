@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="420">
+<rect width="100%" height="100%" fill="white" />
+<line x1="60" y1="360" x2="580" y2="360" stroke="#333" />
+<line x1="60" y1="60" x2="60" y2="360" stroke="#333" />
+<rect x="60" y="60" width="32" height="300" fill="#6a51a3" />
+<rect x="108" y="360" width="32" height="0" fill="#6a51a3" />
+<rect x="156" y="360" width="32" height="0" fill="#6a51a3" />
+<rect x="204" y="360" width="32" height="0" fill="#6a51a3" />
+<rect x="252" y="360" width="32" height="0" fill="#6a51a3" />
+<rect x="300" y="360" width="32" height="0" fill="#6a51a3" />
+<rect x="348" y="360" width="32" height="0" fill="#6a51a3" />
+<rect x="396" y="360" width="32" height="0" fill="#6a51a3" />
+<rect x="444" y="360" width="32" height="0" fill="#6a51a3" />
+<rect x="492" y="360" width="32" height="0" fill="#6a51a3" />
+<text x="320.0" y="28" text-anchor="middle" font-size="18">Replay bucket distribution</text>
+<text x="76.0" y="380" text-anchor="middle" font-size="12">guidance_buffer</text>
+<text x="76.0" y="52" text-anchor="middle" font-size="12">200.000</text>
+<text x="124.0" y="380" text-anchor="middle" font-size="12">guidance_old</text>
+<text x="124.0" y="352" text-anchor="middle" font-size="12">0.000</text>
+<text x="172.0" y="380" text-anchor="middle" font-size="12">avoidance_td_layer</text>
+<text x="172.0" y="352" text-anchor="middle" font-size="12">0.000</text>
+<text x="220.0" y="380" text-anchor="middle" font-size="12">avoidance_filtered_layer</text>
+<text x="220.0" y="352" text-anchor="middle" font-size="12">0.000</text>
+<text x="268.0" y="380" text-anchor="middle" font-size="12">avoidance_rare_layer</text>
+<text x="268.0" y="352" text-anchor="middle" font-size="12">0.000</text>
+<text x="316.0" y="380" text-anchor="middle" font-size="12">avoidance_old</text>
+<text x="316.0" y="352" text-anchor="middle" font-size="12">0.000</text>
+<text x="364.0" y="380" text-anchor="middle" font-size="12">cooperation_td_layer</text>
+<text x="364.0" y="352" text-anchor="middle" font-size="12">0.000</text>
+<text x="412.0" y="380" text-anchor="middle" font-size="12">cooperation_contribution_layer</text>
+<text x="412.0" y="352" text-anchor="middle" font-size="12">0.000</text>
+<text x="460.0" y="380" text-anchor="middle" font-size="12">cooperation_rare_layer</text>
+<text x="460.0" y="352" text-anchor="middle" font-size="12">0.000</text>
+<text x="508.0" y="380" text-anchor="middle" font-size="12">cooperation_old</text>
+<text x="508.0" y="352" text-anchor="middle" font-size="12">0.000</text>
+</svg>

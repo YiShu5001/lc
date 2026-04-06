@@ -1,196 +1,84 @@
-"""
-DQN系列算法实现
-支持Vanilla DQN、Double DQN、Dueling DQN、Prioritized DQN
-适配BaseAlgo接口（需要OffPolicyTrainer支持）
-"""
-from __future__ import annotations
-from dataclasses import dataclass
-from typing import Dict, Optional
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import copy
+import numpy as np
 
-from Reinforce_learning.Basealgos import BaseAlgo, AlgoConfig
+from Reinforce_learning.Basealgos import BaseAlgo
 
-
-@dataclass
-class DQNConfig(AlgoConfig):
+class DQN(BaseAlgo):
     """
-    DQN算法配置
+    深度Q网络 (Deep Q-Network, DQN)
+    
+    核心思想: 
+    使用神经网络近似 Q 目标值函数 Q(s, a)。
+    DQN 主要用于**离散动作空间**。
+    
+    关键技术:
+    1. 经验回放 (Experience Replay): 打破数据相关性。
+    2. 目标网络 (Target Network): 稳定训练，减少自举产生的发散。
     """
-    learning_rate: float = 1e-3
-    gamma: float = 0.99                    # 折扣因子
-    epsilon_start: float = 1.0             # 初始探索率
-    epsilon_end: float = 0.01              # 最终探索率
-    epsilon_decay_steps: int = 10000       # 探索率衰减步数
-    target_update_freq: int = 100          # 目标网络更新频率
-    double_dqn: bool = True                # 是否使用Double DQN
-    dueling: bool = False                  # 是否使用Dueling DQN
-    prioritized: bool = False              # 是否使用优先经验回放
-    device: str = "cpu"
+    def __init__(self, state_dim, action_dim, lr=3e-4, gamma=0.99, tau=0.005):
+        # 注意: DQN 用于离散空间，通常不涉及 max_action 缩放
+        super().__init__(state_dim, action_dim, max_action=1.0)
+        self.gamma = gamma
+        self.tau = tau
+        
+        # Q 网络: 输入状态，输出每个动作的 Q 值
+        self.q_net = nn.Sequential(
+            nn.Linear(state_dim, 256),
+            nn.ReLU(),
+            nn.Linear(256, 256),
+            nn.ReLU(),
+            nn.Linear(256, action_dim)
+        )
+        
+        # 目标 Q 网络: 延迟更新，提供稳定的 Q 目标
+        self.target_q_net = copy.deepcopy(self.q_net)
+        self.optimizer = torch.optim.Adam(self.q_net.parameters(), lr=lr)
+        
+        self.models = {"q_net": self.q_net, "target_q_net": self.target_q_net}
 
-
-@dataclass
-class DQNBatch:
-    """DQN算法的batch类型（off-policy需要next_obs）"""
-    obs: torch.Tensor
-    actions: torch.Tensor
-    rewards: torch.Tensor
-    next_obs: torch.Tensor
-    dones: torch.Tensor
-    weights: Optional[torch.Tensor] = None  # 优先回放的权重
-    indices: Optional[torch.Tensor] = None  # 优先回放的索引
-
-
-class DQNAlgo(BaseAlgo):
-    """
-    DQN算法实现
-    
-    支持变体：
-    1. Vanilla DQN: 标准DQN
-    2. Double DQN: 使用主网络选择动作，目标网络评估
-    3. Dueling DQN: 分离状态价值和优势函数
-    4. Prioritized DQN: 优先经验回放（需要外部Buffer支持）
-    
-    注意：DQN是off-policy算法，需要OffPolicyTrainer支持
-    """
-    
-    def __init__(self, cfg: DQNConfig):
+    def select_action(self, state, evaluate=False, epsilon=0.1):
         """
-        Args:
-            cfg: DQN配置
+        动作选择: $\epsilon$-贪心策略
+        - evaluate=True 时完全贪心探索 (epsilon = 0)
         """
-        super().__init__(cfg)
-        self.cfg: DQNConfig = cfg
-        self.device = torch.device(cfg.device)
-        self.update_counter = 0
-    
-    def update(
-        self,
-        model: nn.Module,
-        optimizer: torch.optim.Optimizer,
-        batch: DQNBatch
-    ) -> Dict[str, float]:
-        """
-        执行DQN更新
-        
-        Args:
-            model: Q网络模型（需要支持DQN的特殊接口）
-            optimizer: 优化器
-            batch: 经验批次
-        
-        Returns:
-            metrics: 包含loss、q_value等指标
-        
-        注意：DQN需要特殊的模型接口：
-        - model.q_network(obs): Q值（主网络）
-        - model.q_target(obs): Q值（目标网络）
-        - 如果使用Dueling DQN，需要model.value和model.advantage
-        """
-        states = batch.obs
-        actions = batch.actions.long()  # 离散动作
-        rewards = batch.rewards
-        next_states = batch.next_obs
-        dones = batch.dones
-        
-        self.update_counter += 1
-        
-        # 当前Q值
-        q_values = model.q_network(states)
-        q_value = q_values.gather(1, actions.unsqueeze(1)).squeeze(1)
-        
-        # 计算目标Q值
-        with torch.no_grad():
-            if self.cfg.double_dqn:
-                # Double DQN: 使用主网络选择动作，目标网络评估
-                next_actions = model.q_network(next_states).argmax(1, keepdim=True)
-                next_q_values = model.q_target(next_states)
-                next_q_value = next_q_values.gather(1, next_actions).squeeze(1)
-            else:
-                # Vanilla DQN: 直接使用目标网络的最大Q值
-                next_q_values = model.q_target(next_states)
-                next_q_value = next_q_values.max(1)[0]
+        if evaluate:
+            epsilon = 0.0
             
-            # TD目标
-            target_q = rewards + (1 - dones) * self.cfg.gamma * next_q_value
-        
-        # 计算损失
-        if self.cfg.prioritized and batch.weights is not None:
-            # 优先经验回放：使用重要性采样权重
-            td_error = q_value - target_q
-            loss = (batch.weights * (td_error ** 2)).mean()
+        if np.random.uniform(0, 1) < epsilon:
+            return np.random.randint(self.action_dim)
         else:
-            # 标准MSE损失
-            loss = F.mse_loss(q_value, target_q)
-        
-        # 反向传播
-        optimizer.zero_grad()
-        loss.backward()
-        # 梯度裁剪（可选）
-        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=10.0)
-        optimizer.step()
-        
-        # 更新目标网络
-        if self.update_counter % self.cfg.target_update_freq == 0:
-            self._update_target_network(model)
-        
-        # 计算TD误差（用于优先回放）
+            state = torch.FloatTensor(state).unsqueeze(0)
+            with torch.no_grad():
+                q_values = self.q_net(state)
+            return q_values.argmax().item()
+
+    def update(self, replay_buffer, batch_size=256):
+        """
+        网络更新: 最小化 TD Error (时序差分误差)
+        """
+        state, action, next_state, reward, not_done = replay_buffer.sample(batch_size)
+
+        # 1. 计算当前 Q 值 Q(s, a)
+        current_q = self.q_net(state).gather(1, action.long())
+
+        # 2. 计算目标 Q 值: r + \gamma * max_a Q_target(s', a)
         with torch.no_grad():
-            td_errors = torch.abs(q_value - target_q).cpu().numpy()
-        
-        metrics = {
-            "loss": loss.item(),
-            "q_value": q_value.mean().item(),
-            "target_q": target_q.mean().item(),
-        }
-        
-        return metrics
-    
-    def _update_target_network(self, model: nn.Module):
-        """更新目标网络"""
-        if hasattr(model, 'update_target_network'):
-            model.update_target_network()
-        else:
-            # 硬更新：直接复制参数
-            model.q_target.load_state_dict(model.q_network.state_dict())
+            max_next_q = self.target_q_net(next_state).max(1, keepdim=True)[0]
+            target_q = reward + not_done * self.gamma * max_next_q
 
+        # 3. 计算均方误差损失 (MSE Loss)
+        loss = F.mse_loss(current_q, target_q)
 
-class DuelingDQN(nn.Module):
-    """
-    Dueling DQN网络结构
-    
-    将Q值分解为：
-    Q(s,a) = V(s) + (A(s,a) - mean(A(s,a)))
-    """
-    def __init__(self, state_dim: int, action_dim: int, hidden_sizes: tuple = (128, 128)):
-        super().__init__()
-        
-        # 共享特征层
-        self.feature = nn.Sequential(
-            nn.Linear(state_dim, hidden_sizes[0]),
-            nn.ReLU(),
-        )
-        
-        # 价值流（V(s)）
-        self.value_stream = nn.Sequential(
-            nn.Linear(hidden_sizes[0], hidden_sizes[1]),
-            nn.ReLU(),
-            nn.Linear(hidden_sizes[1], 1),
-        )
-        
-        # 优势流（A(s,a)）
-        self.advantage_stream = nn.Sequential(
-            nn.Linear(hidden_sizes[0], hidden_sizes[1]),
-            nn.ReLU(),
-            nn.Linear(hidden_sizes[1], action_dim),
-        )
-    
-    def forward(self, state):
-        features = self.feature(state)
-        value = self.value_stream(features)
-        advantage = self.advantage_stream(features)
-        
-        # Q(s,a) = V(s) + (A(s,a) - mean(A(s,a)))
-        q_values = value + (advantage - advantage.mean(dim=1, keepdim=True))
-        return q_values
+        # 4. 反向传播更新 Q 网络
+        self.optimizer.zero_grad()
+        loss.backward()
+        self.optimizer.step()
+
+        # 5. 软更新目标网络参数: \theta_{target} = \tau * \theta + (1 - \tau) * \theta_{target}
+        for param, target_param in zip(self.q_net.parameters(), self.target_q_net.parameters()):
+            target_param.data.copy_(self.tau * param.data + (1 - self.tau) * target_param.data)
+            
+        return {"loss": loss.item()}

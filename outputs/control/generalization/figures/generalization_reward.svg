@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="420">
+<rect width="100%" height="100%" fill="white" />
+<line x1="60" y1="360" x2="660" y2="360" stroke="#333" />
+<line x1="60" y1="60" x2="60" y2="360" stroke="#333" />
+<polyline fill="none" stroke="#4f81bd" stroke-width="2" points="60.0,155.0 660.0,360.0" />
+<polyline fill="none" stroke="#c0504d" stroke-width="2" points="60.0,92.1 660.0,204.0" />
+<polyline fill="none" stroke="#9bbb59" stroke-width="2" points="60.0,130.8 660.0,180.7" />
+<polyline fill="none" stroke="#8064a2" stroke-width="2" points="60.0,150.6 660.0,60.0" />
+<text x="360.0" y="28" text-anchor="middle" font-size="18">Generalization: reward</text>
+<text x="540" y="50" font-size="12" fill="#4f81bd">pid</text>
+<text x="540" y="68" font-size="12" fill="#c0504d">ladrc</text>
+<text x="540" y="86" font-size="12" fill="#9bbb59">ddpg_ladrc</text>
+<text x="540" y="104" font-size="12" fill="#8064a2">mddpg_ladrc</text>
+<text x="60.0" y="380" text-anchor="middle" font-size="12">easy</text>
+<text x="660.0" y="380" text-anchor="middle" font-size="12">medium</text>
+</svg>

@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="860" viewBox="0 0 1500 860">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,3 L0,6 z" fill="#355c7d" />
+    </marker>
+    <style>
+      .title { font: 700 28px 'Microsoft YaHei', sans-serif; fill: #1f2937; }
+      .subtitle { font: 600 18px 'Microsoft YaHei', sans-serif; fill: #4b5563; }
+      .label { font: 600 18px 'Microsoft YaHei', sans-serif; fill: #111827; }
+      .small { font: 500 16px 'Microsoft YaHei', sans-serif; fill: #374151; }
+      .note { font: 700 17px 'Microsoft YaHei', sans-serif; fill: #b91c1c; }
+      .boxA { fill: #eef6ff; stroke: #4f81bd; stroke-width: 2; rx: 16; ry: 16; }
+      .boxB { fill: #effaf1; stroke: #4d8f5a; stroke-width: 2; rx: 16; ry: 16; }
+      .boxC { fill: #fff7e8; stroke: #d28b26; stroke-width: 2; rx: 16; ry: 16; }
+      .boxD { fill: #f7f1ff; stroke: #8b5fbf; stroke-width: 2; rx: 16; ry: 16; }
+      .line { stroke: #355c7d; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+      .dash { stroke: #b91c1c; stroke-width: 2.5; fill: none; stroke-dasharray: 8 6; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect width="100%" height="100%" fill="#ffffff"/>
+  <text x="750" y="48" text-anchor="middle" class="title">图3-x DDPG-LADRC单轴位置跟踪控制框架</text>
+  <text x="220" y="96" text-anchor="middle" class="subtitle">环境 / 控制对象链路</text>
+  <text x="1000" y="96" text-anchor="middle" class="subtitle">强化学习训练链路</text>
+
+  <rect x="80" y="130" width="170" height="70" class="boxC"/>
+  <text x="165" y="173" text-anchor="middle" class="label">参考输入 r(t)</text>
+
+  <rect x="80" y="300" width="170" height="70" class="boxC"/>
+  <text x="165" y="343" text-anchor="middle" class="label">扰动 d(t)</text>
+
+  <rect x="330" y="130" width="250" height="110" class="boxB"/>
+  <text x="455" y="170" text-anchor="middle" class="label">自适应 LADRC 位置环</text>
+  <text x="455" y="202" text-anchor="middle" class="small">在线接收 Δωc, Δωo, Δb0</text>
+
+  <rect x="650" y="145" width="160" height="80" class="boxC"/>
+  <text x="730" y="190" text-anchor="middle" class="label">控制量 u(t)</text>
+
+  <rect x="900" y="130" width="220" height="110" class="boxB"/>
+  <text x="1010" y="172" text-anchor="middle" class="label">单轴被控对象</text>
+  <text x="1010" y="204" text-anchor="middle" class="small">位置跟踪 + 扰动抑制</text>
+
+  <rect x="1180" y="145" width="180" height="80" class="boxC"/>
+  <text x="1270" y="190" text-anchor="middle" class="label">系统输出 y(t)</text>
+
+  <rect x="1110" y="300" width="250" height="120" class="boxA"/>
+  <text x="1235" y="338" text-anchor="middle" class="label">状态构造</text>
+  <text x="1235" y="372" text-anchor="middle" class="small">位置误差 e、速度 v</text>
+  <text x="1235" y="400" text-anchor="middle" class="small">扰动项、参考值、归一化时间</text>
+
+  <rect x="790" y="300" width="220" height="100" class="boxD"/>
+  <text x="900" y="340" text-anchor="middle" class="label">DDPG Actor</text>
+  <text x="900" y="372" text-anchor="middle" class="small">策略网络</text>
+
+  <rect x="480" y="310" width="220" height="80" class="boxD"/>
+  <text x="590" y="344" text-anchor="middle" class="label">三参数动作</text>
+  <text x="590" y="374" text-anchor="middle" class="small">Δωc, Δωo, Δb0</text>
+
+  <rect x="1110" y="490" width="210" height="90" class="boxA"/>
+  <text x="1215" y="530" text-anchor="middle" class="label">奖励函数</text>
+  <text x="1215" y="563" text-anchor="middle" class="small">r = -|位置误差|</text>
+
+  <rect x="760" y="505" width="250" height="110" class="boxA"/>
+  <text x="885" y="547" text-anchor="middle" class="label">Replay Buffer</text>
+  <text x="885" y="580" text-anchor="middle" class="small">状态、动作、奖励、下一状态</text>
+
+  <rect x="470" y="515" width="180" height="90" class="boxD"/>
+  <text x="560" y="555" text-anchor="middle" class="label">Critic</text>
+  <text x="560" y="585" text-anchor="middle" class="small">价值评估</text>
+
+  <rect x="230" y="515" width="170" height="90" class="boxD"/>
+  <text x="315" y="555" text-anchor="middle" class="label">目标网络</text>
+  <text x="315" y="585" text-anchor="middle" class="small">软更新</text>
+
+  <path d="M250 165 L330 165" class="line"/>
+  <path d="M250 335 L900 335 L900 240" class="line"/>
+  <path d="M580 185 L650 185" class="line"/>
+  <path d="M810 185 L900 185" class="line"/>
+  <path d="M1120 185 L1180 185" class="line"/>
+  <path d="M1270 225 L1270 300" class="line"/>
+  <path d="M1180 355 L1010 355" class="line"/>
+  <path d="M790 350 L700 350" class="line"/>
+  <path d="M560 390 L560 465 L455 465 L455 240" class="dash"/>
+  <path d="M1180 185 L1215 185 L1215 490" class="line"/>
+  <path d="M1110 355 L885 355 L885 505" class="line"/>
+  <path d="M590 350 L590 505" class="line"/>
+  <path d="M1215 580 L1010 580" class="line"/>
+  <path d="M760 560 L650 560" class="line"/>
+  <path d="M470 560 L400 560" class="line"/>
+  <path d="M315 515 L315 430 L790 430 L790 350" class="line"/>
+
+  <text x="620" y="447" text-anchor="middle" class="note">强化学习在线调节位置环参数，而非直接生成控制指令</text>
+
+  <rect x="70" y="690" width="1360" height="105" fill="#f9fafb" stroke="#d1d5db" stroke-width="1.5" rx="14" ry="14"/>
+  <text x="92" y="725" class="subtitle">图注：</text>
+  <text x="150" y="725" class="small">该框架将深度确定性策略梯度与LADRC位置环相结合。智能体基于跟踪状态输出三个参数增量，</text>
+  <text x="150" y="753" class="small">在线调整ωc、ωo与b0，自适应LADRC再生成控制输入，从而实现单轴位置跟踪与扰动抑制。</text>
+</svg>

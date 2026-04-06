@@ -1,0 +1,35 @@
+{
+  "task": "axiswise_recursive_position_tracking_with_disturbance_rejection",
+  "controller": "LADRC",
+  "rl_role": "online_parameter_tuning",
+  "rl_action_targets": [
+    "b0",
+    "omega_c",
+    "k"
+  ],
+  "derived_parameter_relation": "omega_o = k * omega_c",
+  "reward_definition": "-abs(position_error) - 0.15 * abs(velocity_error)",
+  "observation_channels": [
+    "position_error",
+    "velocity_error",
+    "current_position",
+    "current_velocity",
+    "reference_position",
+    "reference_velocity",
+    "disturbance_proxy",
+    "normalized_time"
+  ],
+  "showcase_targets": [
+    "reference_tracking_accuracy",
+    "disturbance_rejection",
+    "recovery_after_disturbance",
+    "control_smoothness",
+    "parameter_adaptation"
+  ],
+  "reference_profile": "piecewise_constant_velocity",
+  "axes": [
+    "x",
+    "y",
+    "z"
+  ]
+}

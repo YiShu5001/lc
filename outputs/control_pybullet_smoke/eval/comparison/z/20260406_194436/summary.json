@@ -1,0 +1,82 @@
+{
+  "axis": "z",
+  "backend": "gym_env",
+  "controllers": [
+    "pid_pos_att",
+    "ladrc_pos_pid_att",
+    "ladrc_pos_att"
+  ],
+  "reference_segments": [
+    {
+      "stage": 0.0,
+      "start": 0.0,
+      "stop": 22.0,
+      "velocity": 0.0
+    },
+    {
+      "stage": 1.0,
+      "start": 22.0,
+      "stop": 41.0,
+      "velocity": 0.3960435688495636
+    },
+    {
+      "stage": 2.0,
+      "start": 41.0,
+      "stop": 54.0,
+      "velocity": 0.0
+    },
+    {
+      "stage": 3.0,
+      "start": 54.0,
+      "stop": 72.0,
+      "velocity": -0.4772493541240692
+    }
+  ],
+  "metrics": [
+    {
+      "mae": 0.774702691563612,
+      "rmse": 0.8775732332816844,
+      "iae": 55.77859379258007,
+      "overshoot": 0.0,
+      "settling_time": 71.0,
+      "steady_state_error": 1.000565723516047,
+      "control_energy": 1599794314.9629161,
+      "disturbance_recovery_time": 71.0,
+      "control_variation": 23.846315195862676,
+      "velocity_rmse": 1.6081885126116018,
+      "reward": -0.9746710306432155,
+      "backend": "gym_env",
+      "controller": "pid_pos_att"
+    },
+    {
+      "mae": 0.7710459722891554,
+      "rmse": 0.8748775490691111,
+      "iae": 55.515310004819185,
+      "overshoot": 0.0,
+      "settling_time": 71.0,
+      "steady_state_error": 1.000566576075341,
+      "control_energy": 2181907629.7071095,
+      "disturbance_recovery_time": 71.0,
+      "control_variation": 18.309859154929576,
+      "velocity_rmse": 1.6380499567352345,
+      "reward": -0.9582136396657795,
+      "backend": "gym_env",
+      "controller": "ladrc_pos_pid_att"
+    },
+    {
+      "mae": 0.7710192646934755,
+      "rmse": 0.8748444590518174,
+      "iae": 55.51338705793023,
+      "overshoot": 0.0,
+      "settling_time": 71.0,
+      "steady_state_error": 1.0005664169522268,
+      "control_energy": 2168466151.0263166,
+      "disturbance_recovery_time": 71.0,
+      "control_variation": 42.27682108274648,
+      "velocity_rmse": 1.6381521731838722,
+      "reward": -0.9866961175730976,
+      "backend": "gym_env",
+      "controller": "ladrc_pos_att"
+    }
+  ]
+}
