@@ -91,6 +91,27 @@ def plot_control_generalization(results: dict[str, dict[str, dict[str, float]]],
     return artifacts
 
 
+def plot_mddpg_shared_value_sweep(
+    sweep_rows: list[dict[str, float | int]],
+    output_dir: str | Path,
+) -> list[Path]:
+    """Plot x-axis mDDPG shared-value sweep curves for chapter-3 RLcontrolRefLine experiments."""
+    target = ensure_dir(output_dir)
+    if not sweep_rows:
+        return []
+    sorted_rows = sorted(sweep_rows, key=lambda row: int(row["shared_value"]))
+    shared_values = [str(int(row["shared_value"])) for row in sorted_rows]
+    artifacts: list[Path] = []
+    for metric in ("reward", "rmse", "steady_state_error", "iae"):
+        out = target / f"mddpg_shared_value_{metric}.svg"
+        series = {
+            metric: [float(row[metric]) for row in sorted_rows],
+        }
+        _write_svg_line_chart(out, f"mDDPG shared-v sweep: {metric}", series, x_labels=shared_values)
+        artifacts.append(out)
+    return artifacts
+
+
 def _save_bar_chart(output_dir: Path, metric: str, labels: list[str], values: list[float], color: str) -> Path:
     out = output_dir / f"{metric}.svg"
     _write_svg_bar_chart(out, f"Control comparison: {metric}", labels, values, color)

@@ -5,6 +5,7 @@ from .plots import (
     plot_control_comparison,
     plot_control_generalization,
     plot_control_mechanism_ablation,
+    plot_mddpg_shared_value_sweep,
     plot_control_training_curves,
     plot_time_response,
 )
@@ -24,6 +25,7 @@ from .pybullet_plots import (
 __all__ = [
     "plot_control_comparison",
     "plot_control_generalization",
+    "plot_mddpg_shared_value_sweep",
     "plot_control_training_curves",
     "plot_control_ablation",
     "plot_control_mechanism_ablation",

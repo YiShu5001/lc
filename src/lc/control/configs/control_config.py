@@ -21,6 +21,7 @@ class ControlExperimentConfig:
     enhanced_stack_size: int = 4
     enhanced_n_step: int = 4
     enhanced_action_hold_steps: int = 4
+    mddpg_shared_values: tuple[int, ...] = (1, 3, 5, 7, 10)
     export_reference_preview: bool = True
     reference_profile_mode: str = "piecewise_constant_velocity"
 
