@@ -22,7 +22,7 @@ class ControlLADRLAgent:
     stack_size: int
     action_hold_steps: int = 1
     n_step: int = 1
-    batch_size: int = 32
+    batch_size: int = 128
     controller: AdaptiveLADRCController = field(default_factory=AdaptiveLADRCController)
 
     def __post_init__(self) -> None:

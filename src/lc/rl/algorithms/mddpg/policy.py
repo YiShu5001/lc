@@ -14,16 +14,18 @@ import torch.optim as optim
 class MDDPGConfig:
     state_dim: int
     action_dim: int
-    hidden_dim: int = 128
-    actor_lr: float = 1e-3
-    critic_lr: float = 1e-3
+    # Legacy mDDPG.py uses a wider backbone and more aggressive learning rates.
+    hidden_dim: int = 256
+    actor_lr: float = 1e-2
+    critic_lr: float = 1e-2
     gamma: float = 0.95
-    tau: float = 0.02
-    batch_size: int = 32
-    buffer_size: int = 50000
+    tau: float = 0.05
+    batch_size: int = 128
+    buffer_size: int = 400000
     action_hold_steps: int = 5
     stack_size: int = 4
     expl_noise: float = 0.1
+    soft_update_interval: int = 20
     device: str = "cpu"
 
 
@@ -103,6 +105,7 @@ class MDDPGPolicy:
         self._hold_counter = 0
         self._last_action = np.zeros(config.action_dim, dtype=np.float32)
         self._normalizer = np.ones(effective_state_dim, dtype=np.float32)
+        self._soft_update_counter = config.soft_update_interval
 
     def reset(self) -> None:
         self._hold_counter = 0
@@ -115,6 +118,7 @@ class MDDPGPolicy:
         self._update_normalizer(stacked_state)
         norm_state = stacked_state / self._normalizer
         state_t = torch.as_tensor(norm_state, dtype=torch.float32, device=self.device).view(1, -1)
+        # Keep the current normalized [-1, 1] action semantics for chapter-3 LADRC tuning.
         action = self.actor(state_t).detach().cpu().numpy().reshape(-1)
         if explore:
             action = np.clip(action + np.random.normal(0.0, self.config.expl_noise, size=action.shape), -1.0, 1.0)
@@ -155,8 +159,12 @@ class MDDPGPolicy:
             actor_loss.backward()
             self.actor_optimizer.step()
 
-            self._soft_update(self.actor_target, self.actor)
-            self._soft_update(self.critic_target, self.critic)
+            if self._soft_update_counter <= 0:
+                self._soft_update(self.actor_target, self.actor)
+                self._soft_update(self.critic_target, self.critic)
+                self._soft_update_counter = self.config.soft_update_interval
+            else:
+                self._soft_update_counter -= 1
             critic_losses.append(float(critic_loss.item()))
             actor_losses.append(float(actor_loss.item()))
         return {"critic_loss": float(np.mean(critic_losses)), "actor_loss": float(np.mean(actor_losses))}
