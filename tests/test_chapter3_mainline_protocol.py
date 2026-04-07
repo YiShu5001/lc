@@ -4,6 +4,7 @@ import unittest
 
 import numpy as np
 
+from lc.control.RLcontrolRefLine import build_default_xy_task_config, build_refline_episode
 from lc.control.configs import ControlExperimentConfig
 from lc.control.controllers import LADRCController
 from lc.control.envs import ControlTrackingEnv
@@ -30,6 +31,21 @@ class TestChapter3MainlineProtocol(unittest.TestCase):
         self.assertTrue(np.allclose(env.reference_bundle.positions[:, 0], env.reference_bundle.positions[0, 0]))
         self.assertFalse(np.allclose(env.reference_bundle.positions[:, 1], env.reference_bundle.positions[0, 1]))
         self.assertTrue(np.allclose(env.reference_bundle.positions[:, 2], env.reference_bundle.positions[0, 2]))
+
+    def test_tracking_env_supports_refline_six_phase_mode(self) -> None:
+        bundle = build_refline_episode(build_default_xy_task_config("x"), seed=13)
+        env = ControlTrackingEnv(
+            scenario=build_control_scenario("medium"),
+            axis="x",
+            seed=13,
+            episode_length=len(bundle.time),
+            reference_profile_mode="rl_refline_six_phase",
+            external_episode_bundle=bundle,
+        )
+        obs = env.reset()
+        self.assertEqual(obs.shape[0], 8)
+        self.assertEqual(env.reference_schedule, "rl_refline_six_phase")
+        self.assertEqual(len(env.reference_summary()), 6)
 
     def test_control_comparison_reports_axis_results(self) -> None:
         result = run_control_comparison(

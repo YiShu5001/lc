@@ -3,16 +3,16 @@
 <line x1="60" y1="360" x2="580" y2="360" stroke="#333" />
 <line x1="60" y1="60" x2="60" y2="360" stroke="#333" />
 <rect x="60" y="360" width="78" height="0" fill="#4f81bd" />
-<rect x="177" y="101" width="78" height="259" fill="#4f81bd" />
-<rect x="294" y="60" width="78" height="300" fill="#4f81bd" />
-<rect x="411" y="260" width="78" height="100" fill="#4f81bd" />
+<rect x="177" y="187" width="78" height="173" fill="#4f81bd" />
+<rect x="294" y="303" width="78" height="57" fill="#4f81bd" />
+<rect x="411" y="60" width="78" height="300" fill="#4f81bd" />
 <text x="320.0" y="28" text-anchor="middle" font-size="18">Control comparison: control_energy</text>
 <text x="99.0" y="380" text-anchor="middle" font-size="12">pid</text>
-<text x="99.0" y="352" text-anchor="middle" font-size="12">0.189</text>
+<text x="99.0" y="352" text-anchor="middle" font-size="12">0.229</text>
 <text x="216.0" y="380" text-anchor="middle" font-size="12">ladrc</text>
-<text x="216.0" y="93" text-anchor="middle" font-size="12">70.752</text>
+<text x="216.0" y="179" text-anchor="middle" font-size="12">91.956</text>
 <text x="333.0" y="380" text-anchor="middle" font-size="12">ddpg_ladrc</text>
-<text x="333.0" y="52" text-anchor="middle" font-size="12">81.695</text>
+<text x="333.0" y="295" text-anchor="middle" font-size="12">30.494</text>
 <text x="450.0" y="380" text-anchor="middle" font-size="12">mddpg_ladrc</text>
-<text x="450.0" y="252" text-anchor="middle" font-size="12">27.358</text>
+<text x="450.0" y="52" text-anchor="middle" font-size="12">158.806</text>
 </svg>

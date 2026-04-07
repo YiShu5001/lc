@@ -2,17 +2,17 @@
 <rect width="100%" height="100%" fill="white" />
 <line x1="60" y1="360" x2="580" y2="360" stroke="#333" />
 <line x1="60" y1="60" x2="60" y2="360" stroke="#333" />
-<rect x="60" y="187" width="78" height="173" fill="#4f81bd" />
-<rect x="177" y="223" width="78" height="137" fill="#4f81bd" />
-<rect x="294" y="185" width="78" height="175" fill="#4f81bd" />
-<rect x="411" y="60" width="78" height="300" fill="#4f81bd" />
+<rect x="60" y="94" width="78" height="266" fill="#4f81bd" />
+<rect x="177" y="181" width="78" height="179" fill="#4f81bd" />
+<rect x="294" y="60" width="78" height="300" fill="#4f81bd" />
+<rect x="411" y="316" width="78" height="44" fill="#4f81bd" />
 <text x="320.0" y="28" text-anchor="middle" font-size="18">Control comparison: steady_state_error</text>
 <text x="99.0" y="380" text-anchor="middle" font-size="12">pid</text>
-<text x="99.0" y="179" text-anchor="middle" font-size="12">0.023</text>
+<text x="99.0" y="86" text-anchor="middle" font-size="12">0.027</text>
 <text x="216.0" y="380" text-anchor="middle" font-size="12">ladrc</text>
-<text x="216.0" y="215" text-anchor="middle" font-size="12">0.018</text>
+<text x="216.0" y="173" text-anchor="middle" font-size="12">0.018</text>
 <text x="333.0" y="380" text-anchor="middle" font-size="12">ddpg_ladrc</text>
-<text x="333.0" y="177" text-anchor="middle" font-size="12">0.023</text>
+<text x="333.0" y="52" text-anchor="middle" font-size="12">0.030</text>
 <text x="450.0" y="380" text-anchor="middle" font-size="12">mddpg_ladrc</text>
-<text x="450.0" y="52" text-anchor="middle" font-size="12">0.039</text>
+<text x="450.0" y="308" text-anchor="middle" font-size="12">0.005</text>
 </svg>

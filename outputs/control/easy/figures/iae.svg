@@ -3,16 +3,16 @@
 <line x1="60" y1="360" x2="580" y2="360" stroke="#333" />
 <line x1="60" y1="60" x2="60" y2="360" stroke="#333" />
 <rect x="60" y="60" width="78" height="300" fill="#4f81bd" />
-<rect x="177" y="212" width="78" height="148" fill="#4f81bd" />
-<rect x="294" y="158" width="78" height="202" fill="#4f81bd" />
-<rect x="411" y="108" width="78" height="252" fill="#4f81bd" />
+<rect x="177" y="226" width="78" height="134" fill="#4f81bd" />
+<rect x="294" y="113" width="78" height="247" fill="#4f81bd" />
+<rect x="411" y="231" width="78" height="129" fill="#4f81bd" />
 <text x="320.0" y="28" text-anchor="middle" font-size="18">Control comparison: iae</text>
 <text x="99.0" y="380" text-anchor="middle" font-size="12">pid</text>
-<text x="99.0" y="52" text-anchor="middle" font-size="12">1.829</text>
+<text x="99.0" y="52" text-anchor="middle" font-size="12">2.137</text>
 <text x="216.0" y="380" text-anchor="middle" font-size="12">ladrc</text>
-<text x="216.0" y="204" text-anchor="middle" font-size="12">0.903</text>
+<text x="216.0" y="218" text-anchor="middle" font-size="12">0.955</text>
 <text x="333.0" y="380" text-anchor="middle" font-size="12">ddpg_ladrc</text>
-<text x="333.0" y="150" text-anchor="middle" font-size="12">1.236</text>
+<text x="333.0" y="105" text-anchor="middle" font-size="12">1.765</text>
 <text x="450.0" y="380" text-anchor="middle" font-size="12">mddpg_ladrc</text>
-<text x="450.0" y="100" text-anchor="middle" font-size="12">1.537</text>
+<text x="450.0" y="223" text-anchor="middle" font-size="12">0.923</text>
 </svg>

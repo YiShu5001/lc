@@ -4,6 +4,8 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
+from lc.control.configs import LADRCActionBounds, get_axis_ladrc_action_bounds
+
 from .ladrc import LADRCController
 
 
@@ -15,6 +17,24 @@ class AdaptiveLADRCController:
     b0_bounds: tuple[float, float] = (0.3, 2.5)
     omega_c_bounds: tuple[float, float] = (2.0, 15.0)
     k_bounds: tuple[float, float] = (2.0, 6.0)
+
+    @classmethod
+    def from_action_bounds(cls, bounds: LADRCActionBounds) -> "AdaptiveLADRCController":
+        controller = cls(
+            base=LADRCController(
+                b0=float(bounds.fast_anchor.b0),
+                omega_c=float(bounds.fast_anchor.wc),
+                k=float(bounds.fast_anchor.k),
+            ),
+            b0_bounds=tuple(float(value) for value in bounds.b0),
+            omega_c_bounds=tuple(float(value) for value in bounds.wc),
+            k_bounds=tuple(float(value) for value in bounds.k),
+        )
+        return controller
+
+    @classmethod
+    def for_axis(cls, axis: str) -> "AdaptiveLADRCController":
+        return cls.from_action_bounds(get_axis_ladrc_action_bounds(axis))
 
     def reset(self) -> None:
         self.base.reset()

@@ -3,12 +3,13 @@
   "difficulty": "easy",
   "difficulty_levels": [
     "easy",
-    "medium"
+    "medium",
+    "hard",
+    "extreme"
   ],
   "axes": [
     "x",
-    "y",
-    "z"
+    "y"
   ],
   "episode_length": 100,
   "episodes": 1,

@@ -176,7 +176,10 @@ class _NativeSingleAxisHybridControl(DSLPIDControl):
             controller.leso.cfg.step_size = control_timestep
             ladrc_output = float(controller.update(float(target_pos[index]), float(cur_pos[index])))
             if axis_name == "z":
-                target_thrust[index] = ladrc_output + self.GRAVITY
+                # Keep the native PID hover/thrust baseline on altitude and let LADRC
+                # act as an additive correction term. Replacing the whole z thrust
+                # proved too aggressive for the PyBullet vertical channel.
+                target_thrust[index] = target_thrust[index] + ladrc_output
             else:
                 target_thrust[index] = ladrc_output
 

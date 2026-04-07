@@ -29,7 +29,6 @@
   "reference_profile": "piecewise_constant_velocity",
   "axes": [
     "x",
-    "y",
-    "z"
+    "y"
   ]
 }

@@ -143,6 +143,7 @@ def _run_real_training_episode(
             hold_counter -= 1
         checkpoint = controller_bundle.snapshot_params()
         _apply_axis_action(controller_bundle, axis, action)
+        disturbance = _disturbance_vector(axis_index, step, config, config.axis_config(axis))
         rpm, _, _ = controller_bundle.compute_control_from_state(
             control_timestep=config.control_dt,
             state=state,
@@ -151,6 +152,7 @@ def _run_real_training_episode(
             target_rpy=np.zeros(3, dtype=np.float32),
             target_rpy_rates=np.zeros(3, dtype=np.float32),
         )
+        _apply_real_disturbance(real_env, disturbance)
         next_obs, _, terminated, truncated, _ = real_env.step(rpm.reshape(1, 4))
         next_state = np.asarray(next_obs[0], dtype=np.float32)
         pos_error = float(target_pos[axis_index] - next_state[axis_index])
@@ -162,7 +164,19 @@ def _run_real_training_episode(
         policy.store_transition(observation, action, reward, next_observation, done)
         rewards.append(float(reward))
         timeseries.append(
-            _timeseries_row(step, config.control_dt, axis, state, target_pos, target_vel, rpm, reward, checkpoint, env["backend"])
+            _timeseries_row(
+                step,
+                config.control_dt,
+                axis,
+                state,
+                target_pos,
+                target_vel,
+                rpm,
+                reward,
+                checkpoint,
+                env["backend"],
+                disturbance=disturbance,
+            )
         )
         logger_rows.append(_logger_row(step, config.control_dt, state, target_pos, target_vel))
         state = next_state
@@ -192,6 +206,7 @@ def _run_real_evaluation_episode(
         target_pos = reference_bundle.positions[step]
         target_vel = reference_bundle.velocities[step]
         checkpoint = controller_bundle.snapshot_params()
+        disturbance = _disturbance_vector(axis_index, step, config, config.axis_config(axis))
         rpm, _, _ = controller_bundle.compute_control_from_state(
             control_timestep=config.control_dt,
             state=state,
@@ -200,6 +215,7 @@ def _run_real_evaluation_episode(
             target_rpy=np.zeros(3, dtype=np.float32),
             target_rpy_rates=np.zeros(3, dtype=np.float32),
         )
+        _apply_real_disturbance(real_env, disturbance)
         next_obs, _, terminated, truncated, _ = real_env.step(rpm.reshape(1, 4))
         next_state = np.asarray(next_obs[0], dtype=np.float32)
         pos_error = float(target_pos[axis_index] - next_state[axis_index])
@@ -208,7 +224,19 @@ def _run_real_evaluation_episode(
         reward = _compute_axis_reward(pos_error, vel_error, rpm_delta)
         rewards.append(float(reward))
         timeseries.append(
-            _timeseries_row(step, config.control_dt, axis, state, target_pos, target_vel, rpm, reward, checkpoint, env["backend"])
+            _timeseries_row(
+                step,
+                config.control_dt,
+                axis,
+                state,
+                target_pos,
+                target_vel,
+                rpm,
+                reward,
+                checkpoint,
+                env["backend"],
+                disturbance=disturbance,
+            )
         )
         logger_rows.append(_logger_row(step, config.control_dt, state, target_pos, target_vel))
         state = next_state
@@ -266,7 +294,19 @@ def _run_fallback_training_episode(
         policy.store_transition(observation, action, reward, next_observation, done)
         rewards.append(float(reward))
         timeseries.append(
-            _timeseries_row(step, config.control_dt, axis, state, target_pos, target_vel, rpm, reward, checkpoint, "fallback")
+            _timeseries_row(
+                step,
+                config.control_dt,
+                axis,
+                state,
+                target_pos,
+                target_vel,
+                rpm,
+                reward,
+                checkpoint,
+                "fallback",
+                disturbance=disturbance,
+            )
         )
         logger_rows.append(_logger_row(step, config.control_dt, state, target_pos, target_vel))
         state = next_state
@@ -304,7 +344,19 @@ def _run_fallback_evaluation_episode(
         reward = _compute_axis_reward(pos_error[axis_index], target_vel[axis_index] - next_state[10 + axis_index], 0.0)
         rewards.append(float(reward))
         timeseries.append(
-            _timeseries_row(step, config.control_dt, axis, state, target_pos, target_vel, rpm, reward, checkpoint, "fallback")
+            _timeseries_row(
+                step,
+                config.control_dt,
+                axis,
+                state,
+                target_pos,
+                target_vel,
+                rpm,
+                reward,
+                checkpoint,
+                "fallback",
+                disturbance=disturbance,
+            )
         )
         logger_rows.append(_logger_row(step, config.control_dt, state, target_pos, target_vel))
         state = next_state
@@ -381,7 +433,9 @@ def _timeseries_row(
     reward: float,
     checkpoint: dict[str, float],
     backend: str,
+    disturbance: np.ndarray | None = None,
 ) -> dict[str, float]:
+    disturbance = disturbance if disturbance is not None else np.zeros(3, dtype=np.float32)
     row = {
         "time": float(step * dt),
         "axis": axis,
@@ -406,9 +460,33 @@ def _timeseries_row(
         "rpm2": float(rpm[2]),
         "rpm3": float(rpm[3]),
         "reward": float(reward),
+        "disturbance_x": float(disturbance[0]),
+        "disturbance_y": float(disturbance[1]),
+        "disturbance_z": float(disturbance[2]),
     }
     row.update(checkpoint)
     return row
+
+
+def _apply_real_disturbance(real_env: Any, disturbance: np.ndarray) -> None:
+    if not np.any(np.abs(disturbance) > 0.0):
+        return
+    if importlib.util.find_spec("pybullet") is None:
+        return
+    import pybullet as p
+
+    drone_ids = getattr(real_env, "DRONE_IDS", None)
+    client = getattr(real_env, "CLIENT", None)
+    if drone_ids is None or client is None or len(drone_ids) == 0:
+        return
+    p.applyExternalForce(
+        int(drone_ids[0]),
+        -1,
+        forceObj=[float(disturbance[0]), float(disturbance[1]), float(disturbance[2])],
+        posObj=[0.0, 0.0, 0.0],
+        flags=p.WORLD_FRAME,
+        physicsClientId=client,
+    )
 
 
 def _logger_row(step: int, dt: float, state: np.ndarray, target_pos: np.ndarray, target_vel: np.ndarray) -> dict[str, float]:

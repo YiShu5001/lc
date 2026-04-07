@@ -6,7 +6,9 @@ from dataclasses import dataclass, field
 import numpy as np
 import torch
 
-from lc.control.controllers import LADRCController, PIDController
+from lc.control.RLcontrolRefLine import AxisRLRefLineTaskConfig, build_default_xy_task_config, build_refline_episode
+from lc.control.controllers import AdaptiveLADRCController, LADRCController, PIDController
+from lc.control.configs import get_axis_ladrc_action_bounds
 from lc.control.envs import ControlTrackingEnv
 from lc.control.policies import ControlLADRLAgent, stack_state
 from lc.envs.metrics import compute_control_metrics
@@ -24,6 +26,8 @@ class ControlTrainer:
     batch_size: int = 32
     updates_per_step: int = 1
     tuned_ladrc_params: dict[str, dict[str, float]] = field(default_factory=dict)
+    refline_task_config: AxisRLRefLineTaskConfig | dict[str, AxisRLRefLineTaskConfig] | None = None
+    refline_seed_strategy: str = "episode"
 
     def evaluate_pid(self, episodes: int, axis: str | None = None, seed_offset: int = 0) -> dict[str, float]:
         return self._run_closed_loop(PIDController(), episodes, axis=axis, seed_offset=seed_offset)
@@ -176,13 +180,18 @@ class ControlTrainer:
         stack_size = stack_size_override if stack_size_override is not None else (self.stack_size if enhanced else 1)
         hold_steps = action_hold_override if action_hold_override is not None else (self.action_hold_steps if enhanced else 1)
         n_step = n_step_override if n_step_override is not None else (self.n_step if enhanced else 1)
-        initial_obs = self.env.reset(axis=axis_name, seed=self.env.seed + seed_offset)
+        initial_obs = self.env.reset(
+            axis=axis_name,
+            seed=self.env.seed + seed_offset,
+            external_episode_bundle=self._build_external_episode_bundle(axis_name, self.env.seed + seed_offset),
+        )
         agent = ControlLADRLAgent(
             obs_dim=initial_obs.shape[0],
             stack_size=stack_size,
             action_hold_steps=hold_steps,
             n_step=n_step,
             batch_size=self.batch_size,
+            controller=AdaptiveLADRCController.from_action_bounds(get_axis_ladrc_action_bounds(axis_name)),
         )
         if axis_name in self.tuned_ladrc_params:
             tuned = self.tuned_ladrc_params[axis_name]
@@ -191,7 +200,12 @@ class ControlTrainer:
         gamma = agent.policy.config.gamma
         train_history: list[dict[str, float]] = []
         for episode in range(train_episodes):
-            obs = self.env.reset(axis=axis_name, seed=self.env.seed + seed_offset + episode)
+            episode_seed = self.env.seed + seed_offset + episode
+            obs = self.env.reset(
+                axis=axis_name,
+                seed=episode_seed,
+                external_episode_bundle=self._build_external_episode_bundle(axis_name, episode_seed),
+            )
             history = [obs.copy()]
             agent.reset()
             if axis_name in self.tuned_ladrc_params:
@@ -252,7 +266,12 @@ class ControlTrainer:
         representative_trajectory: dict[str, list[float]] | None = None
         axis_name = axis or self.env.axis
         for episode in range(episodes):
-            obs = self.env.reset(axis=axis_name, seed=self.env.seed + seed_offset + episode)
+            episode_seed = self.env.seed + seed_offset + episode
+            obs = self.env.reset(
+                axis=axis_name,
+                seed=episode_seed,
+                external_episode_bundle=self._build_external_episode_bundle(axis_name, episode_seed),
+            )
             history = [obs.copy()]
             agent.reset()
             done = False
@@ -286,7 +305,11 @@ class ControlTrainer:
         seed_offset: int = 0,
     ) -> tuple[dict[str, float], float, dict[str, list[float]]]:
         axis_name = axis or self.env.axis
-        self.env.reset(axis=axis_name, seed=self.env.seed + seed_offset)
+        self.env.reset(
+            axis=axis_name,
+            seed=self.env.seed + seed_offset,
+            external_episode_bundle=self._build_external_episode_bundle(axis_name, self.env.seed + seed_offset),
+        )
         controller.reset()
         total_reward = 0.0
         done = False
@@ -353,6 +376,34 @@ class ControlTrainer:
             "z": {"b0": 1.2, "omega_c": 4.5, "k": 3.8},
         }
         return defaults.get(axis, defaults["x"])
+
+    def _build_external_episode_bundle(self, axis: str, seed: int) -> object | None:
+        if self.env.reference_profile_mode != "rl_refline_six_phase":
+            return None
+        task_config = self._resolve_refline_task_config(axis)
+        sampled_seed = seed if self.refline_seed_strategy == "episode" else self.env.seed
+        return build_refline_episode(task_config, seed=sampled_seed)
+
+    def _resolve_refline_task_config(self, axis: str) -> AxisRLRefLineTaskConfig:
+        if isinstance(self.refline_task_config, dict):
+            config = self.refline_task_config.get(axis)
+            if config is not None:
+                return self._retime_refline_task_config(axis, config)
+        if isinstance(self.refline_task_config, AxisRLRefLineTaskConfig):
+            return self._retime_refline_task_config(axis, self.refline_task_config)
+        return self._retime_refline_task_config(axis, build_default_xy_task_config(axis))
+
+    def _retime_refline_task_config(self, axis: str, config: AxisRLRefLineTaskConfig) -> AxisRLRefLineTaskConfig:
+        return AxisRLRefLineTaskConfig(
+            axis=axis,
+            total_duration_sec=self.env.episode_length / max(self.env.scenario.control_frequency_hz, 1),
+            control_frequency_hz=self.env.scenario.control_frequency_hz,
+            rl_frequency_hz=self.env.scenario.rl_frequency_hz,
+            enable_randomization=config.enable_randomization,
+            disturbance_decay_mode=config.disturbance_decay_mode,
+            min_phase_duration_sec=config.min_phase_duration_sec,
+            phase_specs=config.phase_specs,
+        )
 
     def _candidate_grid(self, axis: str) -> list[dict[str, float]]:
         base = self._default_axis_params(axis)
