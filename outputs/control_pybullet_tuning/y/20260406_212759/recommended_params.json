@@ -1,0 +1,40 @@
+{
+  "axis": "y",
+  "controller_variant": "ladrc_y_pos_pid_att",
+  "baseline": {
+    "b0": 314.6,
+    "wc": 0.5,
+    "k": 8.384615,
+    "omega_o": 4.1923075
+  },
+  "pid_baseline_metrics": {
+    "mae": 0.0044850219678801055,
+    "rmse": 0.007727065646366919,
+    "iae": 1.7222484356659606,
+    "overshoot": 0.025119155645370483,
+    "settling_time": 0.0,
+    "steady_state_error": 0.0025687139285238167,
+    "control_energy": 80364197284.24806,
+    "disturbance_recovery_time": 0.0,
+    "control_variation": 1.1853441681625327,
+    "velocity_rmse": 0.041746900807613514,
+    "reward": -0.270487015713394
+  },
+  "best_ladrc_metrics": {
+    "mae": 0.2786892804504326,
+    "rmse": 0.3748229224121063,
+    "iae": 107.01668369296613,
+    "overshoot": 0.0,
+    "settling_time": 383.0,
+    "steady_state_error": 0.6862524737750247,
+    "control_energy": 80336683899.28847,
+    "disturbance_recovery_time": 383.0,
+    "control_variation": 0.6984385199086163,
+    "velocity_rmse": 0.11083367927230056,
+    "reward": -0.5656873712087933,
+    "b0": 314.6,
+    "omega_c": 0.5,
+    "k": 8.384615,
+    "score": 8033668449.936153
+  }
+}

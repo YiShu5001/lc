@@ -189,30 +189,44 @@ class PyBulletAxisTrainer:
         metric_rows: list[dict[str, float]] = []
         best_result: dict[str, object] | None = None
         for episode in range(eval_episodes):
-            reference_bundle = build_xyz_reference_trajectory(
-                cfg.axis_config(axis),
-                cfg,
-                rng=np.random.default_rng(cfg.seed + 300 + episode),
-            )
-            controller = create_controller_bundle(controller_name)
-            controller.set_axis_parameters(axis, b0=params["b0"], omega_c=params["omega_c"], k=params["k"])
-            result = run_controller_episode(cfg, controller, reference_bundle)
-            row = dict(result["metrics"])
+            try:
+                reference_bundle = build_xyz_reference_trajectory(
+                    cfg.axis_config(axis),
+                    cfg,
+                    rng=np.random.default_rng(cfg.seed + 300 + episode),
+                )
+                controller = create_controller_bundle(controller_name)
+                controller.set_axis_parameters(axis, b0=params["b0"], omega_c=params["omega_c"], k=params["k"])
+                result = run_controller_episode(cfg, controller, reference_bundle)
+                row = dict(result["metrics"])
+                row["stable"] = 1.0 if self._is_stable_result(row) else 0.0
+                if not bool(row["stable"]):
+                    row["score"] = float(self.config.tuning.instability_penalty)
+                else:
+                    row["score"] = self._ranking_score(row)
+                if best_result is None:
+                    best_result = result
+            except Exception:
+                row = self._unstable_metric_row()
+                row["stable"] = 0.0
+                row["score"] = float(self.config.tuning.instability_penalty)
             row["episode"] = float(episode)
             row["difficulty"] = difficulty
             row["axis"] = axis
             row["b0"] = float(params["b0"])
             row["omega_c"] = float(params["omega_c"])
             row["k"] = float(params["k"])
-            row["score"] = self._ranking_score(row)
             metric_rows.append(row)
-            if best_result is None:
-                best_result = result
         averaged = self._average_metric_rows(metric_rows)
         averaged["b0"] = float(params["b0"])
         averaged["omega_c"] = float(params["omega_c"])
         averaged["k"] = float(params["k"])
-        averaged["score"] = self._ranking_score(averaged)
+        averaged["stable"] = float(np.mean([row.get("stable", 0.0) for row in metric_rows]))
+        averaged["score"] = (
+            self._ranking_score(averaged)
+            if averaged["stable"] >= 0.5 and self._is_stable_result(averaged)
+            else float(self.config.tuning.instability_penalty)
+        )
         return {
             "metrics": averaged,
             "seed_rows": metric_rows,
@@ -222,10 +236,22 @@ class PyBulletAxisTrainer:
     def tune_single_axis_ladrc(self, axis: str) -> AxisTuningResult:
         tuning_cfg = self.config.tuning
         pid_metrics = self._evaluate_pid_baseline(axis, tuning_cfg.tuning_difficulties)
-        coarse_rows = self._run_search_stage(axis, tuning_cfg.tuning_difficulties, stage="coarse")
-        top_rows = sorted(coarse_rows, key=lambda row: row["score"])[: max(tuning_cfg.top_k, 1)]
-        fine_rows = self._run_search_stage(axis, tuning_cfg.tuning_difficulties, stage="fine", seeds=top_rows)
-        best_row = min(fine_rows, key=lambda row: row["score"])
+        base = create_controller_bundle(f"ladrc_{axis}_pos_pid_att").parameter_set.axis_config(axis)
+        sequential_rows = self._run_sequential_search(
+            axis,
+            {
+                "b0": float(base.b0),
+                "omega_c": float(base.omega_c),
+                "k": float(base.k),
+            },
+        )
+        stage_b0_rows = sequential_rows["b0"]
+        stage_wc_rows = sequential_rows["omega_c"]
+        stage_k_rows = sequential_rows["k"]
+        local_rows = sequential_rows["local_refine"]
+        coarse_rows = stage_b0_rows + stage_wc_rows + stage_k_rows
+        fine_rows = local_rows
+        best_row = min(local_rows or stage_k_rows or stage_wc_rows or stage_b0_rows, key=lambda row: row["score"])
         sensitivity_rows = self._run_sensitivity(axis, best_row)
         rl_bounds = self._derive_rl_bounds(best_row, sensitivity_rows)
         validation_rows = self._validate_best_candidate(axis, best_row)
@@ -239,6 +265,10 @@ class PyBulletAxisTrainer:
         write_reference_csv(run_dir / "reference.csv", reference_bundle)
         write_metrics_csv(run_dir / "coarse_search.csv", coarse_rows)
         write_metrics_csv(run_dir / "fine_search.csv", fine_rows)
+        write_metrics_csv(run_dir / "b0_stage.csv", stage_b0_rows)
+        write_metrics_csv(run_dir / "wc_stage.csv", stage_wc_rows)
+        write_metrics_csv(run_dir / "k_stage.csv", stage_k_rows)
+        write_metrics_csv(run_dir / "local_refine.csv", local_rows)
         write_metrics_csv(run_dir / "validation_metrics.csv", validation_rows)
         for key, rows in sensitivity_rows.items():
             write_metrics_csv(run_dir / f"sensitivity_{key}.csv", list(rows))
@@ -282,6 +312,7 @@ class PyBulletAxisTrainer:
                 "pid_metrics": pid_metrics,
                 "best_metrics": {k: float(v) for k, v in best_row.items() if isinstance(v, (int, float))},
                 "reference_segments": summarize_reference_segments(reference_bundle),
+                "protocol": "sequential_b0_wc_k_then_local_refine",
                 "validation_rows": validation_rows,
                 "figures": [str(path) for path in figure_paths],
             },
@@ -362,6 +393,102 @@ class PyBulletAxisTrainer:
             averaged["k"] = float(params["k"])
             averaged["score"] = self._ranking_score(averaged)
             rows.append(averaged)
+        return rows
+
+    def _run_sequential_search(self, axis: str, base_params: dict[str, float]) -> dict[str, list[dict[str, float]]]:
+        current = dict(base_params)
+        b0_rows = self._search_single_factor(
+            axis,
+            current,
+            factor="b0",
+            candidates=[float(base_params["b0"] * scale) for scale in self.config.tuning.sequential_b0_scales],
+        )
+        current["b0"] = min(b0_rows, key=lambda row: row["score"])["b0"]
+        wc_rows = self._search_single_factor(
+            axis,
+            current,
+            factor="omega_c",
+            candidates=[float(max(base_params["omega_c"] * scale, 0.3)) for scale in self.config.tuning.sequential_wc_scales],
+        )
+        current["omega_c"] = min(wc_rows, key=lambda row: row["score"])["omega_c"]
+        k_rows = self._search_single_factor(
+            axis,
+            current,
+            factor="k",
+            candidates=[float(max(base_params["k"] * scale, 0.5)) for scale in self.config.tuning.sequential_k_scales],
+        )
+        current["k"] = min(k_rows, key=lambda row: row["score"])["k"]
+        local_rows = self._search_local_refine(axis, current)
+        return {
+            "b0": b0_rows,
+            "omega_c": wc_rows,
+            "k": k_rows,
+            "local_refine": local_rows,
+        }
+
+    def _search_single_factor(
+        self,
+        axis: str,
+        params: dict[str, float],
+        factor: str,
+        candidates: list[float],
+    ) -> list[dict[str, float]]:
+        rows: list[dict[str, float]] = []
+        seen: set[float] = set()
+        for candidate in candidates:
+            rounded = round(float(candidate), 6)
+            if rounded in seen:
+                continue
+            seen.add(rounded)
+            trial = dict(params)
+            trial[factor] = float(candidate)
+            result = self.evaluate_single_axis_ladrc_variant(
+                axis,
+                trial,
+                difficulty=self.config.tuning.tuning_difficulties[0],
+            )
+            row = dict(result["metrics"])
+            row["axis"] = axis
+            row["search_factor"] = factor
+            row["b0"] = float(trial["b0"])
+            row["omega_c"] = float(trial["omega_c"])
+            row["k"] = float(trial["k"])
+            row["score"] = float(row.get("score", self.config.tuning.instability_penalty))
+            rows.append(row)
+        return rows
+
+    def _search_local_refine(self, axis: str, params: dict[str, float]) -> list[dict[str, float]]:
+        rows: list[dict[str, float]] = []
+        seen: set[tuple[float, float, float]] = set()
+        for b0_scale in self.config.tuning.local_refine_scales:
+            for wc_scale in self.config.tuning.local_refine_scales:
+                for k_scale in self.config.tuning.local_refine_scales:
+                    candidate = {
+                        "b0": float(params["b0"] * b0_scale),
+                        "omega_c": float(params["omega_c"] * wc_scale),
+                        "k": float(params["k"] * k_scale),
+                    }
+                    key = (
+                        round(candidate["b0"], 6),
+                        round(candidate["omega_c"], 6),
+                        round(candidate["k"], 6),
+                    )
+                    if key in seen:
+                        continue
+                    seen.add(key)
+                    result = self.evaluate_single_axis_ladrc_variant(
+                        axis,
+                        candidate,
+                        difficulty=self.config.tuning.tuning_difficulties[0],
+                    )
+                    row = dict(result["metrics"])
+                    row["axis"] = axis
+                    row["search_factor"] = "local_refine"
+                    row["b0"] = candidate["b0"]
+                    row["omega_c"] = candidate["omega_c"]
+                    row["k"] = candidate["k"]
+                    row["score"] = float(row.get("score", self.config.tuning.instability_penalty))
+                    rows.append(row)
         return rows
 
     def _run_sensitivity(self, axis: str, best_row: dict[str, float]) -> dict[str, list[dict[str, float]]]:
@@ -469,6 +596,31 @@ class PyBulletAxisTrainer:
         for metric, weight in self.config.tuning.ranking_weights.items():
             score += float(weight) * float(row.get(metric, 0.0))
         return float(score)
+
+    def _is_stable_result(self, row: dict[str, float]) -> bool:
+        if not np.isfinite(float(row.get("rmse", np.inf))):
+            return False
+        for metric, limit in self.config.tuning.stability_limits.items():
+            value = float(row.get(metric, np.inf))
+            if not np.isfinite(value) or value > float(limit):
+                return False
+        return True
+
+    def _unstable_metric_row(self) -> dict[str, float]:
+        penalty = float(self.config.tuning.instability_penalty)
+        return {
+            "mae": penalty,
+            "rmse": penalty,
+            "iae": penalty,
+            "overshoot": penalty,
+            "settling_time": penalty,
+            "steady_state_error": penalty,
+            "control_energy": penalty,
+            "disturbance_recovery_time": penalty,
+            "control_variation": penalty,
+            "velocity_rmse": penalty,
+            "reward": -penalty,
+        }
 
     def _average_metric_rows(self, rows: list[dict[str, float]]) -> dict[str, float]:
         metrics = [key for key in rows[0].keys() if key not in {"difficulty", "episode", "axis", "backend", "controller"}]

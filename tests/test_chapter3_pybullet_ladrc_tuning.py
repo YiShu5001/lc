@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import unittest
+from pathlib import Path
 
 from lc.control.configs import PyBulletControlExperimentConfig
 from lc.control.controllers import create_controller_bundle
@@ -33,6 +34,20 @@ class TestChapter3PyBulletLADRCTuning(unittest.TestCase):
         self.assertIn("b0_max", result.rl_bounds)
         self.assertIn("wc_min", result.rl_bounds)
         self.assertIn("k_max", result.rl_bounds)
+
+    def test_axis_tuning_writes_sequential_stage_artifacts(self) -> None:
+        result = run_pybullet_ladrc_axis_tuning(
+            PyBulletControlExperimentConfig(duration_sec=1.0, eval_episodes=1),
+            axis="x",
+        )
+        run_dir = Path(result.output_dir)
+        self.assertTrue((run_dir / "b0_stage.csv").exists())
+        self.assertTrue((run_dir / "wc_stage.csv").exists())
+        self.assertTrue((run_dir / "k_stage.csv").exists())
+        self.assertTrue((run_dir / "local_refine.csv").exists())
+        self.assertTrue((run_dir / "recommended_params.json").exists())
+        self.assertTrue((run_dir / "rl_bounds.json").exists())
+        self.assertTrue((run_dir / "summary.json").exists())
 
 
 if __name__ == "__main__":

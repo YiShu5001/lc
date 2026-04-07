@@ -1,0 +1,105 @@
+{
+  "axis": "x",
+  "controller_variant": "ladrc_x_pos_pid_att",
+  "baseline": {
+    "b0": 121.44000000000001,
+    "wc": 1.5444000000000002,
+    "k": 8.02909090909091,
+    "omega_o": 12.400128000000002
+  },
+  "rl_bounds": {
+    "b0_min": 97.15200000000002,
+    "b0_max": 145.728,
+    "wc_min": 1.2355200000000002,
+    "wc_max": 1.8532800000000003,
+    "k_min": 6.423272727272728,
+    "k_max": 9.63490909090909
+  },
+  "pid_metrics": {
+    "mae": 0.014623075996396756,
+    "rmse": 0.019490744306885174,
+    "iae": 0.8335153317946151,
+    "overshoot": 0.03565340302884579,
+    "settling_time": 0.0,
+    "steady_state_error": 0.03139871209859848,
+    "control_energy": 11952061880.73244,
+    "disturbance_recovery_time": 0.0,
+    "control_variation": 6.488429478236607,
+    "velocity_rmse": 0.11268334687484792,
+    "reward": -0.4246810864070902
+  },
+  "best_metrics": {
+    "mae": 0.012895272501819577,
+    "rmse": 0.016664767040902265,
+    "iae": 0.7350305326037159,
+    "overshoot": 0.03310310607776046,
+    "settling_time": 0.0,
+    "steady_state_error": 0.026522242289502174,
+    "control_energy": 11925920250.926105,
+    "disturbance_recovery_time": 0.0,
+    "control_variation": 0.3563668387276786,
+    "velocity_rmse": 0.09904208531838997,
+    "reward": -0.4032694375989599,
+    "stable": 1.0,
+    "score": 1192592025.2850645,
+    "b0": 121.44000000000001,
+    "omega_c": 1.5444000000000002,
+    "k": 8.02909090909091
+  },
+  "reference_segments": [
+    {
+      "stage": 0.0,
+      "start": 0.0,
+      "stop": 13.0,
+      "velocity": 0.0
+    },
+    {
+      "stage": 1.0,
+      "start": 13.0,
+      "stop": 27.0,
+      "velocity": 0.09819648414850235
+    },
+    {
+      "stage": 2.0,
+      "start": 27.0,
+      "stop": 40.0,
+      "velocity": 0.0
+    },
+    {
+      "stage": 3.0,
+      "start": 40.0,
+      "stop": 57.0,
+      "velocity": -0.09589583426713943
+    }
+  ],
+  "protocol": "sequential_b0_wc_k_then_local_refine",
+  "validation_rows": [
+    {
+      "mae": 0.016673544752620978,
+      "rmse": 0.021737305392941046,
+      "iae": 0.9503920508993957,
+      "overshoot": 0.05034629022702575,
+      "settling_time": 28.0,
+      "steady_state_error": 0.04146883845096454,
+      "control_energy": 11927031500.687757,
+      "disturbance_recovery_time": 28.0,
+      "control_variation": 0.5861598423549107,
+      "velocity_rmse": 0.1328835247875344,
+      "reward": -0.41403298119496096,
+      "stable": 1.0,
+      "score": 1192703153.1312988,
+      "b0": 121.44000000000001,
+      "omega_c": 1.5444000000000002,
+      "k": 8.02909090909091,
+      "difficulty": "hard"
+    }
+  ],
+  "figures": [
+    "outputs\\control_pybullet_tuning\\x\\20260407_103420\\figures\\pid_vs_best_ladrc_time_response.png",
+    "outputs\\control_pybullet_tuning\\x\\20260407_103420\\figures\\rmse_heatmap_wc_k.png",
+    "outputs\\control_pybullet_tuning\\x\\20260407_103420\\figures\\iae_heatmap_b0_wc.png",
+    "outputs\\control_pybullet_tuning\\x\\20260407_103420\\figures\\single_factor_sensitivity_b0.png",
+    "outputs\\control_pybullet_tuning\\x\\20260407_103420\\figures\\single_factor_sensitivity_wc.png",
+    "outputs\\control_pybullet_tuning\\x\\20260407_103420\\figures\\single_factor_sensitivity_k.png"
+  ]
+}

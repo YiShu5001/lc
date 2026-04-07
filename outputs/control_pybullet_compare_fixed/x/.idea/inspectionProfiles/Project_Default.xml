@@ -1,0 +1,31 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="beautifulsoup4" />
+          <option value="fastapi" />
+          <option value="google-genai" />
+          <option value="langchain_core" />
+          <option value="langchain_google_genai" />
+          <option value="loguru" />
+          <option value="openai" />
+          <option value="pika" />
+          <option value="protobuf" />
+          <option value="py2neo" />
+          <option value="pydantic" />
+          <option value="pymongo" />
+          <option value="pymysql" />
+          <option value="python-dotenv" />
+          <option value="Requests" />
+          <option value="sse_starlette" />
+          <option value="utils" />
+          <option value="uvicorn" />
+          <option value="pycryptodomex" />
+          <option value="pytest" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

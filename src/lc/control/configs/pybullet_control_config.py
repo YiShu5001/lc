@@ -36,12 +36,16 @@ class ControllerVariantConfig:
 
 @dataclass(frozen=True)
 class SingleAxisLADRCTuningConfig:
-    coarse_b0_scales: tuple[float, ...] = (0.7, 0.85, 1.0, 1.15, 1.3)
+    coarse_b0_scales: tuple[float, ...] = (0.6, 0.8, 1.0, 1.2, 1.4)
     coarse_wc_offsets: tuple[float, ...] = (-1.4, -0.7, 0.0, 0.7, 1.4)
-    coarse_k_offsets: tuple[float, ...] = (-0.8, -0.4, 0.0, 0.4, 0.8)
-    fine_b0_scales: tuple[float, ...] = (0.9, 1.0, 1.1)
-    fine_wc_offsets: tuple[float, ...] = (-0.35, 0.0, 0.35)
-    fine_k_offsets: tuple[float, ...] = (-0.2, 0.0, 0.2)
+    coarse_k_offsets: tuple[float, ...] = (-1.2, -0.6, 0.0, 0.6, 1.2)
+    fine_b0_scales: tuple[float, ...] = (0.92, 1.0, 1.08)
+    fine_wc_offsets: tuple[float, ...] = (-0.25, 0.0, 0.25)
+    fine_k_offsets: tuple[float, ...] = (-0.3, 0.0, 0.3)
+    sequential_b0_scales: tuple[float, ...] = (0.6, 0.8, 1.0, 1.2, 1.4)
+    sequential_wc_scales: tuple[float, ...] = (0.6, 0.8, 1.0, 1.15, 1.3)
+    sequential_k_scales: tuple[float, ...] = (0.7, 0.85, 1.0, 1.15, 1.3)
+    local_refine_scales: tuple[float, ...] = (0.92, 1.0, 1.08)
     sensitivity_scales: tuple[float, ...] = (0.8, 0.9, 1.0, 1.1, 1.2)
     top_k: int = 5
     ranking_weights: dict[str, float] = field(
@@ -58,11 +62,20 @@ class SingleAxisLADRCTuningConfig:
     tuning_difficulties: tuple[str, ...] = ("medium",)
     validation_difficulties: tuple[str, ...] = ("hard",)
     eval_episodes_per_candidate: int = 2
+    instability_penalty: float = 1.0e12
+    stability_limits: dict[str, float] = field(
+        default_factory=lambda: {
+            "rmse": 0.5,
+            "steady_state_error": 0.3,
+            "velocity_rmse": 1.0,
+            "control_variation": 5000.0,
+        }
+    )
     rl_bounds_clip: dict[str, tuple[float, float]] = field(
         default_factory=lambda: {
-            "b0": (0.2, 4.0),
-            "omega_c": (0.5, 12.0),
-            "k": (2.0, 6.0),
+            "b0": (50.0, 500.0),
+            "omega_c": (0.3, 25.0),
+            "k": (3.0, 12.0),
         }
     )
 

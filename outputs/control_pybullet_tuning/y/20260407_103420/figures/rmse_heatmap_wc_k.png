@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="480">
+<rect width="100%" height="100%" fill="white" />
+<text x="360.0" y="26" text-anchor="middle" font-size="18">RMSE Heatmap (y)</text>
+<rect x="300.0" y="204.0" width="120.0" height="72.0" fill="rgb(98,110,210)" stroke="#ffffff" />
+<text x="360.0" y="240.0" text-anchor="middle" font-size="11">0.052</text>
+<rect x="300.0" y="204.0" width="120.0" height="72.0" fill="rgb(130,84,210)" stroke="#ffffff" />
+<text x="360.0" y="240.0" text-anchor="middle" font-size="11">0.059</text>
+<rect x="300.0" y="204.0" width="120.0" height="72.0" fill="rgb(208,21,210)" stroke="#ffffff" />
+<text x="360.0" y="240.0" text-anchor="middle" font-size="11">0.077</text>
+<rect x="300.0" y="204.0" width="120.0" height="72.0" fill="rgb(235,0,210)" stroke="#ffffff" />
+<text x="360.0" y="240.0" text-anchor="middle" font-size="11">0.083</text>
+<rect x="300.0" y="204.0" width="120.0" height="72.0" fill="rgb(58,142,210)" stroke="#ffffff" />
+<text x="360.0" y="240.0" text-anchor="middle" font-size="11">0.044</text>
+<rect x="60.0" y="204.0" width="120.0" height="72.0" fill="rgb(113,97,210)" stroke="#ffffff" />
+<text x="120.0" y="240.0" text-anchor="middle" font-size="11">0.056</text>
+<rect x="180.0" y="204.0" width="120.0" height="72.0" fill="rgb(129,85,210)" stroke="#ffffff" />
+<text x="240.0" y="240.0" text-anchor="middle" font-size="11">0.059</text>
+<rect x="300.0" y="204.0" width="120.0" height="72.0" fill="rgb(58,142,210)" stroke="#ffffff" />
+<text x="360.0" y="240.0" text-anchor="middle" font-size="11">0.044</text>
+<rect x="420.0" y="204.0" width="120.0" height="72.0" fill="rgb(201,27,210)" stroke="#ffffff" />
+<text x="480.0" y="240.0" text-anchor="middle" font-size="11">0.075</text>
+<rect x="540.0" y="204.0" width="120.0" height="72.0" fill="rgb(94,113,210)" stroke="#ffffff" />
+<text x="600.0" y="240.0" text-anchor="middle" font-size="11">0.051</text>
+<rect x="300.0" y="348.0" width="120.0" height="72.0" fill="rgb(71,132,210)" stroke="#ffffff" />
+<text x="360.0" y="384.0" text-anchor="middle" font-size="11">0.046</text>
+<rect x="300.0" y="276.0" width="120.0" height="72.0" fill="rgb(7,184,210)" stroke="#ffffff" />
+<text x="360.0" y="312.0" text-anchor="middle" font-size="11">0.032</text>
+<rect x="300.0" y="204.0" width="120.0" height="72.0" fill="rgb(58,142,210)" stroke="#ffffff" />
+<text x="360.0" y="240.0" text-anchor="middle" font-size="11">0.044</text>
+<rect x="300.0" y="132.0" width="120.0" height="72.0" fill="rgb(80,125,210)" stroke="#ffffff" />
+<text x="360.0" y="168.0" text-anchor="middle" font-size="11">0.048</text>
+<rect x="300.0" y="60.0" width="120.0" height="72.0" fill="rgb(0,190,210)" stroke="#ffffff" />
+<text x="360.0" y="96.0" text-anchor="middle" font-size="11">0.030</text>
+<text x="120.0" y="462" text-anchor="middle" font-size="11">0.78</text>
+<text x="240.0" y="462" text-anchor="middle" font-size="11">1.04</text>
+<text x="360.0" y="462" text-anchor="middle" font-size="11">1.30</text>
+<text x="480.0" y="462" text-anchor="middle" font-size="11">1.49</text>
+<text x="600.0" y="462" text-anchor="middle" font-size="11">1.69</text>
+<text x="24" y="96.0" text-anchor="middle" font-size="11">9.60</text>
+<text x="24" y="168.0" text-anchor="middle" font-size="11">8.49</text>
+<text x="24" y="240.0" text-anchor="middle" font-size="11">7.38</text>
+<text x="24" y="312.0" text-anchor="middle" font-size="11">6.28</text>
+<text x="24" y="384.0" text-anchor="middle" font-size="11">5.17</text>
+</svg>

@@ -1,2 +1,0 @@
-mae,rmse,iae,overshoot,settling_time,steady_state_error,control_energy,disturbance_recovery_time,control_variation,velocity_rmse,reward,b0,omega_c,k,score,difficulty
-0.7179612173824959,0.833034567058039,43.077673042949755,0.0,59.0,0.9753156807273626,1507821011.0906549,59.0,42.72821044921875,1.8896154941811631,-0.9685905887277338,1.716,2.25,4.0,150782120.3352806,hard
