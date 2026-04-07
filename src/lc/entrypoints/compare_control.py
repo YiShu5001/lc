@@ -19,6 +19,25 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--compare-episodes", type=int, default=6, help="Evaluation episodes for RL methods.")
     parser.add_argument("--episodes", type=int, default=6, help="Evaluation episodes for PID/LADRC baselines.")
     parser.add_argument("--seed", type=int, default=7, help="Base random seed.")
+    parser.add_argument("--seed-runs", type=int, default=3, help="Number of repeated seed runs.")
+    parser.add_argument(
+        "--axes",
+        nargs="+",
+        default=("x", "y", "z"),
+        help="Axes to include, e.g. --axes x or --axes x y z.",
+    )
+    parser.add_argument(
+        "--reference-profile-mode",
+        default="piecewise_constant_velocity",
+        help="Reference profile mode, e.g. piecewise_constant_velocity or rl_refline_six_phase.",
+    )
+    parser.add_argument(
+        "--mddpg-shared-values",
+        nargs="+",
+        type=int,
+        default=(1, 3, 5, 7, 10),
+        help="Shared values for stack_size/action_hold_steps/n_step in mDDPG sweeps.",
+    )
     parser.add_argument(
         "--difficulty-levels",
         nargs="+",
@@ -33,10 +52,14 @@ if __name__ == "__main__":
     config = ControlExperimentConfig(
         difficulty=args.difficulty,
         difficulty_levels=tuple(args.difficulty_levels),
+        axes=tuple(args.axes),
         train_episodes=args.train_episodes,
         compare_episodes=args.compare_episodes,
         episodes=args.episodes,
         seed=args.seed,
+        seed_runs=args.seed_runs,
+        reference_profile_mode=args.reference_profile_mode,
+        mddpg_shared_values=tuple(args.mddpg_shared_values),
     )
     if args.mode == "generalization":
         print(run_control_generalization(config))

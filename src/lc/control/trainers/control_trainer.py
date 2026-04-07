@@ -23,7 +23,7 @@ class ControlTrainer:
     action_hold_steps: int = 4
     n_step: int = 4
     warmup_steps: int = 64
-    batch_size: int = 32
+    batch_size: int = 128
     updates_per_step: int = 1
     tuned_ladrc_params: dict[str, dict[str, float]] = field(default_factory=dict)
     refline_task_config: AxisRLRefLineTaskConfig | dict[str, AxisRLRefLineTaskConfig] | None = None
@@ -112,10 +112,11 @@ class ControlTrainer:
         stack_size_override: int | None = None,
         action_hold_override: int | None = None,
         n_step_override: int | None = None,
+        snapshot_interval: int | None = None,
     ) -> dict[str, object]:
         """Run one RL-LADRC experiment and return training/eval bundles."""
         method = "mddpg_ladrc" if enhanced else "ddpg_ladrc"
-        agent, train_history = self._train_agent(
+        agent, train_history, train_snapshots = self._train_agent(
             train_episodes=train_episodes,
             enhanced=enhanced,
             axis=axis,
@@ -123,6 +124,7 @@ class ControlTrainer:
             stack_size_override=stack_size_override,
             action_hold_override=action_hold_override,
             n_step_override=n_step_override,
+            snapshot_interval=snapshot_interval,
         )
         metrics, representative_trajectory = self._evaluate_agent(
             agent,
@@ -136,6 +138,7 @@ class ControlTrainer:
             "metrics": metrics,
             "train_history": train_history,
             "trajectory": representative_trajectory,
+            "train_snapshots": train_snapshots,
             "checkpoint": {
                 "actor": agent.policy.actor.state_dict(),
                 "critic": agent.policy.critic.state_dict(),
@@ -175,7 +178,8 @@ class ControlTrainer:
         stack_size_override: int | None = None,
         action_hold_override: int | None = None,
         n_step_override: int | None = None,
-    ) -> tuple[ControlLADRLAgent, list[dict[str, float]]]:
+        snapshot_interval: int | None = None,
+    ) -> tuple[ControlLADRLAgent, list[dict[str, float]], dict[int, dict[str, list[float]]]]:
         axis_name = axis or self.env.axis
         stack_size = stack_size_override if stack_size_override is not None else (self.stack_size if enhanced else 1)
         hold_steps = action_hold_override if action_hold_override is not None else (self.action_hold_steps if enhanced else 1)
@@ -199,6 +203,7 @@ class ControlTrainer:
         total_steps = 0
         gamma = agent.policy.config.gamma
         train_history: list[dict[str, float]] = []
+        train_snapshots: dict[int, dict[str, list[float]]] = {}
         for episode in range(train_episodes):
             episode_seed = self.env.seed + seed_offset + episode
             obs = self.env.reset(
@@ -251,7 +256,9 @@ class ControlTrainer:
                     "critic_loss": float(losses["critic_loss"]),
                 }
             )
-        return agent, train_history
+            if snapshot_interval and (episode + 1) % snapshot_interval == 0:
+                train_snapshots[episode + 1] = self._collect_trajectory()
+        return agent, train_history, train_snapshots
 
     def _evaluate_agent(
         self,
@@ -342,6 +349,8 @@ class ControlTrainer:
             "output": list(self.env.outputs),
             "control": list(self.env.controls),
             "disturbance": list(self.env.disturbances),
+            "pitch": list(self.env.pitches),
+            "pitch_rate": list(self.env.pitch_rates),
         }
 
     def _flush_n_step(

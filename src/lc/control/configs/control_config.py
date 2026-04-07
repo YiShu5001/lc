@@ -16,7 +16,7 @@ class ControlExperimentConfig:
     compare_episodes: int = 6
     train_episodes: int = 12
     warmup_steps: int = 32
-    batch_size: int = 16
+    batch_size: int = 128
     updates_per_step: int = 1
     enhanced_stack_size: int = 4
     enhanced_n_step: int = 4

@@ -49,9 +49,18 @@ class ControlTrackingEnv(BaseTaskEnv):
     reference_velocities: list[float] = field(default_factory=list)
     disturbances: list[float] = field(default_factory=list)
     outputs: list[float] = field(default_factory=list)
+    pitch: float = 0.0
+    pitch_rate: float = 0.0
+    pitches: list[float] = field(default_factory=list)
+    pitch_rates: list[float] = field(default_factory=list)
 
     @property
     def obs_spec(self) -> ObservationSpec:
+        if self.reference_profile_mode == "rl_refline_six_phase" and self.axis == "x":
+            return ObservationSpec(
+                shape=(4,),
+                description="x, vx, pitch, pitch_rate",
+            )
         return ObservationSpec(
             shape=(8,),
             description=(
@@ -110,6 +119,10 @@ class ControlTrackingEnv(BaseTaskEnv):
         self.reference_velocities.clear()
         self.disturbances.clear()
         self.outputs.clear()
+        self.pitches.clear()
+        self.pitch_rates.clear()
+        self.pitch = 0.0
+        self.pitch_rate = 0.0
         self.reference_schedule = self.reference_profile_mode
         self.external_reference_position = tuple()
         self.external_reference_velocity = tuple()
@@ -126,7 +139,14 @@ class ControlTrackingEnv(BaseTaskEnv):
         reference_velocity = self._target_velocity(self.t)
         self.disturbance = self._disturbance(self.t)
         damping = 0.18 if axis_index < 2 else 0.24
-        accel = control_signal - damping * float(self.velocity[axis_index]) + self.disturbance
+        if self.reference_profile_mode == "rl_refline_six_phase" and self.axis == "x":
+            pitch_target = float(np.clip(0.14 * control_signal, -0.35, 0.35))
+            pitch_accel = 16.0 * (pitch_target - self.pitch) - 5.5 * self.pitch_rate
+            self.pitch_rate += pitch_accel * dt
+            self.pitch += self.pitch_rate * dt
+            accel = 4.2 * self.pitch - damping * float(self.velocity[axis_index]) + self.disturbance
+        else:
+            accel = control_signal - damping * float(self.velocity[axis_index]) + self.disturbance
         self.velocity[axis_index] += accel * dt
         self.state[axis_index] += float(self.velocity[axis_index]) * dt
         if axis_index != 2:
@@ -145,6 +165,8 @@ class ControlTrackingEnv(BaseTaskEnv):
         self.reference_velocities.append(float(reference_velocity))
         self.disturbances.append(float(self.disturbance))
         self.outputs.append(float(self.state[axis_index]))
+        self.pitches.append(float(self.pitch))
+        self.pitch_rates.append(float(self.pitch_rate))
         done = self.t >= self.episode_length
         info = {
             "axis": self.axis,
@@ -152,6 +174,8 @@ class ControlTrackingEnv(BaseTaskEnv):
             "velocity_error": float(velocity_error),
             "disturbance": float(self.disturbance),
             "reference_velocity": float(reference_velocity),
+            "pitch": float(self.pitch),
+            "pitch_rate": float(self.pitch_rate),
         }
         return self._obs(), reward, done, info
 
@@ -167,6 +191,16 @@ class ControlTrackingEnv(BaseTaskEnv):
 
     def _obs(self) -> np.ndarray:
         axis_index = self.axis_index
+        if self.reference_profile_mode == "rl_refline_six_phase" and self.axis == "x":
+            return np.asarray(
+                [
+                    float(self.state[axis_index]),
+                    float(self.velocity[axis_index]),
+                    float(self.pitch),
+                    float(self.pitch_rate),
+                ],
+                dtype=np.float32,
+            )
         target_pos = self._target_position(self.t)
         target_vel = self._target_velocity(self.t)
         error = target_pos - float(self.state[axis_index])

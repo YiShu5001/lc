@@ -112,6 +112,19 @@ def plot_mddpg_shared_value_sweep(
     return artifacts
 
 
+def plot_reward_curve_collection(
+    training_logs: dict[str, list[dict[str, float]]],
+    output_path: str | Path,
+    title: str,
+) -> Path:
+    """Plot a combined reward curve figure for multiple training runs."""
+    output = Path(output_path)
+    ensure_dir(output.parent)
+    series = {name: [float(row["reward"]) for row in rows] for name, rows in training_logs.items()}
+    _write_svg_line_chart(output, title, series)
+    return output
+
+
 def _save_bar_chart(output_dir: Path, metric: str, labels: list[str], values: list[float], color: str) -> Path:
     out = output_dir / f"{metric}.svg"
     _write_svg_bar_chart(out, f"Control comparison: {metric}", labels, values, color)

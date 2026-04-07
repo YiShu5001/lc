@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import unittest
+from pathlib import Path
 
 import numpy as np
 
@@ -43,7 +44,7 @@ class TestChapter3MainlineProtocol(unittest.TestCase):
             external_episode_bundle=bundle,
         )
         obs = env.reset()
-        self.assertEqual(obs.shape[0], 8)
+        self.assertEqual(obs.shape[0], 4)
         self.assertEqual(env.reference_schedule, "rl_refline_six_phase")
         self.assertEqual(len(env.reference_summary()), 6)
 
@@ -61,6 +62,26 @@ class TestChapter3MainlineProtocol(unittest.TestCase):
         self.assertIn("axis_results", result)
         self.assertIn("x", result["axis_results"])
         self.assertIn("y", result["axis_results"])
+
+    def test_control_comparison_supports_x_axis_refline_shared_value_sweep(self) -> None:
+        result = run_control_comparison(
+            ControlExperimentConfig(
+                difficulty="easy",
+                axes=("x",),
+                reference_profile_mode="rl_refline_six_phase",
+                mddpg_shared_values=(1, 3),
+                train_episodes=1,
+                compare_episodes=1,
+                episodes=1,
+                seed_runs=1,
+            )
+        )
+        self.assertEqual(sorted(result["axis_results"].keys()), ["x"])
+        self.assertIn(result["best_mddpg_value"], {1, 3})
+        self.assertEqual(len(result["mddpg_shared_value_sweep"]), 2)
+        output_dir = Path(result["output_dir"])
+        self.assertTrue((output_dir / "summary.json").exists())
+        self.assertTrue((output_dir / "mddpg_shared_value_sweep.csv").exists())
 
 
 if __name__ == "__main__":
