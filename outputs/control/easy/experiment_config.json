@@ -18,11 +18,18 @@
   "compare_episodes": 1,
   "train_episodes": 1,
   "warmup_steps": 32,
-  "batch_size": 16,
+  "batch_size": 128,
   "updates_per_step": 1,
   "enhanced_stack_size": 4,
   "enhanced_n_step": 4,
   "enhanced_action_hold_steps": 4,
+  "mddpg_shared_values": [
+    1,
+    3,
+    5,
+    7,
+    10
+  ],
   "export_reference_preview": true,
   "reference_profile_mode": "piecewise_constant_velocity"
 }
