@@ -1,0 +1,45 @@
+{
+  "task_type": "fast_tracking_refined",
+  "recommended_params": {
+    "b0": 30.5,
+    "wc": 1.5,
+    "k": 11.0,
+    "r": 10.0,
+    "wo": 16.5
+  },
+  "pid_metrics": {
+    "mae": 0.009957683058980038,
+    "rmse": 0.02572510939309169,
+    "iae": 3.8237502946483346,
+    "overshoot": 0.011425890028476715,
+    "settling_time": 119.0,
+    "steady_state_error": 0.0026063691628606697,
+    "control_energy": 80363156836.81729,
+    "disturbance_recovery_time": 119.0,
+    "control_variation": 1.1066327207082245,
+    "velocity_rmse": 0.05607674484779289,
+    "reward": -0.29206068846267846,
+    "backend": "gym_env"
+  },
+  "ladrc_metrics": {
+    "mae": 0.010369322566309217,
+    "rmse": 0.02579427199438325,
+    "iae": 3.9818198654627395,
+    "overshoot": 0.019251056015491486,
+    "settling_time": 118.0,
+    "steady_state_error": 0.000938779625453447,
+    "control_energy": 80379604006.43723,
+    "disturbance_recovery_time": 118.0,
+    "control_variation": 1.269037869206919,
+    "velocity_rmse": 0.06336274085671482,
+    "reward": -0.29350168198246357,
+    "backend": "gym_env"
+  },
+  "source_mode": "hold_step_hold",
+  "duration_sec": 8.0,
+  "segment_durations": [
+    2.0,
+    3.0,
+    3.0
+  ]
+}
