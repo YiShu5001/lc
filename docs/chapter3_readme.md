@@ -38,14 +38,16 @@
   基础 `LADRC` 控制器实现。
 - `src/lc/control/controllers/adaptive_ladrc.py`
   强化学习调参包装器，负责把策略动作解释为 `omega_c / omega_o / b0` 的增量。
-- `src/lc/control/envs/tracking.py`
-  单轴跟踪与扰动抑制环境。
+- `src/lc/control/envs/pybullet_axis_env.py`
+  单轴 PyBullet 训练环境。
+- `src/lc/control/envs/pybullet_eval_env.py`
+  单轴 PyBullet 评测与时域轨迹采集入口。
 - `src/lc/control/policies/mddpg_control.py`
   第三章控制策略封装，统一 `DDPG-LADRC` 与 `mDDPG-LADRC` 的控制接口。
 - `src/lc/control/policies/stacking.py`
   状态堆叠和动作保持相关工具。
-- `src/lc/control/trainers/control_trainer.py`
-  第三章训练、评估、对比实验和日志导出的主入口。
+- `src/lc/control/trainers/pybullet_axis_trainer.py`
+  第三章单轴训练、评估、整定和基准实验主入口。
 - `src/lc/control/experiments/compare.py`
   第三章一键对比实验入口。
 - `src/lc/control/plotting/plots.py`

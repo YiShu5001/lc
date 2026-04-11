@@ -22,12 +22,13 @@
   - `controllers/ladrc.py`
   - `controllers/adaptive_ladrc.py`
 - 环境
-  - `envs/tracking.py`
+  - `envs/pybullet_axis_env.py`
+  - `envs/pybullet_eval_env.py`
 - 控制策略
   - `policies/mddpg_control.py`
   - `policies/stacking.py`
 - 训练器
-  - `trainers/control_trainer.py`
+  - `trainers/pybullet_axis_trainer.py`
 - 对比实验入口
   - `experiments/compare.py`
 - 绘图模块
@@ -214,10 +215,11 @@ reward = -|position_error|
 
 - `docs/chapter3_readme.md`
 - `docs/chapter3_method_figures.md`
-- `src/lc/control/trainers/control_trainer.py`
+- `src/lc/control/trainers/pybullet_axis_trainer.py`
 - `src/lc/control/experiments/compare.py`
 - `src/lc/control/plotting/plots.py`
-- `src/lc/control/envs/tracking.py`
+- `src/lc/control/envs/pybullet_axis_env.py`
+- `src/lc/control/envs/pybullet_eval_env.py`
 - `src/lc/control/policies/mddpg_control.py`
 
 ## 8. 最终验收口径

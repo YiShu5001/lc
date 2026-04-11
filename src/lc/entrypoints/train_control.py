@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-from lc.control.experiments import run_control_comparison
+from lc.control.configs import PyBulletControlExperimentConfig
+from lc.control.experiments import run_pybullet_full_experiment
 
 
 if __name__ == "__main__":
-    print(run_control_comparison())
+    print(run_pybullet_full_experiment(PyBulletControlExperimentConfig()))
 

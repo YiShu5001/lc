@@ -53,7 +53,7 @@
 - `build_refline_episode(config, seed=None)`
   生成完整 episode，包括参考位置、参考速度和扰动。
 - `adapt_episode_to_tracking_inputs(bundle)`
-  把生成结果转成 `ControlTrackingEnv` 更容易消费的格式。
+  把生成结果转成统一的参考位置、参考速度和扰动数组，供 PyBullet 训练/评测链路消费。
 
 ## 推荐修改点
 
@@ -73,8 +73,8 @@
 ## 与主链的关系
 
 - 本目录是“任务规格和生成器”
-- `tracking.py` 负责消费这些结果，并把它们用于环境 roll-out
-- `control_trainer.py` 负责在每个 episode 开始时按轴采样一个新任务
+- `pybullet_axis_env.py` / `pybullet_eval_env.py` 负责消费这些结果，并把它们用于 PyBullet 环境 roll-out
+- `pybullet_axis_trainer.py` 负责在每个 episode 开始时按轴采样一个新任务
 
 ## 简单示例
 
