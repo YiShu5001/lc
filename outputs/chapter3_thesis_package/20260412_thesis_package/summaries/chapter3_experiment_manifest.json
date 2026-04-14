@@ -1,0 +1,68 @@
+{
+  "generated_at": "2026-04-12T20:27:00.019991",
+  "package_root": "D:\\ZhangC\\lc\\outputs\\chapter3_thesis_package\\20260412_thesis_package",
+  "trusted_sources": {
+    "single_speed_retune_summary": {
+      "path": "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_ladrc_retune_short_speed_r_scan\\x\\20260411_185832\\summary_readable.json",
+      "description": "单速度 0.5 m/s LADRC 重整定可信结果"
+    },
+    "single_speed_tracking_figure": {
+      "path": "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_ladrc_retune_short_speed_r_scan\\x\\20260411_185832\\figures\\tracking_three_way.png",
+      "description": "单速度短参考轨迹图"
+    },
+    "single_speed_error_figure": {
+      "path": "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_ladrc_retune_short_speed_r_scan\\x\\20260411_185832\\figures\\tracking_error_three_way.png",
+      "description": "单速度短参考误差图"
+    },
+    "multispeed_best_params": {
+      "path": "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\best_params_by_speed.csv",
+      "description": "多速度 LADRC 最优参数表"
+    },
+    "baseline_no_disturbance_metrics": {
+      "path": "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_pid_vs_ladrc_no_disturbance_compare\\x\\20260412_105149\\metrics.csv",
+      "description": "无扰动固定控制器对比指标"
+    },
+    "baseline_no_disturbance_error": {
+      "path": "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_pid_vs_ladrc_no_disturbance_compare\\x\\20260412_105149\\figures\\error_compare.png",
+      "description": "无扰动固定控制器误差图"
+    },
+    "no_dist_rl_summary": {
+      "path": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_to_v5_300eps_reexpanded\\summary.json",
+      "description": "无扰动 RL-LADRC 摘要"
+    },
+    "no_dist_rl_compare_metrics": {
+      "path": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_to_v5_300eps_reexpanded\\best_v_compare\\bestv_compare_20260412_150029\\metrics.csv",
+      "description": "无扰动 RL-LADRC 正式对比指标"
+    },
+    "random_rl_summary": {
+      "path": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\summary.json",
+      "description": "0.004N 随机扰动 RL-LADRC 摘要"
+    },
+    "random_rl_compare_metrics": {
+      "path": "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_pid_ladrc_ddpg_random_hover_disturb_compare\\x\\20260412_random_hover_disturb_0p004_bestv2_narrowed_noise0p2_posonly_multiseed_normfix_300eps_compare\\metrics.csv",
+      "description": "0.004N 随机扰动正式对比指标"
+    },
+    "random_rl_compare_tracking": {
+      "path": "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_pid_ladrc_ddpg_random_hover_disturb_compare\\x\\20260412_random_hover_disturb_0p004_bestv2_narrowed_noise0p2_posonly_multiseed_normfix_300eps_compare\\figures\\tracking_compare.png",
+      "description": "0.004N 随机扰动正式轨迹图"
+    }
+  },
+  "random_scan_sources": {
+    "0p003": "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_pid_ladrc_ddpg_random_hover_disturb_compare\\x\\hover_gap_rand_0p003",
+    "0p004": "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_pid_ladrc_ddpg_random_hover_disturb_compare\\x\\hover_gap_rand_0p004",
+    "0p005": "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_pid_ladrc_ddpg_random_hover_disturb_compare\\x\\hover_gap_rand_0p005",
+    "0p006": "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_pid_ladrc_ddpg_random_hover_disturb_compare\\x\\hover_gap_rand_0p006",
+    "0p007": "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_pid_ladrc_ddpg_random_hover_disturb_compare\\x\\hover_gap_rand_0p007",
+    "0p008": "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_pid_ladrc_ddpg_random_hover_disturb_compare\\x\\hover_gap_rand_0p008",
+    "0p009": "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_pid_ladrc_ddpg_random_hover_disturb_compare\\x\\hover_gap_rand_0p009"
+  },
+  "recommended_results": {
+    "no_disturbance_best_v": 2,
+    "random_hover_0p004_best_v": 2
+  },
+  "notes": [
+    "本导出包只复用 2026-04-12 已经验证可信的 PyBullet 第三章主链结果。",
+    "zero-delta rewrite 与 checkpoint state 完整恢复之前的 RL 结果没有纳入正式论文包。",
+    "3.2 的阶跃响应使用当前短参考重整定实验近似支撑；若后续论文要求严格标准阶跃，可单独补实验。"
+  ]
+}

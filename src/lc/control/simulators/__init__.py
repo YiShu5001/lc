@@ -5,6 +5,7 @@ from .pybullet_runner import (
     close_ctrl_aviary,
     create_ctrl_aviary,
     run_evaluation_episode,
+    run_policy_episode,
     run_training_episode,
     step_controller_loop,
 )
@@ -16,4 +17,5 @@ __all__ = [
     "step_controller_loop",
     "run_training_episode",
     "run_evaluation_episode",
+    "run_policy_episode",
 ]

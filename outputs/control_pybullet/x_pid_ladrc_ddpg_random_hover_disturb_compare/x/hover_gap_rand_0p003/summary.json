@@ -1,0 +1,91 @@
+{
+  "backend": "gym_env",
+  "disturbance": {
+    "mode": "random_uniform",
+    "scale_n": 0.003,
+    "window_steps": [
+      106,
+      134
+    ],
+    "window_seconds": [
+      2.2083333333333335,
+      2.7916666666666665
+    ],
+    "hover_gap_seconds": 0.20833333333333334,
+    "effective_duration_seconds": 0.5833333333333334,
+    "axis": "x",
+    "seed": 7
+  },
+  "reference_segments": [
+    {
+      "stage": 0.0,
+      "start": 0.0,
+      "stop": 96.0,
+      "velocity": 0.5
+    },
+    {
+      "stage": 1.0,
+      "start": 96.0,
+      "stop": 144.0,
+      "velocity": 0.0
+    },
+    {
+      "stage": 2.0,
+      "start": 144.0,
+      "stop": 240.0,
+      "velocity": -0.6
+    },
+    {
+      "stage": 3.0,
+      "start": 240.0,
+      "stop": 264.0,
+      "velocity": 0.0
+    }
+  ],
+  "controllers": {
+    "PID": {
+      "source": "pid_pos_att"
+    },
+    "LADRC(0.5-opt)": {
+      "source": "fixed_ladrc_0.5_opt",
+      "r": 63.0,
+      "b0": 24.3,
+      "omega_c": 2.95,
+      "k": 7.415254237288136
+    },
+    "DDPG-LADRC (best v=2)": {
+      "checkpoint": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_to_v5_300eps_reexpanded\\v_2\\train\\ladrc_x_pos_pid_att\\x\\20260412_145504\\checkpoints\\x_policy_best.pt"
+    }
+  },
+  "metrics": [
+    {
+      "controller": "PID",
+      "rmse": 0.0575551017821604,
+      "mae": 0.03884447059869879,
+      "velocity_rmse": 0.2449132624714117,
+      "reward": -0.07307657475866139,
+      "disturbance_abs_mean": 0.00014451455828031723
+    },
+    {
+      "controller": "LADRC(0.5-opt)",
+      "rmse": 0.058830808567803435,
+      "mae": 0.0513550189817235,
+      "velocity_rmse": 0.2188061605159259,
+      "reward": -0.07596028284434313,
+      "disturbance_abs_mean": 0.00014451455828031723
+    },
+    {
+      "controller": "DDPG-LADRC (best v=2)",
+      "rmse": 0.05791631065914275,
+      "mae": 0.05009025992191826,
+      "velocity_rmse": 0.22193560528610265,
+      "reward": -0.07540687473480252,
+      "disturbance_abs_mean": 0.00014451455828031723
+    }
+  ],
+  "figures": [
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_pid_ladrc_ddpg_random_hover_disturb_compare\\x\\hover_gap_rand_0p003\\figures\\tracking_compare.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_pid_ladrc_ddpg_random_hover_disturb_compare\\x\\hover_gap_rand_0p003\\figures\\velocity_compare.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_pid_ladrc_ddpg_random_hover_disturb_compare\\x\\hover_gap_rand_0p003\\figures\\error_compare.png"
+  ]
+}

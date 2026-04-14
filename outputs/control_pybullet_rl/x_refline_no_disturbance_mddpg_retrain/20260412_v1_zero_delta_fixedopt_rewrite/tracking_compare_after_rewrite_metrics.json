@@ -1,0 +1,15 @@
+{
+  "figure": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta_fixedopt_rewrite\\tracking_compare_after_rewrite.png",
+  "pid": {
+    "rmse": 0.0581679855540342,
+    "mae": 0.038969181332404755
+  },
+  "ladrc_0p5_opt": {
+    "rmse": 0.0584265301676926,
+    "mae": 0.05103564097217775
+  },
+  "rl_zero_delta_fixedopt": {
+    "rmse": 0.0584265301676926,
+    "mae": 0.05103564097217775
+  }
+}

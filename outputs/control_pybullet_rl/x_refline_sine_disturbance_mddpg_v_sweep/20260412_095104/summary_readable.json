@@ -1,0 +1,21 @@
+{
+  "backend": "gym_env",
+  "message": "PyBullet four-parameter mDDPG-LADRC shared-value sweep completed.",
+  "runs": [
+    {
+      "shared_value": 1,
+      "output_dir": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_sine_disturbance_mddpg_v_sweep\\20260412_095104\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_095104",
+      "checkpoint_path": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_sine_disturbance_mddpg_v_sweep\\20260412_095104\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_095104\\checkpoints\\x_policy.pt",
+      "best_checkpoint_path": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_sine_disturbance_mddpg_v_sweep\\20260412_095104\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_095104\\checkpoints\\x_policy_best.pt",
+      "average_reward": -617.9235403410261,
+      "history_length": 20,
+      "backend": "gym_env",
+      "figures": [
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_sine_disturbance_mddpg_v_sweep\\20260412_095104\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_095104\\figures\\training_curves.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_sine_disturbance_mddpg_v_sweep\\20260412_095104\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_095104\\figures\\episode_020\\axis_tracking.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_sine_disturbance_mddpg_v_sweep\\20260412_095104\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_095104\\figures\\episode_020\\axis_error.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_sine_disturbance_mddpg_v_sweep\\20260412_095104\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_095104\\figures\\episode_020\\axis_velocity.png"
+      ]
+    }
+  ]
+}

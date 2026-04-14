@@ -36,8 +36,8 @@ class AxiswiseLADRCParameterSet:
 def load_default_ladrc_parameter_set(variant: str) -> AxiswiseLADRCParameterSet:
     attitude = SingleChannelLADRCConfig(b0=250.0, omega_c=6.0, k=30.0 / 6.0, r=50.0)
     base = AxiswiseLADRCParameterSet(
-        x=SingleChannelLADRCConfig(b0=220.0, omega_c=1.1, k=9.6 / 1.1, r=30.0),
-        y=SingleChannelLADRCConfig(b0=220.0, omega_c=1.3, k=9.6 / 1.3, r=30.0),
+        x=SingleChannelLADRCConfig(b0=30.5, omega_c=1.5, k=11.0, r=10.0),
+        y=SingleChannelLADRCConfig(b0=30.5, omega_c=1.5, k=11.0, r=10.0),
         z=SingleChannelLADRCConfig(b0=300.0, omega_c=15.0, k=110.0 / 15.0, r=30.0),
         roll=SingleChannelLADRCConfig(b0=attitude.b0, omega_c=attitude.omega_c, k=attitude.k, r=attitude.r),
         pitch=SingleChannelLADRCConfig(b0=attitude.b0, omega_c=attitude.omega_c, k=attitude.k, r=attitude.r),

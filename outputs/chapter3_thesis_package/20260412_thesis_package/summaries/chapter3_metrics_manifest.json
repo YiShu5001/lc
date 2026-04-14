@@ -1,0 +1,8 @@
+{
+  "single_speed_rows": 3,
+  "multispeed_rows": 7,
+  "baseline_no_disturbance_rows": 4,
+  "random_scan_rows": 21,
+  "shared_value_rows": 9,
+  "overall_summary_rows": 6
+}

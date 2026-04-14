@@ -1,0 +1,5 @@
+﻿{
+    "with_td_output":  "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_r63_compare\\x\\20260411_191500",
+    "no_td_output":  "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_no_td_compare\\x\\20260411_191814",
+    "combined_csv":  "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_speed_sweep_td_vs_no_td_summary\\x\\20260411_192100\\td_vs_no_td_combined_metrics.csv"
+}

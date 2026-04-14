@@ -1,0 +1,103 @@
+{
+  "axis": "x",
+  "controller_variant": "ladrc_x_pos_pid_att",
+  "backend": "gym_env",
+  "shared_value": 1,
+  "action_dim": 4,
+  "stack_size": 1,
+  "action_hold_steps": 1,
+  "n_step": 1,
+  "checkpoint_path": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\checkpoints\\x_policy.pt",
+  "best_checkpoint_path": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\checkpoints\\x_policy_best.pt",
+  "best_reward": -11.501972907222807,
+  "best_eval_score": 0.12990324265511574,
+  "best_eval_metrics": {
+    "episode": 160.0,
+    "rmse": 0.06570545971117599,
+    "mae": 0.058672280896948835,
+    "velocity_rmse": 0.2183124231500383,
+    "reward": -0.05057385290215601,
+    "score": 0.12990324265511574
+  },
+  "average_reward": -13.994169196498891,
+  "snapshot_interval": 20,
+  "snapshot_figures": [
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_020\\axis_tracking.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_020\\axis_error.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_020\\axis_velocity.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_040\\axis_tracking.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_040\\axis_error.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_040\\axis_velocity.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_060\\axis_tracking.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_060\\axis_error.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_060\\axis_velocity.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_080\\axis_tracking.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_080\\axis_error.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_080\\axis_velocity.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_100\\axis_tracking.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_100\\axis_error.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_100\\axis_velocity.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_120\\axis_tracking.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_120\\axis_error.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_120\\axis_velocity.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_140\\axis_tracking.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_140\\axis_error.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_140\\axis_velocity.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_160\\axis_tracking.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_160\\axis_error.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_160\\axis_velocity.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_180\\axis_tracking.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_180\\axis_error.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_180\\axis_velocity.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_200\\axis_tracking.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_200\\axis_error.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_200\\axis_velocity.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_220\\axis_tracking.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_220\\axis_error.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_220\\axis_velocity.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_240\\axis_tracking.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_240\\axis_error.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_240\\axis_velocity.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_260\\axis_tracking.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_260\\axis_error.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_260\\axis_velocity.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_280\\axis_tracking.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_280\\axis_error.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_280\\axis_velocity.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_300\\axis_tracking.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_300\\axis_error.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\episode_300\\axis_velocity.png"
+  ],
+  "best_eval_snapshot_figures": [
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\best_eval\\axis_tracking.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\best_eval\\axis_error.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\figures\\best_eval\\axis_velocity.png"
+  ],
+  "eval_history_path": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v1234_300eps_narrowed_noise0p2_0p004_posonly_multiseed_normfix\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_185723\\eval_history.csv",
+  "reference_segments": [
+    {
+      "stage": 0.0,
+      "start": 0.0,
+      "stop": 96.0,
+      "velocity": 0.5
+    },
+    {
+      "stage": 1.0,
+      "start": 96.0,
+      "stop": 144.0,
+      "velocity": 0.0
+    },
+    {
+      "stage": 2.0,
+      "start": 144.0,
+      "stop": 240.0,
+      "velocity": -0.6
+    },
+    {
+      "stage": 3.0,
+      "start": 240.0,
+      "stop": 264.0,
+      "velocity": 0.0
+    }
+  ]
+}

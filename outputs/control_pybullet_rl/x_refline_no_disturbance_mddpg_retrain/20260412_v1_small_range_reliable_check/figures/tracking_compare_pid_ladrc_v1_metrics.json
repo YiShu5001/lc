@@ -1,0 +1,19 @@
+{
+  "figure": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_small_range_reliable_check\\figures\\tracking_compare_pid_ladrc_v1.png",
+  "pid": {
+    "rmse": 0.0581679855540342,
+    "mae": 0.038969181332404755,
+    "velocity_rmse": 0.24970742060378923
+  },
+  "ladrc_0p5_opt": {
+    "rmse": 0.0584265301676926,
+    "mae": 0.05103564097217775,
+    "velocity_rmse": 0.21482284011168293
+  },
+  "ddpg_ladrc_v1_small_range": {
+    "rmse": 0.058944446813114566,
+    "mae": 0.05200492542278087,
+    "velocity_rmse": 0.20798363555143043
+  },
+  "reward_curve": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_small_range_reliable_check\\figures\\reward_curves_by_shared_value.svg"
+}

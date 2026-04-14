@@ -1,0 +1,13 @@
+{
+  "section": "3.2",
+  "tables": [
+    "table_ladrc_single_speed_retune.csv",
+    "table_ladrc_multispeed_best_params.csv",
+    "table_baseline_no_disturbance.csv"
+  ],
+  "figures": [
+    "fig2_step_or_short_response_compare.png",
+    "fig3_disturbance_recovery_compare.png",
+    "fig4_tracking_error_compare.png"
+  ]
+}

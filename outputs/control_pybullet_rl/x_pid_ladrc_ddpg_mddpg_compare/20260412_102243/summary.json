@@ -1,0 +1,77 @@
+{
+  "backend": "gym_env",
+  "reference_segments": [
+    {
+      "stage": 0.0,
+      "start": 0.0,
+      "stop": 96.0,
+      "velocity": 0.5
+    },
+    {
+      "stage": 1.0,
+      "start": 96.0,
+      "stop": 144.0,
+      "velocity": 0.0
+    },
+    {
+      "stage": 2.0,
+      "start": 144.0,
+      "stop": 240.0,
+      "velocity": -0.6
+    },
+    {
+      "stage": 3.0,
+      "start": 240.0,
+      "stop": 264.0,
+      "velocity": 0.0
+    }
+  ],
+  "controllers": {
+    "PID": {
+      "source": "pid_pos_att"
+    },
+    "LADRC": {
+      "source": "ladrc_x_pos_pid_att"
+    },
+    "DDPG-LADRC (v=1)": {
+      "checkpoint": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_sine_disturbance_mddpg_v_sweep\\20260412_4d_retuned_net_vsweep\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_100348\\checkpoints\\x_policy_best.pt"
+    },
+    "mDDPG-LADRC (v=5)": {
+      "checkpoint": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_sine_disturbance_mddpg_v_sweep\\20260412_4d_retuned_net_vsweep\\v_5\\train\\ladrc_x_pos_pid_att\\x\\20260412_100703\\checkpoints\\x_policy_best.pt"
+    }
+  },
+  "metrics": [
+    {
+      "rmse": 0.4981811258467756,
+      "mae": 0.331723129503962,
+      "velocity_rmse": 1.063972819488377,
+      "reward": -0.8416107604833672,
+      "controller": "PID"
+    },
+    {
+      "rmse": 0.8519783595384792,
+      "mae": 0.6535561269231592,
+      "velocity_rmse": 1.1513534796315827,
+      "reward": -1.2928113283482632,
+      "controller": "LADRC"
+    },
+    {
+      "rmse": 1.5322051649561048,
+      "mae": 1.4183158832379392,
+      "velocity_rmse": 1.244386029253187,
+      "reward": -1.7031282670659789,
+      "controller": "DDPG-LADRC (v=1)"
+    },
+    {
+      "rmse": 1.500089122030072,
+      "mae": 1.3666733705668983,
+      "velocity_rmse": 0.8788215207279607,
+      "reward": -1.6159213292011332,
+      "controller": "mDDPG-LADRC (v=5)"
+    }
+  ],
+  "figures": [
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_pid_ladrc_ddpg_mddpg_compare\\20260412_102243\\figures\\tracking_compare.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_pid_ladrc_ddpg_mddpg_compare\\20260412_102243\\figures\\velocity_compare.png"
+  ]
+}

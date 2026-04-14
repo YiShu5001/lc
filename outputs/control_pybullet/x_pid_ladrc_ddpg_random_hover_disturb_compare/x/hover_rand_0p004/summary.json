@@ -1,0 +1,89 @@
+{
+  "backend": "gym_env",
+  "disturbance": {
+    "mode": "random_uniform",
+    "scale_n": 0.004,
+    "window_steps": [
+      96,
+      144
+    ],
+    "window_seconds": [
+      2.0,
+      3.0
+    ],
+    "axis": "x",
+    "seed": 7
+  },
+  "reference_segments": [
+    {
+      "stage": 0.0,
+      "start": 0.0,
+      "stop": 96.0,
+      "velocity": 0.5
+    },
+    {
+      "stage": 1.0,
+      "start": 96.0,
+      "stop": 144.0,
+      "velocity": 0.0
+    },
+    {
+      "stage": 2.0,
+      "start": 144.0,
+      "stop": 240.0,
+      "velocity": -0.6
+    },
+    {
+      "stage": 3.0,
+      "start": 240.0,
+      "stop": 264.0,
+      "velocity": 0.0
+    }
+  ],
+  "controllers": {
+    "PID": {
+      "source": "pid_pos_att"
+    },
+    "LADRC(0.5-opt)": {
+      "source": "fixed_ladrc_0.5_opt",
+      "r": 63.0,
+      "b0": 24.3,
+      "omega_c": 2.95,
+      "k": 7.415254237288136
+    },
+    "DDPG-LADRC (best v=2)": {
+      "checkpoint": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_to_v5_300eps_reexpanded\\v_2\\train\\ladrc_x_pos_pid_att\\x\\20260412_145504\\checkpoints\\x_policy_best.pt"
+    }
+  },
+  "metrics": [
+    {
+      "controller": "PID",
+      "rmse": 0.06376172260907578,
+      "mae": 0.0418365313361856,
+      "velocity_rmse": 0.2706995051418464,
+      "reward": -0.07916583253882757,
+      "disturbance_abs_mean": 0.00033322271249772075
+    },
+    {
+      "controller": "LADRC(0.5-opt)",
+      "rmse": 0.059709311629238634,
+      "mae": 0.051819708134066986,
+      "velocity_rmse": 0.22030683479918323,
+      "reward": -0.07636009533960147,
+      "disturbance_abs_mean": 0.00033322271249772075
+    },
+    {
+      "controller": "DDPG-LADRC (best v=2)",
+      "rmse": 0.06168786982530576,
+      "mae": 0.05144719511883777,
+      "velocity_rmse": 0.25939327342459273,
+      "reward": -0.08477859918573151,
+      "disturbance_abs_mean": 0.00033322271249772075
+    }
+  ],
+  "figures": [
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_pid_ladrc_ddpg_random_hover_disturb_compare\\x\\hover_rand_0p004\\figures\\tracking_compare.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_pid_ladrc_ddpg_random_hover_disturb_compare\\x\\hover_rand_0p004\\figures\\velocity_compare.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_pid_ladrc_ddpg_random_hover_disturb_compare\\x\\hover_rand_0p004\\figures\\error_compare.png"
+  ]
+}

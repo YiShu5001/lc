@@ -1,0 +1,60 @@
+{
+  "fig1_ladrc_framework.png": {
+    "path": "D:\\ZhangC\\lc\\outputs\\chapter3_thesis_package\\20260412_thesis_package\\figures\\fig1_ladrc_framework.png",
+    "sources": [
+      "single_speed_retune_summary"
+    ]
+  },
+  "fig2_step_or_short_response_compare.png": {
+    "path": "D:\\ZhangC\\lc\\outputs\\chapter3_thesis_package\\20260412_thesis_package\\figures\\fig2_step_or_short_response_compare.png",
+    "sources": [
+      "single_speed_tracking_figure"
+    ]
+  },
+  "fig3_disturbance_recovery_compare.png": {
+    "path": "D:\\ZhangC\\lc\\outputs\\chapter3_thesis_package\\20260412_thesis_package\\figures\\fig3_disturbance_recovery_compare.png",
+    "sources": [
+      "random_rl_compare_tracking"
+    ]
+  },
+  "fig4_tracking_error_compare.png": {
+    "path": "D:\\ZhangC\\lc\\outputs\\chapter3_thesis_package\\20260412_thesis_package\\figures\\fig4_tracking_error_compare.png",
+    "sources": [
+      "baseline_no_disturbance_error"
+    ]
+  },
+  "fig5_ddpg_ladrc_framework.png": {
+    "path": "D:\\ZhangC\\lc\\outputs\\chapter3_thesis_package\\20260412_thesis_package\\figures\\fig5_ddpg_ladrc_framework.png",
+    "sources": [
+      "no_dist_rl_summary",
+      "random_rl_summary"
+    ]
+  },
+  "fig6_temporal_enhancement_framework.png": {
+    "path": "D:\\ZhangC\\lc\\outputs\\chapter3_thesis_package\\20260412_thesis_package\\figures\\fig6_temporal_enhancement_framework.png",
+    "sources": [
+      "random_rl_summary",
+      "no_dist_rl_summary"
+    ]
+  },
+  "fig7_training_reward_curve.png": {
+    "path": "D:\\ZhangC\\lc\\outputs\\chapter3_thesis_package\\20260412_thesis_package\\figures\\fig7_training_reward_curve.png",
+    "sources": [
+      "random_rl_summary"
+    ]
+  },
+  "fig8_control_smoothness_compare.png": {
+    "path": "D:\\ZhangC\\lc\\outputs\\chapter3_thesis_package\\20260412_thesis_package\\figures\\fig8_control_smoothness_compare.png",
+    "sources": [
+      "no_dist_rl_compare_metrics",
+      "random_rl_compare_metrics"
+    ]
+  },
+  "fig9_overall_performance_compare.png": {
+    "path": "D:\\ZhangC\\lc\\outputs\\chapter3_thesis_package\\20260412_thesis_package\\figures\\fig9_overall_performance_compare.png",
+    "sources": [
+      "no_dist_rl_compare_metrics",
+      "random_rl_compare_metrics"
+    ]
+  }
+}

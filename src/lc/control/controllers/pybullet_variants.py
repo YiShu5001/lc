@@ -72,7 +72,16 @@ class ControllerBundle:
     def uses_ladrc_on_axis(self, axis: str) -> bool:
         return self.use_ladrc_position and (not self.position_ladrc_axes or axis in self.position_ladrc_axes)
 
-    def set_axis_parameters(self, axis: str, *, b0: float | None = None, omega_c: float | None = None, k: float | None = None) -> None:
+    def set_axis_parameters(
+        self,
+        axis: str,
+        *,
+        b0: float | None = None,
+        omega_c: float | None = None,
+        k: float | None = None,
+        omega_o: float | None = None,
+        r: float | None = None,
+    ) -> None:
         target = self.parameter_set.axis_config(axis)
         if b0 is not None:
             target.b0 = float(b0)
@@ -80,6 +89,10 @@ class ControllerBundle:
             target.omega_c = float(omega_c)
         if k is not None:
             target.k = float(k)
+        if omega_o is not None:
+            target.omega_o = float(omega_o)
+        if r is not None:
+            target.r = float(r)
         if hasattr(self, "_sync_from_parameter_set"):
             self._sync_from_parameter_set()
 
@@ -88,12 +101,15 @@ class ControllerBundle:
             "x_b0": self.parameter_set.x.b0,
             "x_omega_c": self.parameter_set.x.omega_c,
             "x_k": self.parameter_set.x.k,
+            "x_r": self.parameter_set.x.r,
             "y_b0": self.parameter_set.y.b0,
             "y_omega_c": self.parameter_set.y.omega_c,
             "y_k": self.parameter_set.y.k,
+            "y_r": self.parameter_set.y.r,
             "z_b0": self.parameter_set.z.b0,
             "z_omega_c": self.parameter_set.z.omega_c,
             "z_k": self.parameter_set.z.k,
+            "z_r": self.parameter_set.z.r,
         }
 
 
@@ -118,6 +134,16 @@ class _NativeSingleAxisHybridControl(DSLPIDControl):
         self.con_Y = self._make_channel(self.parameter_set.y, step_size)
         self.con_Z = self._make_channel(self.parameter_set.z, step_size)
 
+    def _update_channel(self, channel: Any, axis_cfg: Any, step_size: float) -> Any:
+        if channel is None:
+            return self._make_channel(axis_cfg, step_size)
+        channel.cfg.omega_c = axis_cfg.omega_c
+        channel.cfg.b0 = axis_cfg.b0
+        channel.cfg.omega_o = axis_cfg.omega_c * axis_cfg.k
+        channel.cfg.step_size = step_size
+        channel.cfg.r = axis_cfg.r
+        return channel
+
     def _make_channel(self, axis_cfg: Any, step_size: float) -> Any:
         return LADRC(
             LADRCConfig(
@@ -132,7 +158,9 @@ class _NativeSingleAxisHybridControl(DSLPIDControl):
     def sync_from_parameter_set(self, step_size: float | None = None) -> None:
         if step_size is None:
             step_size = self.CTRL_TIMESTEP if hasattr(self, "CTRL_TIMESTEP") else 1.0 / 60.0
-        self._build_ladrc_channels(step_size)
+        self.con_X = self._update_channel(self.con_X, self.parameter_set.x, step_size)
+        self.con_Y = self._update_channel(self.con_Y, self.parameter_set.y, step_size)
+        self.con_Z = self._update_channel(self.con_Z, self.parameter_set.z, step_size)
 
     def reset(self) -> None:
         super().reset()
@@ -419,12 +447,12 @@ class _FallbackBundle(ControllerBundle):
         return rpm, pos_error.astype(np.float32), float(attitude_error[2])
 
     def _sync_from_parameter_set(self) -> None:
-        self.ladrc_x.set_parameters(b0=self.parameter_set.x.b0, omega_c=self.parameter_set.x.omega_c, k=self.parameter_set.x.k)
-        self.ladrc_y.set_parameters(b0=self.parameter_set.y.b0, omega_c=self.parameter_set.y.omega_c, k=self.parameter_set.y.k)
-        self.ladrc_z.set_parameters(b0=self.parameter_set.z.b0, omega_c=self.parameter_set.z.omega_c, k=self.parameter_set.z.k)
-        self.att_ladrc_roll.set_parameters(b0=self.parameter_set.roll.b0, omega_c=self.parameter_set.roll.omega_c, k=self.parameter_set.roll.k)
-        self.att_ladrc_pitch.set_parameters(b0=self.parameter_set.pitch.b0, omega_c=self.parameter_set.pitch.omega_c, k=self.parameter_set.pitch.k)
-        self.att_ladrc_yaw.set_parameters(b0=self.parameter_set.yaw.b0, omega_c=self.parameter_set.yaw.omega_c, k=self.parameter_set.yaw.k)
+        self.ladrc_x.set_parameters(r=self.parameter_set.x.r, b0=self.parameter_set.x.b0, omega_c=self.parameter_set.x.omega_c, k=self.parameter_set.x.k)
+        self.ladrc_y.set_parameters(r=self.parameter_set.y.r, b0=self.parameter_set.y.b0, omega_c=self.parameter_set.y.omega_c, k=self.parameter_set.y.k)
+        self.ladrc_z.set_parameters(r=self.parameter_set.z.r, b0=self.parameter_set.z.b0, omega_c=self.parameter_set.z.omega_c, k=self.parameter_set.z.k)
+        self.att_ladrc_roll.set_parameters(r=self.parameter_set.roll.r, b0=self.parameter_set.roll.b0, omega_c=self.parameter_set.roll.omega_c, k=self.parameter_set.roll.k)
+        self.att_ladrc_pitch.set_parameters(r=self.parameter_set.pitch.r, b0=self.parameter_set.pitch.b0, omega_c=self.parameter_set.pitch.omega_c, k=self.parameter_set.pitch.k)
+        self.att_ladrc_yaw.set_parameters(r=self.parameter_set.yaw.r, b0=self.parameter_set.yaw.b0, omega_c=self.parameter_set.yaw.omega_c, k=self.parameter_set.yaw.k)
 
 
 @dataclass
@@ -515,6 +543,7 @@ def _create_native_bundle(name: str, checkpoint: dict[str, Any] | None = None) -
             target.b0 = float(snapshot.get(f"{axis}_b0", target.b0))
             target.omega_c = float(snapshot.get(f"{axis}_omega_c", target.omega_c))
             target.k = float(snapshot.get(f"{axis}_k", target.k))
+            target.r = float(snapshot.get(f"{axis}_r", target.r))
         if hasattr(bundle, "_sync_from_parameter_set"):
             bundle._sync_from_parameter_set()
     return bundle
@@ -558,6 +587,7 @@ def create_controller_bundle(name: str, checkpoint: dict[str, Any] | None = None
             target.b0 = float(snapshot.get(f"{axis}_b0", target.b0))
             target.omega_c = float(snapshot.get(f"{axis}_omega_c", target.omega_c))
             target.k = float(snapshot.get(f"{axis}_k", target.k))
+            target.r = float(snapshot.get(f"{axis}_r", target.r))
     if isinstance(bundle, _FallbackBundle):
         bundle._sync_from_parameter_set()
     return bundle

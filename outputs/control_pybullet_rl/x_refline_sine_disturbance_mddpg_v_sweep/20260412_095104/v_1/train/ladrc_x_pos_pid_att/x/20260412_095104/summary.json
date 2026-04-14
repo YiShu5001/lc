@@ -1,0 +1,46 @@
+{
+  "axis": "x",
+  "controller_variant": "ladrc_x_pos_pid_att",
+  "backend": "gym_env",
+  "shared_value": 1,
+  "action_dim": 4,
+  "stack_size": 1,
+  "action_hold_steps": 1,
+  "n_step": 1,
+  "checkpoint_path": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_sine_disturbance_mddpg_v_sweep\\20260412_095104\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_095104\\checkpoints\\x_policy.pt",
+  "best_checkpoint_path": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_sine_disturbance_mddpg_v_sweep\\20260412_095104\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_095104\\checkpoints\\x_policy_best.pt",
+  "best_reward": -309.98466394930637,
+  "average_reward": -617.9235403410261,
+  "snapshot_interval": 20,
+  "snapshot_figures": [
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_sine_disturbance_mddpg_v_sweep\\20260412_095104\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_095104\\figures\\episode_020\\axis_tracking.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_sine_disturbance_mddpg_v_sweep\\20260412_095104\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_095104\\figures\\episode_020\\axis_error.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_sine_disturbance_mddpg_v_sweep\\20260412_095104\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_095104\\figures\\episode_020\\axis_velocity.png"
+  ],
+  "reference_segments": [
+    {
+      "stage": 0.0,
+      "start": 0.0,
+      "stop": 96.0,
+      "velocity": 0.5
+    },
+    {
+      "stage": 1.0,
+      "start": 96.0,
+      "stop": 144.0,
+      "velocity": 0.0
+    },
+    {
+      "stage": 2.0,
+      "start": 144.0,
+      "stop": 240.0,
+      "velocity": -0.6
+    },
+    {
+      "stage": 3.0,
+      "start": 240.0,
+      "stop": 264.0,
+      "velocity": 0.0
+    }
+  ]
+}

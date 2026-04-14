@@ -1,0 +1,3 @@
+﻿scenario,train_episodes,compare_episodes,shared_values,hidden_dim,dropout_p,tau,soft_update_interval,exploration_schedule,exploration_start,exploration_end,batch_size,snapshot_interval
+no_disturbance,300,5,"1,2,3,4,5",768,0.25,0.02,10,three_phase,0.15,0.02,128,20
+random_hover_0p004,300,5,"1,2,3,4",768,0.25,0.02,10,three_phase,0.2,0.02,128,20

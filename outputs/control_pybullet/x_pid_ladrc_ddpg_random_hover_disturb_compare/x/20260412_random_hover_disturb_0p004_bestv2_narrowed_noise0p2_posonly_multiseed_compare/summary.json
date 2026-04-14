@@ -1,0 +1,96 @@
+{
+  "backend": "gym_env",
+  "eval_seeds": [
+    7,
+    17,
+    27
+  ],
+  "disturbance": {
+    "mode": "random_uniform",
+    "scale_n": 0.004,
+    "window_steps": [
+      106,
+      134
+    ],
+    "window_seconds": [
+      2.2083333333333335,
+      2.7916666666666665
+    ],
+    "hover_gap_seconds": 0.20833333333333334,
+    "effective_duration_seconds": 0.5833333333333334,
+    "axis": "x",
+    "seed": 7
+  },
+  "reference_segments": [
+    {
+      "stage": 0.0,
+      "start": 0.0,
+      "stop": 96.0,
+      "velocity": 0.5
+    },
+    {
+      "stage": 1.0,
+      "start": 96.0,
+      "stop": 144.0,
+      "velocity": 0.0
+    },
+    {
+      "stage": 2.0,
+      "start": 144.0,
+      "stop": 240.0,
+      "velocity": -0.6
+    },
+    {
+      "stage": 3.0,
+      "start": 240.0,
+      "stop": 264.0,
+      "velocity": 0.0
+    }
+  ],
+  "controllers": {
+    "PID": {
+      "source": "pid_pos_att"
+    },
+    "LADRC(0.5-opt)": {
+      "source": "fixed_ladrc_0.5_opt",
+      "r": 63.0,
+      "b0": 24.3,
+      "omega_c": 2.95,
+      "k": 7.415254237288136
+    },
+    "DDPG-LADRC (v=2, 0.004N, pos-only, multiseed)": {
+      "checkpoint": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v12345_500eps_narrowed_noise0p2_0p004_posonly_multiseed\\v_2\\train\\ladrc_x_pos_pid_att\\x\\20260412_172107\\checkpoints\\x_policy_best.pt"
+    }
+  },
+  "metrics": [
+    {
+      "controller": "PID",
+      "rmse": 0.062070849854467515,
+      "mae": 0.041972681561519364,
+      "velocity_rmse": 0.2554569968288404,
+      "reward": -0.04325211051012575,
+      "disturbance_abs_mean": 0.00019268607756010059
+    },
+    {
+      "controller": "LADRC(0.5-opt)",
+      "rmse": 0.05800738690441423,
+      "mae": 0.0505992468213291,
+      "velocity_rmse": 0.2172130274072904,
+      "reward": -0.04244448596992614,
+      "disturbance_abs_mean": 0.00019268607756010059
+    },
+    {
+      "controller": "DDPG-LADRC (v=2, 0.004N, pos-only, multiseed)",
+      "rmse": 0.2644727568345447,
+      "mae": 0.16961344793897823,
+      "velocity_rmse": 0.602146130315429,
+      "reward": -0.1658594656625123,
+      "disturbance_abs_mean": 0.00019268607756010059
+    }
+  ],
+  "figures": [
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_pid_ladrc_ddpg_random_hover_disturb_compare\\x\\20260412_random_hover_disturb_0p004_bestv2_narrowed_noise0p2_posonly_multiseed_compare\\figures\\tracking_compare.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_pid_ladrc_ddpg_random_hover_disturb_compare\\x\\20260412_random_hover_disturb_0p004_bestv2_narrowed_noise0p2_posonly_multiseed_compare\\figures\\velocity_compare.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_pid_ladrc_ddpg_random_hover_disturb_compare\\x\\20260412_random_hover_disturb_0p004_bestv2_narrowed_noise0p2_posonly_multiseed_compare\\figures\\error_compare.png"
+  ]
+}

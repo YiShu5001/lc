@@ -1,0 +1,91 @@
+{
+  "backend": "gym_env",
+  "disturbance": {
+    "mode": "random_uniform",
+    "scale_n": 0.004,
+    "window_steps": [
+      106,
+      134
+    ],
+    "window_seconds": [
+      2.2083333333333335,
+      2.7916666666666665
+    ],
+    "hover_gap_seconds": 0.20833333333333334,
+    "effective_duration_seconds": 0.5833333333333334,
+    "axis": "x",
+    "seed": 7
+  },
+  "reference_segments": [
+    {
+      "stage": 0.0,
+      "start": 0.0,
+      "stop": 96.0,
+      "velocity": 0.5
+    },
+    {
+      "stage": 1.0,
+      "start": 96.0,
+      "stop": 144.0,
+      "velocity": 0.0
+    },
+    {
+      "stage": 2.0,
+      "start": 144.0,
+      "stop": 240.0,
+      "velocity": -0.6
+    },
+    {
+      "stage": 3.0,
+      "start": 240.0,
+      "stop": 264.0,
+      "velocity": 0.0
+    }
+  ],
+  "controllers": {
+    "PID": {
+      "source": "pid_pos_att"
+    },
+    "LADRC(0.5-opt)": {
+      "source": "fixed_ladrc_0.5_opt",
+      "r": 63.0,
+      "b0": 24.3,
+      "omega_c": 2.95,
+      "k": 7.415254237288136
+    },
+    "DDPG-LADRC (v=6, narrowed, noise=0.2)": {
+      "checkpoint": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v6_500eps_narrowed_noise0p2\\v_6\\train\\ladrc_x_pos_pid_att\\x\\20260412_165437\\checkpoints\\x_policy_best.pt"
+    }
+  },
+  "metrics": [
+    {
+      "controller": "PID",
+      "rmse": 0.062070849854467515,
+      "mae": 0.041972681561519364,
+      "velocity_rmse": 0.2554569968288404,
+      "reward": -0.07796403269778023,
+      "disturbance_abs_mean": 0.00019268607756010059
+    },
+    {
+      "controller": "LADRC(0.5-opt)",
+      "rmse": 0.05800738690441423,
+      "mae": 0.0505992468213291,
+      "velocity_rmse": 0.21721302740729037,
+      "reward": -0.07494215869700191,
+      "disturbance_abs_mean": 0.00019268607756010059
+    },
+    {
+      "controller": "DDPG-LADRC (v=6, narrowed, noise=0.2)",
+      "rmse": 0.059495378650047274,
+      "mae": 0.052797028990565285,
+      "velocity_rmse": 0.20973837379978053,
+      "reward": -0.0747228092252926,
+      "disturbance_abs_mean": 0.00019268607756010059
+    }
+  ],
+  "figures": [
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_pid_ladrc_ddpg_random_hover_disturb_compare\\x\\20260412_random_hover_disturb_0p004_bestv6_narrowed_noise0p2_compare\\figures\\tracking_compare.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_pid_ladrc_ddpg_random_hover_disturb_compare\\x\\20260412_random_hover_disturb_0p004_bestv6_narrowed_noise0p2_compare\\figures\\velocity_compare.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_pid_ladrc_ddpg_random_hover_disturb_compare\\x\\20260412_random_hover_disturb_0p004_bestv6_narrowed_noise0p2_compare\\figures\\error_compare.png"
+  ]
+}

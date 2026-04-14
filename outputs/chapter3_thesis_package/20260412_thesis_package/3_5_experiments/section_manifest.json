@@ -1,0 +1,14 @@
+{
+  "section": "3.5",
+  "tables": [
+    "table_rl_best_v2_no_disturbance.csv",
+    "table_rl_best_v2_random_0p004.csv",
+    "table_overall_metrics_summary.csv",
+    "table_random_disturbance_scan_0p003_to_0p009.csv"
+  ],
+  "figures": [
+    "fig7_training_reward_curve.png",
+    "fig8_control_smoothness_compare.png",
+    "fig9_overall_performance_compare.png"
+  ]
+}

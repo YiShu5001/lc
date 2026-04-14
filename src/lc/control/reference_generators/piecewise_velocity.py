@@ -22,6 +22,27 @@ def build_axis_piecewise_velocity_profile(
     step_count: int,
     dt: float,
 ) -> tuple[np.ndarray, tuple[slice, ...], tuple[float, ...]]:
+    if config.fixed_stage_lengths and config.fixed_stage_velocities:
+        lengths = [max(int(value), 1) for value in config.fixed_stage_lengths]
+        if len(lengths) != len(config.fixed_stage_velocities):
+            raise ValueError("fixed_stage_lengths and fixed_stage_velocities must have the same length")
+        total = int(sum(lengths))
+        if total != step_count:
+            lengths[-1] += step_count - total
+        velocities = np.zeros(step_count, dtype=np.float32)
+        stage_slices: list[slice] = []
+        cursor = 0
+        for length, speed in zip(lengths, config.fixed_stage_velocities):
+            stop = min(cursor + int(length), step_count)
+            stage_slice = slice(cursor, stop)
+            velocities[stage_slice] = float(speed)
+            stage_slices.append(stage_slice)
+            cursor = stop
+        if cursor < step_count:
+            velocities[cursor:] = float(config.fixed_stage_velocities[-1])
+            stage_slices[-1] = slice(stage_slices[-1].start, step_count)
+        return velocities, tuple(stage_slices), tuple(float(speed) for speed in config.fixed_stage_velocities)
+
     stage_count = max(config.stage_count, 4)
     duration_low, duration_high = config.stage_duration_range
     durations = rng.uniform(duration_low, duration_high, size=stage_count)

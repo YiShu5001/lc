@@ -1,0 +1,14 @@
+{
+  "section": "3.4",
+  "tables": [
+    "table_rl_shared_value_summary.csv"
+  ],
+  "figures": [
+    "fig6_temporal_enhancement_framework.png"
+  ],
+  "notes": {
+    "stack_size": "由 shared value 与时序增强机制共同影响。",
+    "action_hold_steps": "体现在 trainer 与 policy 的跨时间动作保持逻辑里。",
+    "n_step": "由增强回报计算和 replay 采样共同决定。"
+  }
+}

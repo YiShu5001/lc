@@ -1,0 +1,141 @@
+{
+  "backend": "gym_env",
+  "disturbance": "none",
+  "include_disturbance": false,
+  "reference_segments": [
+    {
+      "stage": 0.0,
+      "start": 0.0,
+      "stop": 96.0,
+      "velocity": 0.5
+    },
+    {
+      "stage": 1.0,
+      "start": 96.0,
+      "stop": 144.0,
+      "velocity": 0.0
+    },
+    {
+      "stage": 2.0,
+      "start": 144.0,
+      "stop": 240.0,
+      "velocity": -0.6
+    },
+    {
+      "stage": 3.0,
+      "start": 240.0,
+      "stop": 264.0,
+      "velocity": 0.0
+    }
+  ],
+  "scenario_definition": {
+    "control_freq_hz": 48,
+    "duration_sec": 5.5,
+    "fixed_stage_lengths": [
+      96,
+      48,
+      96,
+      24
+    ],
+    "fixed_stage_velocities": [
+      0.5,
+      0.0,
+      -0.6,
+      0.0
+    ]
+  },
+  "controllers": {
+    "PID": {
+      "source": "pid_pos_att"
+    },
+    "LADRC(0.5-opt)": {
+      "source": "previous_0.5_mps_r_scan_best",
+      "r": 63.0,
+      "b0": 24.3,
+      "omega_c": 2.95,
+      "k": 7.415254237288136
+    },
+    "LADRC(0.6-opt)": {
+      "source": "previous_0.6_mps_multispeed_best",
+      "r": 59.5,
+      "b0": 27.45,
+      "omega_c": 3.15,
+      "k": 3.08
+    },
+    "LADRC(switched)": {
+      "switch_rule": {
+        "stage_0_forward_0p5": "LADRC(0.5-opt)",
+        "stage_1_hover": "LADRC(0.5-opt)",
+        "stage_2_reverse_minus_0p6": "LADRC(0.6-opt)",
+        "stage_3_final_hold": "LADRC(0.6-opt)"
+      }
+    }
+  },
+  "metrics": [
+    {
+      "controller": "PID",
+      "mae": 0.038969181332404755,
+      "rmse": 0.0581679855540342,
+      "iae": 10.287863871754855,
+      "overshoot": 0.13188648223876953,
+      "settling_time": 263.0,
+      "steady_state_error": 0.09113753587007523,
+      "control_energy": 55732140953.45879,
+      "disturbance_recovery_time": 263.0,
+      "control_variation": 13.349958412547528,
+      "velocity_rmse": 0.24970742060378923,
+      "reward": -0.4165203936214933,
+      "backend": "gym_env"
+    },
+    {
+      "controller": "LADRC(0.5-opt)",
+      "mae": 0.05103564097217775,
+      "rmse": 0.0584265301676926,
+      "iae": 13.473409216654925,
+      "overshoot": 0.1303359866142273,
+      "settling_time": 263.0,
+      "steady_state_error": 0.05930042152221386,
+      "control_energy": 55873623803.85652,
+      "disturbance_recovery_time": 263.0,
+      "control_variation": 38.5752008822481,
+      "velocity_rmse": 0.21482284011168293,
+      "reward": -0.4090559437570522,
+      "backend": "gym_env"
+    },
+    {
+      "controller": "LADRC(0.6-opt)",
+      "mae": 0.05103483149844841,
+      "rmse": 0.06650192032101497,
+      "iae": 13.47319551559038,
+      "overshoot": 0.17865657806396484,
+      "settling_time": 263.0,
+      "steady_state_error": 0.04932536528660701,
+      "control_energy": 56129955576.44653,
+      "disturbance_recovery_time": 263.0,
+      "control_variation": 19.159827634862168,
+      "velocity_rmse": 0.3046488947565713,
+      "reward": -0.45446491786595244,
+      "backend": "gym_env"
+    },
+    {
+      "controller": "LADRC(switched)",
+      "mae": 1.1805869688205914,
+      "rmse": 1.2968774286335925,
+      "iae": 311.67495976863614,
+      "overshoot": 2.068152904510498,
+      "settling_time": 263.0,
+      "steady_state_error": 2.066710252601367,
+      "control_energy": 28774204535.468643,
+      "disturbance_recovery_time": 263.0,
+      "control_variation": 166.83064995247148,
+      "velocity_rmse": 0.9154360443724571,
+      "reward": -1.442508209252691,
+      "backend": "gym_env"
+    }
+  ],
+  "figures": [
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_pid_vs_ladrc_no_disturbance_compare\\x\\20260412_105149\\figures\\tracking_compare.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_pid_vs_ladrc_no_disturbance_compare\\x\\20260412_105149\\figures\\velocity_compare.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet\\x_pid_vs_ladrc_no_disturbance_compare\\x\\20260412_105149\\figures\\error_compare.png"
+  ]
+}

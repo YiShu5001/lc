@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Chapter 3 RL RefLine Experiment Suite</title>
+  <desc id="desc">A schematic showing ablation, Monte Carlo, and generalization experiment branches from the best x-axis RL RefLine configuration.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f8f6f0; }
+      .panel { fill: #fffdf8; stroke: #2d3a3a; stroke-width: 2; rx: 18; ry: 18; }
+      .header { fill: #d8ead7; stroke: #2d3a3a; stroke-width: 2; rx: 18; ry: 18; }
+      .sub { fill: #f7e4c5; stroke: #2d3a3a; stroke-width: 2; rx: 14; ry: 14; }
+      .out { fill: #dce8f5; stroke: #2d3a3a; stroke-width: 2; rx: 14; ry: 14; }
+      .txt { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; fill: #1f2525; font-size: 22px; }
+      .small { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; fill: #1f2525; font-size: 18px; }
+      .tiny { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; fill: #1f2525; font-size: 16px; }
+      .line { stroke: #2d3a3a; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#2d3a3a" />
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1200" height="760" />
+
+  <rect class="header" x="305" y="30" width="590" height="120" />
+  <text class="txt" x="600" y="72" text-anchor="middle">第三章 `x` 轴 RL RefLine 实验总控</text>
+  <text class="small" x="600" y="105" text-anchor="middle">最佳配置：net=768, dropout=0.25, tau=0.02, soft_update_interval=10</text>
+  <text class="small" x="600" y="133" text-anchor="middle">exploration: linear 0.10 -> 0.04,  train_episodes=500,  snapshot_interval=50</text>
+
+  <rect class="panel" x="50" y="220" width="320" height="360" />
+  <text class="txt" x="210" y="260" text-anchor="middle">消融对比实验</text>
+  <rect class="sub" x="80" y="290" width="260" height="55" />
+  <text class="small" x="210" y="325" text-anchor="middle">best_config</text>
+  <rect class="sub" x="80" y="360" width="260" height="55" />
+  <text class="small" x="210" y="395" text-anchor="middle">no_decay</text>
+  <rect class="sub" x="80" y="430" width="260" height="55" />
+  <text class="small" x="210" y="465" text-anchor="middle">smaller_model</text>
+  <rect class="sub" x="80" y="500" width="260" height="55" />
+  <text class="small" x="210" y="535" text-anchor="middle">faster_target</text>
+
+  <rect class="panel" x="440" y="220" width="320" height="360" />
+  <text class="txt" x="600" y="260" text-anchor="middle">蒙特卡洛实验</text>
+  <rect class="sub" x="470" y="300" width="260" height="70" />
+  <text class="small" x="600" y="332" text-anchor="middle">固定最优配置</text>
+  <text class="tiny" x="600" y="356" text-anchor="middle">seed = 7,8,...,16</text>
+  <rect class="sub" x="470" y="410" width="260" height="70" />
+  <text class="small" x="600" y="442" text-anchor="middle">每个 seed 单独目录</text>
+  <text class="tiny" x="600" y="466" text-anchor="middle">避免结果混叠</text>
+  <rect class="sub" x="470" y="520" width="260" height="70" />
+  <text class="small" x="600" y="552" text-anchor="middle">统计均值 / 方差 / 置信区间</text>
+
+  <rect class="panel" x="830" y="220" width="320" height="360" />
+  <text class="txt" x="990" y="260" text-anchor="middle">泛化能力实验</text>
+  <rect class="sub" x="860" y="300" width="260" height="70" />
+  <text class="small" x="990" y="332" text-anchor="middle">difficulty = easy / medium</text>
+  <text class="tiny" x="990" y="356" text-anchor="middle">hard / extreme</text>
+  <rect class="sub" x="860" y="410" width="260" height="70" />
+  <text class="small" x="990" y="442" text-anchor="middle">同一最优超参数</text>
+  <text class="tiny" x="990" y="466" text-anchor="middle">只换场景复杂度</text>
+  <rect class="sub" x="860" y="520" width="260" height="70" />
+  <text class="small" x="990" y="552" text-anchor="middle">对比 rmse / reward 劣化趋势</text>
+
+  <path class="line" d="M600 150 L210 210" />
+  <path class="line" d="M600 150 L600 210" />
+  <path class="line" d="M600 150 L990 210" />
+
+  <rect class="out" x="135" y="630" width="150" height="70" />
+  <text class="small" x="210" y="662" text-anchor="middle">指标表</text>
+  <text class="tiny" x="210" y="686" text-anchor="middle">rmse / reward</text>
+
+  <rect class="out" x="525" y="630" width="150" height="70" />
+  <text class="small" x="600" y="662" text-anchor="middle">分布统计</text>
+  <text class="tiny" x="600" y="686" text-anchor="middle">mean / std / CI</text>
+
+  <rect class="out" x="915" y="630" width="150" height="70" />
+  <text class="small" x="990" y="662" text-anchor="middle">泛化趋势图</text>
+  <text class="tiny" x="990" y="686" text-anchor="middle">difficulty sweep</text>
+
+  <path class="line" d="M210 580 L210 625" />
+  <path class="line" d="M600 580 L600 625" />
+  <path class="line" d="M990 580 L990 625" />
+</svg>

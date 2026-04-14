@@ -1,0 +1,86 @@
+{
+  "backend": "gym_env",
+  "disturbance": {
+    "mode": "random_uniform",
+    "scale_n": 0.008,
+    "window_steps": [
+      106,
+      134
+    ],
+    "window_seconds": [
+      2.2083333333333335,
+      2.7916666666666665
+    ]
+  },
+  "reference_segments": [
+    {
+      "stage": 0.0,
+      "start": 0.0,
+      "stop": 96.0,
+      "velocity": 0.5
+    },
+    {
+      "stage": 1.0,
+      "start": 96.0,
+      "stop": 144.0,
+      "velocity": 0.0
+    },
+    {
+      "stage": 2.0,
+      "start": 144.0,
+      "stop": 240.0,
+      "velocity": -0.6
+    },
+    {
+      "stage": 3.0,
+      "start": 240.0,
+      "stop": 264.0,
+      "velocity": 0.0
+    }
+  ],
+  "controllers": [
+    {
+      "label": "DDPG-LADRC (v=1)",
+      "checkpoint": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v136_500eps_reexpanded\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_163336\\checkpoints\\x_policy_best.pt"
+    },
+    {
+      "label": "DDPG-LADRC (v=3)",
+      "checkpoint": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v136_500eps_reexpanded\\v_3\\train\\ladrc_x_pos_pid_att\\x\\20260412_163554\\checkpoints\\x_policy_best.pt"
+    },
+    {
+      "label": "DDPG-LADRC (v=6)",
+      "checkpoint": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_random_hover_disturbance_mddpg_retrain\\20260412_random_hover_disturb_v136_500eps_reexpanded\\v_6\\train\\ladrc_x_pos_pid_att\\x\\20260412_163755\\checkpoints\\x_policy_best.pt"
+    }
+  ],
+  "metrics": [
+    {
+      "controller": "DDPG-LADRC (v=1)",
+      "rmse": 0.18355687628590814,
+      "mae": 0.15246616168379998,
+      "velocity_rmse": 0.2773118929587281,
+      "reward": -0.185319110370862,
+      "disturbance_abs_mean": 0.00038537215512020117
+    },
+    {
+      "controller": "DDPG-LADRC (v=3)",
+      "rmse": 0.4573059440690779,
+      "mae": 0.33298618714734823,
+      "velocity_rmse": 0.4937295357328507,
+      "reward": -0.410702846607786,
+      "disturbance_abs_mean": 0.00038537215512020117
+    },
+    {
+      "controller": "DDPG-LADRC (v=6)",
+      "rmse": 4.636674558212914,
+      "mae": 4.186078233225775,
+      "velocity_rmse": 2.484359392015781,
+      "reward": -4.45957138547296,
+      "disturbance_abs_mean": 0.00038537215512020117
+    }
+  ],
+  "figures": [
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_rl_triplet_random_hover_compare\\20260412_random_hover_disturb_v136_triplet_compare\\figures\\tracking_compare.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_rl_triplet_random_hover_compare\\20260412_random_hover_disturb_v136_triplet_compare\\figures\\velocity_compare.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_rl_triplet_random_hover_compare\\20260412_random_hover_disturb_v136_triplet_compare\\figures\\error_compare.png"
+  ]
+}

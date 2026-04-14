@@ -9,7 +9,7 @@ import torch
 from lc.common.utils import seed_everything
 from lc.control.configs import AxisTuningResult, PyBulletControlExperimentConfig
 from lc.control.controllers import create_controller_bundle
-from lc.control.envs import run_controller_episode
+from lc.control.envs import compute_episode_metrics, run_controller_episode
 from lc.control.io import (
     build_run_directory,
     export_legacy_logger_artifacts,
@@ -32,7 +32,16 @@ from lc.control.plotting import (
 )
 from lc.control.policies.stacking import stack_state
 from lc.control.reference_generators import build_xyz_reference_trajectory, summarize_reference_segments
-from lc.control.simulators import close_ctrl_aviary, create_ctrl_aviary, run_training_episode
+from lc.control.simulators import close_ctrl_aviary, create_ctrl_aviary, run_policy_episode, run_training_episode
+from lc.control.simulators.pybullet_runner import (
+    _apply_axis_action,
+    _apply_real_disturbance,
+    _build_axis_observation,
+    _compute_axis_reward,
+    _disturbance_vector,
+    _ensure_real_env,
+    _timeseries_row,
+)
 from lc.rl.algorithms import MDDPGConfig, MDDPGPolicy
 
 
@@ -40,25 +49,38 @@ from lc.rl.algorithms import MDDPGConfig, MDDPGPolicy
 class PyBulletAxisTrainer:
     config: PyBulletControlExperimentConfig
 
-    def train_axis(self, axis: str, policy_config: MDDPGConfig | None = None) -> dict[str, object]:
+    def train_axis(
+        self,
+        axis: str,
+        policy_config: MDDPGConfig | None = None,
+        *,
+        n_step: int | None = None,
+        shared_value: int | None = None,
+    ) -> dict[str, object]:
         seed_everything(self.config.seed)
+        run_dir = build_run_directory(self.config, "train", axis, self.config.training_controller_variant)
         env = create_ctrl_aviary(self.config)
         history_rows: list[dict[str, float]] = []
         best_reward = float("-inf")
+        best_eval_score = float("inf")
         best_checkpoint: dict[str, object] | None = None
-        policy = MDDPGPolicy(
-            policy_config
-            or MDDPGConfig(
-                state_dim=8,
-                action_dim=3,
-                stack_size=1,
-                action_hold_steps=self.config.action_hold_steps,
-                batch_size=self.config.batch_size,
-            )
+        final_checkpoint: dict[str, object] | None = None
+        eval_history_rows: list[dict[str, float]] = []
+        best_eval_snapshot_paths: list[str] = []
+        policy_cfg = policy_config or MDDPGConfig(
+            state_dim=8,
+            action_dim=4,
+            stack_size=1,
+            action_hold_steps=self.config.action_hold_steps,
+            batch_size=self.config.batch_size,
         )
+        effective_n_step = max(int(n_step if n_step is not None else getattr(policy_cfg, "stack_size", 1)), 1)
+        policy = MDDPGPolicy(policy_cfg)
         backend_name = env["backend"]
+        snapshot_paths: list[str] = []
         try:
             for episode in range(self.config.train_episodes):
+                policy.set_exploration_noise(self._episode_exploration_noise(episode, self.config.train_episodes, policy_cfg))
                 rng = np.random.default_rng(self.config.seed + episode)
                 reference_bundle = build_xyz_reference_trajectory(self.config.axis_config(axis), self.config, rng=rng)
                 controller = create_controller_bundle(self.config.training_controller_variant)
@@ -68,35 +90,63 @@ class PyBulletAxisTrainer:
                     controller,
                     reference_bundle,
                     axis=axis,
-                    action_hold_steps=self.config.action_hold_steps,
+                    action_hold_steps=policy_cfg.action_hold_steps,
+                    n_step=effective_n_step,
                     config=self.config,
                 )
                 backend_name = artifacts.backend
                 losses = policy.update(self.config.updates_per_step)
                 episode_reward = float(np.sum(artifacts.rewards))
+                average_reward = float(np.mean([row["reward"] for row in history_rows] + [episode_reward]))
                 history_rows.append(
                     {
-                        "episode": float(episode),
+                        "episode": float(episode + 1),
                         "reward": episode_reward,
+                        "average_reward": average_reward,
+                        "exploration_noise": float(policy._current_expl_noise),
                         "actor_loss": float(losses["actor_loss"]),
                         "critic_loss": float(losses["critic_loss"]),
                     }
                 )
                 if episode_reward > best_reward:
                     best_reward = episode_reward
-                    best_checkpoint = {
-                        "policy_state": {
-                            "actor": policy.actor.state_dict(),
-                            "critic": policy.critic.state_dict(),
-                        },
-                        "parameter_snapshot": controller.snapshot_params(),
-                        "backend": artifacts.backend,
+                if self.config.snapshot_interval and (episode + 1) % self.config.snapshot_interval == 0:
+                    snapshot_paths.extend(self._save_episode_snapshot(axis, run_dir, episode + 1, list(artifacts.timeseries)))
+                    eval_metrics, eval_rows = self._evaluate_policy_deterministic(axis, policy)
+                    eval_row = {
+                        "episode": float(episode + 1),
+                        "rmse": float(eval_metrics["rmse"]),
+                        "mae": float(eval_metrics["mae"]),
+                        "velocity_rmse": float(eval_metrics["velocity_rmse"]),
+                        "reward": float(eval_metrics["reward"]),
+                        "score": float(self._evaluation_score(eval_metrics)),
                     }
+                    eval_history_rows.append(eval_row)
+                    if eval_row["score"] < best_eval_score:
+                        best_eval_score = float(eval_row["score"])
+                        best_eval_snapshot_paths = self._save_best_eval_snapshot(axis, run_dir, episode + 1, eval_rows)
+                        best_checkpoint = {
+                            "policy_state": self._serialize_policy_state(policy),
+                            "parameter_snapshot": controller.snapshot_params(),
+                            "backend": artifacts.backend,
+                            "best_eval_metrics": eval_row,
+                        }
+            final_checkpoint = {
+                "policy_state": self._serialize_policy_state(policy),
+                "parameter_snapshot": controller.snapshot_params(),
+                "backend": backend_name,
+            }
         finally:
             close_ctrl_aviary(env)
-        run_dir = build_run_directory(self.config, "train", axis, self.config.training_controller_variant)
-        checkpoint_path = self.save_best_checkpoint(axis, best_checkpoint or {}, run_dir)
+        checkpoint_path = self.save_checkpoint(axis, final_checkpoint or {}, run_dir, filename=f"{axis}_policy.pt")
+        best_checkpoint_path = self.save_checkpoint(axis, best_checkpoint or final_checkpoint or {}, run_dir, filename=f"{axis}_policy_best.pt")
         write_metrics_csv(run_dir / "training_history.csv", history_rows)
+        average_reward_rows = [
+            {"episode": row["episode"], "average_reward": row["average_reward"], "reward": row["reward"]}
+            for row in history_rows
+        ]
+        write_metrics_csv(run_dir / "average_reward.csv", average_reward_rows)
+        write_metrics_csv(run_dir / "eval_history.csv", eval_history_rows)
         figure = plot_training_curves(history_rows, run_dir / "figures")
         reference_bundle = build_xyz_reference_trajectory(self.config.axis_config(axis), self.config, rng=np.random.default_rng(self.config.seed))
         write_reference_csv(run_dir / "reference.csv", reference_bundle)
@@ -106,8 +156,21 @@ class PyBulletAxisTrainer:
                 "axis": axis,
                 "controller_variant": self.config.training_controller_variant,
                 "backend": backend_name,
+                "shared_value": shared_value,
+                "action_dim": int(policy_cfg.action_dim),
+                "stack_size": int(policy_cfg.stack_size),
+                "action_hold_steps": int(policy_cfg.action_hold_steps),
+                "n_step": int(effective_n_step),
                 "checkpoint_path": str(checkpoint_path),
+                "best_checkpoint_path": str(best_checkpoint_path),
                 "best_reward": best_reward,
+                "best_eval_score": best_eval_score if np.isfinite(best_eval_score) else None,
+                "best_eval_metrics": best_checkpoint.get("best_eval_metrics") if best_checkpoint else None,
+                "average_reward": float(np.mean([row["reward"] for row in history_rows])) if history_rows else 0.0,
+                "snapshot_interval": int(self.config.snapshot_interval),
+                "snapshot_figures": snapshot_paths,
+                "best_eval_snapshot_figures": best_eval_snapshot_paths,
+                "eval_history_path": str(run_dir / "eval_history.csv"),
                 "reference_segments": summarize_reference_segments(reference_bundle),
             },
         )
@@ -117,8 +180,140 @@ class PyBulletAxisTrainer:
             "history": history_rows,
             "backend": backend_name,
             "checkpoint_path": str(checkpoint_path),
-            "figures": [str(figure)],
+            "best_checkpoint_path": str(best_checkpoint_path),
+            "average_reward": float(np.mean([row["reward"] for row in history_rows])) if history_rows else 0.0,
+            "eval_history": eval_history_rows,
+            "best_eval_metrics": best_checkpoint.get("best_eval_metrics") if best_checkpoint else None,
+            "figures": [str(figure), *snapshot_paths, *best_eval_snapshot_paths],
         }
+
+    def _evaluate_policy_deterministic(self, axis: str, policy: MDDPGPolicy) -> tuple[dict[str, float], list[dict[str, float]]]:
+        eval_seeds = tuple(int(seed) for seed in (self.config.eval_seeds or (self.config.seed,)))
+        metric_rows: list[dict[str, float]] = []
+        representative_rows: list[dict[str, float]] = []
+        backend_name = "fallback"
+        for episode_seed in eval_seeds:
+            env = create_ctrl_aviary(self.config)
+            try:
+                reference_bundle = build_xyz_reference_trajectory(
+                    self.config.axis_config(axis),
+                    self.config,
+                    rng=np.random.default_rng(episode_seed),
+                )
+                controller = create_controller_bundle(self.config.training_controller_variant)
+                artifacts = run_policy_episode(
+                    env,
+                    policy,
+                    controller,
+                    reference_bundle,
+                    axis,
+                    self.config,
+                    explore=False,
+                    store_transitions=False,
+                    n_step=1,
+                )
+                metrics = compute_episode_metrics(artifacts.timeseries, axis)
+                metrics["backend"] = env["backend"]
+                metrics["eval_seed"] = float(episode_seed)
+                metric_rows.append(metrics)
+                if not representative_rows:
+                    representative_rows = list(artifacts.timeseries)
+                backend_name = env["backend"]
+            finally:
+                close_ctrl_aviary(env)
+        if not metric_rows:
+            return (
+                {"rmse": float("inf"), "mae": float("inf"), "velocity_rmse": float("inf"), "reward": float("-inf"), "backend": backend_name},
+                [],
+            )
+        averaged: dict[str, float] = {}
+        for key in ("rmse", "mae", "velocity_rmse", "reward"):
+            averaged[key] = float(np.mean([float(row[key]) for row in metric_rows]))
+        averaged["backend"] = backend_name
+        averaged["eval_seed_count"] = float(len(metric_rows))
+        return averaged, representative_rows
+
+    def _evaluation_score(self, metrics: dict[str, float]) -> float:
+        return float(metrics["rmse"] + 0.35 * metrics["mae"] + 0.2 * metrics["velocity_rmse"])
+
+    def _episode_exploration_noise(
+        self,
+        episode: int,
+        train_episodes: int,
+        policy_config: MDDPGConfig,
+    ) -> float:
+        if train_episodes <= 1:
+            return float(policy_config.expl_noise_start)
+        if policy_config.expl_noise_schedule == "three_phase":
+            start_value = float(policy_config.expl_noise_start)
+            mid_value = min(0.1, start_value)
+            end_value = float(policy_config.expl_noise_end)
+            first_end = max(train_episodes // 3, 1)
+            second_end = max((2 * train_episodes) // 3, first_end + 1)
+            if episode < first_end:
+                progress = episode / max(first_end - 1, 1)
+                return float(start_value + progress * (mid_value - start_value))
+            if episode < second_end:
+                return float(mid_value)
+            progress = (episode - second_end) / max(train_episodes - second_end - 1, 1)
+            return float(mid_value + progress * (end_value - mid_value))
+        if policy_config.expl_noise_schedule != "linear":
+            return float(policy_config.expl_noise_start)
+        progress = episode / max(train_episodes - 1, 1)
+        return float(policy_config.expl_noise_start + progress * (policy_config.expl_noise_end - policy_config.expl_noise_start))
+
+    def _serialize_policy_state(self, policy: MDDPGPolicy) -> dict[str, object]:
+        return {
+            "actor": policy.actor.state_dict(),
+            "critic": policy.critic.state_dict(),
+            "actor_target": policy.actor_target.state_dict(),
+            "critic_target": policy.critic_target.state_dict(),
+            "config": dict(policy.config.__dict__),
+            "normalizer": policy._normalizer.copy(),
+            "last_action": policy._last_action.copy(),
+            "hold_counter": int(policy._hold_counter),
+            "current_expl_noise": float(policy._current_expl_noise),
+        }
+
+    def _save_episode_snapshot(self, axis: str, run_dir: Path, episode: int, rows: list[dict[str, float]]) -> list[str]:
+        snapshot_dir = run_dir / "figures" / f"episode_{episode:03d}"
+        projected_rows = self._project_axis_rows(rows, axis)
+        return [
+            str(plot_axis_tracking(projected_rows, snapshot_dir)),
+            str(plot_axis_error(projected_rows, snapshot_dir)),
+            str(plot_axis_velocity(projected_rows, snapshot_dir)),
+        ]
+
+    def _save_best_eval_snapshot(self, axis: str, run_dir: Path, episode: int, rows: list[dict[str, float]]) -> list[str]:
+        snapshot_dir = run_dir / "figures" / "best_eval"
+        projected_rows = self._project_axis_rows(rows, axis)
+        return [
+            str(plot_axis_tracking(projected_rows, snapshot_dir)),
+            str(plot_axis_error(projected_rows, snapshot_dir)),
+            str(plot_axis_velocity(projected_rows, snapshot_dir)),
+        ]
+
+    def _project_axis_rows(self, rows: list[dict[str, float]], axis: str) -> list[dict[str, float]]:
+        projected: list[dict[str, float]] = []
+        for row in rows:
+            projected.append(
+                {
+                    "time": row["time"],
+                    "x": row.get(axis, 0.0),
+                    "y": 0.0,
+                    "z": 0.0,
+                    "vx": row.get(f"v{axis}", 0.0),
+                    "vy": 0.0,
+                    "vz": 0.0,
+                    "target_x": row.get(f"target_{axis}", 0.0),
+                    "target_y": 0.0,
+                    "target_z": 0.0,
+                    "target_vx": row.get(f"target_v{axis}", 0.0),
+                    "target_vy": 0.0,
+                    "target_vz": 0.0,
+                }
+            )
+        return projected
 
     def evaluate_axis(self, axis: str, controller_variants: list[str] | None = None) -> dict[str, object]:
         variants = controller_variants or [variant.name for variant in self.config.controller_variants]
@@ -196,7 +391,14 @@ class PyBulletAxisTrainer:
                     rng=np.random.default_rng(cfg.seed + 300 + episode),
                 )
                 controller = create_controller_bundle(controller_name)
-                controller.set_axis_parameters(axis, b0=params["b0"], omega_c=params["omega_c"], k=params["k"])
+                controller.set_axis_parameters(
+                    axis,
+                    b0=params["b0"],
+                    omega_c=params["omega_c"],
+                    k=params.get("k"),
+                    omega_o=params.get("omega_o"),
+                    r=params.get("r"),
+                )
                 result = run_controller_episode(cfg, controller, reference_bundle)
                 row = dict(result["metrics"])
                 row["stable"] = 1.0 if self._is_stable_result(row) else 0.0
@@ -215,12 +417,16 @@ class PyBulletAxisTrainer:
             row["axis"] = axis
             row["b0"] = float(params["b0"])
             row["omega_c"] = float(params["omega_c"])
-            row["k"] = float(params["k"])
+            row["k"] = float(params.get("k", params.get("omega_o", 0.0) / max(float(params["omega_c"]), 1e-6)))
+            row["omega_o"] = float(params.get("omega_o", row["k"] * float(params["omega_c"])))
+            row["r"] = float(params.get("r", create_controller_bundle(controller_name).parameter_set.axis_config(axis).r))
             metric_rows.append(row)
         averaged = self._average_metric_rows(metric_rows)
         averaged["b0"] = float(params["b0"])
         averaged["omega_c"] = float(params["omega_c"])
-        averaged["k"] = float(params["k"])
+        averaged["k"] = float(params.get("k", params.get("omega_o", 0.0) / max(float(params["omega_c"]), 1e-6)))
+        averaged["omega_o"] = float(params.get("omega_o", averaged["k"] * float(params["omega_c"])))
+        averaged["r"] = float(params.get("r", create_controller_bundle(controller_name).parameter_set.axis_config(axis).r))
         averaged["stable"] = float(np.mean([row.get("stable", 0.0) for row in metric_rows]))
         averaged["score"] = (
             self._ranking_score(averaged)
@@ -335,18 +541,26 @@ class PyBulletAxisTrainer:
         evaluation = {axis: self.evaluate_axis(axis) for axis in ("x", "y", "z")}
         return {"training": training, "evaluation": evaluation}
 
-    def save_best_checkpoint(self, axis: str, policy_state: dict[str, object], run_dir: str | Path) -> Path:
+    def save_checkpoint(
+        self,
+        axis: str,
+        policy_state: dict[str, object],
+        run_dir: str | Path,
+        *,
+        filename: str | None = None,
+    ) -> Path:
         target = Path(run_dir) / "checkpoints"
         target.mkdir(parents=True, exist_ok=True)
-        path = target / f"{axis}_policy.pt"
+        path = target / (filename or f"{axis}_policy.pt")
         torch.save(policy_state, path)
         return path
 
     def _load_checkpoint_if_exists(self, axis: str) -> dict[str, object] | None:
-        base = Path(self.config.artifact.output_root) / "train" / axis
+        base = Path(self.config.artifact.output_root)
         if not base.exists():
             return None
-        candidates = sorted(base.glob("**/checkpoints/*.pt"))
+        preferred = sorted(base.glob(f"**/checkpoints/{axis}_policy.pt"))
+        candidates = preferred or sorted(base.glob("**/checkpoints/*.pt"))
         if not candidates:
             return None
         return torch.load(candidates[-1], map_location="cpu")
@@ -555,7 +769,14 @@ class PyBulletAxisTrainer:
         )
         controller = create_controller_bundle(controller_name)
         if params is not None:
-            controller.set_axis_parameters(axis, b0=params["b0"], omega_c=params["omega_c"], k=params["k"])
+            controller.set_axis_parameters(
+                axis,
+                b0=params["b0"],
+                omega_c=params["omega_c"],
+                k=params.get("k"),
+                omega_o=params.get("omega_o"),
+                r=params.get("r"),
+            )
         return run_controller_episode(cfg, controller, reference_bundle)
 
     def _coarse_candidates(self, axis: str) -> list[dict[str, float]]:
@@ -651,6 +872,14 @@ class PyBulletAxisTrainer:
                     disturbance_scale=axis_cfg.disturbance_scale * scale,
                     disturbance_axis_bias=axis_cfg.disturbance_axis_bias,
                     stage_count=axis_cfg.stage_count,
+                    fixed_stage_lengths=axis_cfg.fixed_stage_lengths,
+                    fixed_stage_velocities=(
+                        tuple(float(value) * scale for value in axis_cfg.fixed_stage_velocities)
+                        if axis_cfg.fixed_stage_velocities is not None
+                        else None
+                    ),
+                    disturbance_step_window=axis_cfg.disturbance_step_window,
+                    disturbance_frequency_rad=axis_cfg.disturbance_frequency_rad,
                 )
             )
         return PyBulletControlExperimentConfig(

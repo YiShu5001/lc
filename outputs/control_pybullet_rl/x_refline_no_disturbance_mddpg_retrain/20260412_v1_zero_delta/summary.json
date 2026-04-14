@@ -1,0 +1,158 @@
+{
+  "backend": "gym_env",
+  "axis": "x",
+  "train_episodes": 300,
+  "compare_episodes": 5,
+  "action_dim": 4,
+  "shared_values": [
+    1
+  ],
+  "action_order": [
+    "r",
+    "b0",
+    "omega_c",
+    "k"
+  ],
+  "action_bounds": {
+    "r": [
+      64.0,
+      66.0
+    ],
+    "b0": [
+      28.0,
+      32.0
+    ],
+    "omega_c": [
+      2.0,
+      2.5
+    ],
+    "k": [
+      6.0,
+      8.0
+    ]
+  },
+  "delta_bounds": {
+    "r": [
+      0.0,
+      0.0
+    ],
+    "b0": [
+      0.0,
+      0.0
+    ],
+    "omega_c": [
+      0.0,
+      0.0
+    ],
+    "k": [
+      0.0,
+      0.0
+    ]
+  },
+  "train_anchor": {
+    "r": 65.0,
+    "b0": 30.0,
+    "omega_c": 2.25,
+    "k": 7.0,
+    "omega_o": 15.75
+  },
+  "network_config": {
+    "hidden_dim": 768,
+    "dropout_p": 0.25,
+    "tau": 0.02,
+    "soft_update_interval": 10,
+    "exploration_noise_schedule": "three_phase",
+    "exploration_noise_start": 0.15,
+    "exploration_noise_end": 0.02,
+    "snapshot_interval": 20,
+    "batch_size": 128
+  },
+  "scenario_definition": {
+    "control_freq_hz": 48,
+    "duration_sec": 5.5,
+    "include_disturbance": false,
+    "fixed_stage_lengths": [
+      96,
+      48,
+      96,
+      24
+    ],
+    "fixed_stage_velocities": [
+      0.5,
+      0.0,
+      -0.6,
+      0.0
+    ]
+  },
+  "runs": [
+    {
+      "shared_value": 1,
+      "output_dir": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722",
+      "checkpoint_path": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\checkpoints\\x_policy.pt",
+      "best_checkpoint_path": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\checkpoints\\x_policy_best.pt",
+      "average_reward": -360.54422173006463,
+      "best_eval_metrics": {
+        "episode": 20.0,
+        "rmse": 1.3282917023847074,
+        "mae": 1.217712397023745,
+        "velocity_rmse": 1.156310642748618,
+        "reward": -1.3656978095835781,
+        "score": 1.9857531698927418
+      },
+      "history_length": 300,
+      "backend": "gym_env",
+      "figures": [
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\training_curves.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_020\\axis_tracking.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_020\\axis_error.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_020\\axis_velocity.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_040\\axis_tracking.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_040\\axis_error.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_040\\axis_velocity.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_060\\axis_tracking.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_060\\axis_error.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_060\\axis_velocity.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_080\\axis_tracking.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_080\\axis_error.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_080\\axis_velocity.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_100\\axis_tracking.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_100\\axis_error.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_100\\axis_velocity.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_120\\axis_tracking.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_120\\axis_error.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_120\\axis_velocity.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_140\\axis_tracking.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_140\\axis_error.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_140\\axis_velocity.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_160\\axis_tracking.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_160\\axis_error.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_160\\axis_velocity.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_180\\axis_tracking.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_180\\axis_error.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_180\\axis_velocity.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_200\\axis_tracking.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_200\\axis_error.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_200\\axis_velocity.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_220\\axis_tracking.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_220\\axis_error.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_220\\axis_velocity.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_240\\axis_tracking.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_240\\axis_error.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_240\\axis_velocity.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_260\\axis_tracking.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_260\\axis_error.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_260\\axis_velocity.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_280\\axis_tracking.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_280\\axis_error.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_280\\axis_velocity.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_300\\axis_tracking.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_300\\axis_error.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\figures\\episode_300\\axis_velocity.png"
+      ]
+    }
+  ],
+  "figures": [
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\figures\\reward_curves_by_shared_value.svg",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\figures\\average_reward_by_shared_value.png"
+  ]
+}

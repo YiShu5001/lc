@@ -1,0 +1,218 @@
+{
+  "backend": "gym_env",
+  "scenario_name": "x_highspeed_midhold_sine_disturbance",
+  "scenario_definition": {
+    "speed_profile": {
+      "forward": 0.6,
+      "reverse": -0.6
+    },
+    "stage_lengths_steps": [
+      5,
+      120,
+      139,
+      120
+    ],
+    "stage_lengths_seconds": [
+      0.104167,
+      2.5,
+      2.895833,
+      2.5
+    ],
+    "disturbance_mode": "pybullet_external_force_sine",
+    "disturbance_axis": "x",
+    "disturbance_amplitude_n": 0.1,
+    "disturbance_step_window": [
+      125,
+      264
+    ],
+    "disturbance_frequency_rad": 0.2617993877991494
+  },
+  "reference_segments": [
+    {
+      "stage": 0.0,
+      "start": 0.0,
+      "stop": 5.0,
+      "velocity": 0.0
+    },
+    {
+      "stage": 1.0,
+      "start": 5.0,
+      "stop": 125.0,
+      "velocity": 0.6
+    },
+    {
+      "stage": 2.0,
+      "start": 125.0,
+      "stop": 264.0,
+      "velocity": 0.0
+    },
+    {
+      "stage": 3.0,
+      "start": 264.0,
+      "stop": 384.0,
+      "velocity": -0.6
+    }
+  ],
+  "controllers": {
+    "pid_pos_att": {
+      "mae": 0.3880956253488576,
+      "rmse": 0.6115647448349669,
+      "iae": 149.02872013396131,
+      "overshoot": 1.7203289745375514,
+      "settling_time": 383.0,
+      "steady_state_error": 1.489082243808202,
+      "control_energy": 51860930802.1157,
+      "disturbance_recovery_time": 383.0,
+      "control_variation": 246.77426617575065,
+      "velocity_rmse": 0.37433968636177367,
+      "reward": -0.7533767488896115,
+      "backend": "gym_env"
+    },
+    "ladrc_x_pos_pid_att_default": {
+      "mae": 0.3921426100202803,
+      "rmse": 0.5736578871263169,
+      "iae": 150.58276224778763,
+      "overshoot": 1.6370378015562892,
+      "settling_time": 383.0,
+      "steady_state_error": 1.4057902457731728,
+      "control_energy": 51599599014.88414,
+      "disturbance_recovery_time": 383.0,
+      "control_variation": 253.5032547833714,
+      "velocity_rmse": 0.3941846247751127,
+      "reward": -0.7595298435765181,
+      "backend": "gym_env"
+    },
+    "ladrc_x_pos_pid_att_tuned": {
+      "mae": 0.3340469171933614,
+      "rmse": 0.4199530095951489,
+      "iae": 128.27401620225078,
+      "overshoot": 1.189501809887588,
+      "settling_time": 383.0,
+      "steady_state_error": 0.9582519703054506,
+      "control_energy": 37138402088.50577,
+      "disturbance_recovery_time": 383.0,
+      "control_variation": 152.55506996573106,
+      "velocity_rmse": 0.5471164001453032,
+      "reward": -0.5382396396499561,
+      "backend": "gym_env"
+    }
+  },
+  "stage_metrics": {
+    "pid_pos_att": [
+      {
+        "stage": 0,
+        "start": 0,
+        "stop": 5,
+        "velocity": 0.0,
+        "rmse": 0.0,
+        "mae": 0.0
+      },
+      {
+        "stage": 1,
+        "start": 5,
+        "stop": 125,
+        "velocity": 0.6,
+        "rmse": 0.041809321092603956,
+        "mae": 0.02343078252568489
+      },
+      {
+        "stage": 2,
+        "start": 125,
+        "stop": 264,
+        "velocity": 0.0,
+        "rmse": 0.21568450232035688,
+        "mae": 0.20882608650399626
+      },
+      {
+        "stage": 3,
+        "start": 264,
+        "stop": 384,
+        "velocity": -0.6,
+        "rmse": 1.0682710981814314,
+        "mae": 0.9765850017235304
+      }
+    ],
+    "ladrc_x_pos_pid_att_default": [
+      {
+        "stage": 0,
+        "start": 0,
+        "stop": 5,
+        "velocity": 0.0,
+        "rmse": 0.0,
+        "mae": 0.0
+      },
+      {
+        "stage": 1,
+        "start": 5,
+        "stop": 125,
+        "velocity": 0.6,
+        "rmse": 0.2112020427435811,
+        "mae": 0.20372103758387444
+      },
+      {
+        "stage": 2,
+        "start": 125,
+        "stop": 264,
+        "velocity": 0.0,
+        "rmse": 0.1409134879657143,
+        "mae": 0.13626464751126954
+      },
+      {
+        "stage": 3,
+        "start": 264,
+        "stop": 384,
+        "velocity": -0.6,
+        "rmse": 0.9927033349932513,
+        "mae": 0.8932954311138019
+      }
+    ],
+    "ladrc_x_pos_pid_att_tuned": [
+      {
+        "stage": 0,
+        "start": 0,
+        "stop": 5,
+        "velocity": 0.0,
+        "rmse": 0.0,
+        "mae": 0.0
+      },
+      {
+        "stage": 1,
+        "start": 5,
+        "stop": 125,
+        "velocity": 0.6,
+        "rmse": 0.2744265404747392,
+        "mae": 0.21632014466302393
+      },
+      {
+        "stage": 2,
+        "start": 125,
+        "stop": 264,
+        "velocity": 0.0,
+        "rmse": 0.29799604415930364,
+        "mae": 0.29799604415893555
+      },
+      {
+        "stage": 3,
+        "start": 264,
+        "stop": 384,
+        "velocity": -0.6,
+        "rmse": 0.6214353291935021,
+        "mae": 0.5074512392049655
+      }
+    ]
+  },
+  "tuned_params": {
+    "b0": 0.8,
+    "omega_c": 6.6,
+    "k": 3.2,
+    "source": "current_disturbance_tuned"
+  },
+  "figures": [
+    "outputs\\control_pybullet\\x_highspeed_midhold_sine_disturbance\\x\\20260411_164559\\figures\\tracking_three_way.svg",
+    "outputs\\control_pybullet\\x_highspeed_midhold_sine_disturbance\\x\\20260411_164559\\figures\\tracking_three_way.png",
+    "outputs\\control_pybullet\\x_highspeed_midhold_sine_disturbance\\x\\20260411_164559\\figures\\tracking_error_three_way.svg",
+    "outputs\\control_pybullet\\x_highspeed_midhold_sine_disturbance\\x\\20260411_164559\\figures\\tracking_error_three_way.png",
+    "outputs\\control_pybullet\\x_highspeed_midhold_sine_disturbance\\x\\20260411_164559\\figures\\disturbance_zoom_three_way.svg",
+    "outputs\\control_pybullet\\x_highspeed_midhold_sine_disturbance\\x\\20260411_164559\\figures\\disturbance_zoom_three_way.png"
+  ]
+}

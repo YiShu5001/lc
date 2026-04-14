@@ -1,0 +1,4 @@
+scenario,description,backend,pid_rmse,ladrc_rmse,pid_reward,ladrc_reward,ladrc_beats_pid,best_b0,best_omega_c,best_k
+baseline,Current medium reference without disturbance,gym_env,0.006488629392436318,0.059992708842951166,-0.2708436816828683,-0.3065866005589802,0,30.5,0.7200000000000001,6.3
+lateral_disturbance,Current reference with sustained x-axis disturbance,gym_env,0.42604279897416863,0.23281678344005657,-0.8570644211079909,-0.6131643155736162,1,0.8,6.6000000000000005,3.2
+aggressive_reference,Faster and shorter stage transitions to stress transient tracking,gym_env,0.013040174284748515,0.09123800780287403,-0.27876888084598783,-0.3348496179043665,0,36.6,0.8,7.700000000000001

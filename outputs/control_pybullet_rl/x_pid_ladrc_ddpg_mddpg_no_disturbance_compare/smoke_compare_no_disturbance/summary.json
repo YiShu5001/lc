@@ -1,0 +1,83 @@
+{
+  "backend": "gym_env",
+  "disturbance": "none",
+  "reference_segments": [
+    {
+      "stage": 0.0,
+      "start": 0.0,
+      "stop": 96.0,
+      "velocity": 0.5
+    },
+    {
+      "stage": 1.0,
+      "start": 96.0,
+      "stop": 144.0,
+      "velocity": 0.0
+    },
+    {
+      "stage": 2.0,
+      "start": 144.0,
+      "stop": 240.0,
+      "velocity": -0.6
+    },
+    {
+      "stage": 3.0,
+      "start": 240.0,
+      "stop": 264.0,
+      "velocity": 0.0
+    }
+  ],
+  "controllers": {
+    "PID": {
+      "source": "pid_pos_att"
+    },
+    "LADRC(0.5-opt)": {
+      "source": "fixed_ladrc_0.5_opt",
+      "r": 63.0,
+      "b0": 24.3,
+      "omega_c": 2.95,
+      "k": 7.415254237288136
+    },
+    "DDPG-LADRC (v=1)": {
+      "checkpoint": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\smoke_no_disturbance_v1_v5\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_111454\\checkpoints\\x_policy_best.pt"
+    },
+    "mDDPG-LADRC (v=5)": {
+      "checkpoint": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\smoke_no_disturbance_v1_v5\\v_5\\train\\ladrc_x_pos_pid_att\\x\\20260412_111512\\checkpoints\\x_policy_best.pt"
+    }
+  },
+  "metrics": [
+    {
+      "rmse": 0.0581679855540342,
+      "mae": 0.038969181332404755,
+      "velocity_rmse": 0.24970742060378923,
+      "reward": -0.3103057919635454,
+      "controller": "PID"
+    },
+    {
+      "rmse": 0.0584265301676926,
+      "mae": 0.05103564097217775,
+      "velocity_rmse": 0.21482284011168293,
+      "reward": -0.30527975197041857,
+      "controller": "LADRC(0.5-opt)"
+    },
+    {
+      "rmse": 1.6683386101130848,
+      "mae": 1.5453594606901253,
+      "velocity_rmse": 1.0764028552914968,
+      "reward": -2.108142922001883,
+      "controller": "DDPG-LADRC (v=1)"
+    },
+    {
+      "rmse": 1.57885272037624,
+      "mae": 1.4571811550399907,
+      "velocity_rmse": 1.047332283466142,
+      "reward": -2.0799153187238106,
+      "controller": "mDDPG-LADRC (v=5)"
+    }
+  ],
+  "figures": [
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_pid_ladrc_ddpg_mddpg_no_disturbance_compare\\smoke_compare_no_disturbance\\figures\\tracking_compare.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_pid_ladrc_ddpg_mddpg_no_disturbance_compare\\smoke_compare_no_disturbance\\figures\\velocity_compare.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_pid_ladrc_ddpg_mddpg_no_disturbance_compare\\smoke_compare_no_disturbance\\figures\\error_compare.png"
+  ]
+}

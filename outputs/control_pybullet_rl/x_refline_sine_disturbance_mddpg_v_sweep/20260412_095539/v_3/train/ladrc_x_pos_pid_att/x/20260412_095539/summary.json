@@ -1,0 +1,42 @@
+{
+  "axis": "x",
+  "controller_variant": "ladrc_x_pos_pid_att",
+  "backend": "gym_env",
+  "shared_value": 3,
+  "action_dim": 4,
+  "stack_size": 3,
+  "action_hold_steps": 3,
+  "n_step": 3,
+  "checkpoint_path": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_sine_disturbance_mddpg_v_sweep\\20260412_095539\\v_3\\train\\ladrc_x_pos_pid_att\\x\\20260412_095539\\checkpoints\\x_policy.pt",
+  "best_checkpoint_path": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_sine_disturbance_mddpg_v_sweep\\20260412_095539\\v_3\\train\\ladrc_x_pos_pid_att\\x\\20260412_095539\\checkpoints\\x_policy_best.pt",
+  "best_reward": -572.3963525872996,
+  "average_reward": -648.3153767777515,
+  "snapshot_interval": 20,
+  "snapshot_figures": [],
+  "reference_segments": [
+    {
+      "stage": 0.0,
+      "start": 0.0,
+      "stop": 96.0,
+      "velocity": 0.5
+    },
+    {
+      "stage": 1.0,
+      "start": 96.0,
+      "stop": 144.0,
+      "velocity": 0.0
+    },
+    {
+      "stage": 2.0,
+      "start": 144.0,
+      "stop": 240.0,
+      "velocity": -0.6
+    },
+    {
+      "stage": 3.0,
+      "start": 240.0,
+      "stop": 264.0,
+      "velocity": 0.0
+    }
+  ]
+}

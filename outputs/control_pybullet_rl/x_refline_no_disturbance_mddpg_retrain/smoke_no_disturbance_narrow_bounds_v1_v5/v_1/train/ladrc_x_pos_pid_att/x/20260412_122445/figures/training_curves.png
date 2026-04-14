@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="420">
+<rect width="100%" height="100%" fill="white" />
+<text x="360.0" y="24" text-anchor="middle" font-size="18">Training Reward</text>
+<line x1="50" y1="370" x2="670" y2="370" stroke="#333" />
+<line x1="50" y1="50" x2="50" y2="370" stroke="#333" />
+<polyline fill="none" stroke="#1b9e77" stroke-width="2" points="50.0,218.0 82.6,77.8 115.3,112.1 147.9,134.7 180.5,103.4 213.2,50.0 245.8,126.0 278.4,90.2 311.1,199.7 343.7,270.4 376.3,90.6 408.9,146.7 441.6,262.2 474.2,300.1 506.8,312.2 539.5,159.5 572.1,183.9 604.7,182.0 637.4,370.0 670.0,241.8" />
+<text x="560" y="42" font-size="12" fill="#1b9e77">reward</text>
+</svg>

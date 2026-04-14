@@ -1,0 +1,11 @@
+{
+  "section": "3.3",
+  "tables": [
+    "rl_action_space_table.csv",
+    "rl_training_config_table.csv",
+    "shared_value_summary.csv"
+  ],
+  "figures": [
+    "fig5_ddpg_ladrc_framework.png"
+  ]
+}

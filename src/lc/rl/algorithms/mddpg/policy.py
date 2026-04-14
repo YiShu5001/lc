@@ -14,27 +14,35 @@ import torch.optim as optim
 class MDDPGConfig:
     state_dim: int
     action_dim: int
-    hidden_dim: int = 128
-    actor_lr: float = 1e-3
-    critic_lr: float = 1e-3
+    # Favor a larger, more regularized backbone for long-horizon control tuning.
+    hidden_dim: int = 512
+    actor_lr: float = 3e-4
+    critic_lr: float = 3e-4
     gamma: float = 0.95
-    tau: float = 0.02
-    batch_size: int = 32
-    buffer_size: int = 50000
+    tau: float = 0.05
+    batch_size: int = 128
+    buffer_size: int = 400000
     action_hold_steps: int = 5
     stack_size: int = 4
     expl_noise: float = 0.1
+    expl_noise_start: float = 0.1
+    expl_noise_end: float = 0.1
+    expl_noise_schedule: str = "fixed"
+    soft_update_interval: int = 20
+    dropout_p: float = 0.2
     device: str = "cpu"
 
 
 class _Actor(nn.Module):
-    def __init__(self, state_dim: int, action_dim: int, hidden_dim: int):
+    def __init__(self, state_dim: int, action_dim: int, hidden_dim: int, dropout_p: float):
         super().__init__()
         self.net = nn.Sequential(
             nn.Linear(state_dim, hidden_dim),
             nn.ReLU(),
+            nn.Dropout(dropout_p),
             nn.Linear(hidden_dim, hidden_dim),
             nn.ReLU(),
+            nn.Dropout(dropout_p),
             nn.Linear(hidden_dim, action_dim),
             nn.Tanh(),
         )
@@ -44,13 +52,15 @@ class _Actor(nn.Module):
 
 
 class _Critic(nn.Module):
-    def __init__(self, state_dim: int, action_dim: int, hidden_dim: int):
+    def __init__(self, state_dim: int, action_dim: int, hidden_dim: int, dropout_p: float):
         super().__init__()
         self.net = nn.Sequential(
             nn.Linear(state_dim + action_dim, hidden_dim),
             nn.ReLU(),
+            nn.Dropout(dropout_p),
             nn.Linear(hidden_dim, hidden_dim),
             nn.ReLU(),
+            nn.Dropout(dropout_p),
             nn.Linear(hidden_dim, 1),
         )
 
@@ -91,11 +101,11 @@ class MDDPGPolicy:
         self.config = config
         self.device = torch.device(config.device)
         effective_state_dim = config.state_dim * config.stack_size
-        self.actor = _Actor(effective_state_dim, config.action_dim, config.hidden_dim).to(self.device)
-        self.actor_target = _Actor(effective_state_dim, config.action_dim, config.hidden_dim).to(self.device)
+        self.actor = _Actor(effective_state_dim, config.action_dim, config.hidden_dim, config.dropout_p).to(self.device)
+        self.actor_target = _Actor(effective_state_dim, config.action_dim, config.hidden_dim, config.dropout_p).to(self.device)
         self.actor_target.load_state_dict(self.actor.state_dict())
-        self.critic = _Critic(effective_state_dim, config.action_dim, config.hidden_dim).to(self.device)
-        self.critic_target = _Critic(effective_state_dim, config.action_dim, config.hidden_dim).to(self.device)
+        self.critic = _Critic(effective_state_dim, config.action_dim, config.hidden_dim, config.dropout_p).to(self.device)
+        self.critic_target = _Critic(effective_state_dim, config.action_dim, config.hidden_dim, config.dropout_p).to(self.device)
         self.critic_target.load_state_dict(self.critic.state_dict())
         self.actor_optimizer = optim.Adam(self.actor.parameters(), lr=config.actor_lr)
         self.critic_optimizer = optim.Adam(self.critic.parameters(), lr=config.critic_lr)
@@ -103,10 +113,15 @@ class MDDPGPolicy:
         self._hold_counter = 0
         self._last_action = np.zeros(config.action_dim, dtype=np.float32)
         self._normalizer = np.ones(effective_state_dim, dtype=np.float32)
+        self._soft_update_counter = config.soft_update_interval
+        self._current_expl_noise = float(config.expl_noise_start)
 
     def reset(self) -> None:
         self._hold_counter = 0
         self._last_action = np.zeros(self.config.action_dim, dtype=np.float32)
+
+    def set_exploration_noise(self, value: float) -> None:
+        self._current_expl_noise = max(float(value), 0.0)
 
     def select_action(self, stacked_state: np.ndarray, explore: bool = False) -> np.ndarray:
         if self._hold_counter > 0:
@@ -115,9 +130,11 @@ class MDDPGPolicy:
         self._update_normalizer(stacked_state)
         norm_state = stacked_state / self._normalizer
         state_t = torch.as_tensor(norm_state, dtype=torch.float32, device=self.device).view(1, -1)
+        # Keep the current normalized [-1, 1] action semantics for chapter-3 LADRC tuning.
         action = self.actor(state_t).detach().cpu().numpy().reshape(-1)
         if explore:
-            action = np.clip(action + np.random.normal(0.0, self.config.expl_noise, size=action.shape), -1.0, 1.0)
+            noise = np.random.uniform(-self._current_expl_noise, self._current_expl_noise, size=action.shape)
+            action = np.clip(action + noise, -1.0, 1.0)
         self._last_action = action.astype(np.float32)
         self._hold_counter = self.config.action_hold_steps - 1
         return self._last_action.copy()
@@ -155,8 +172,12 @@ class MDDPGPolicy:
             actor_loss.backward()
             self.actor_optimizer.step()
 
-            self._soft_update(self.actor_target, self.actor)
-            self._soft_update(self.critic_target, self.critic)
+            if self._soft_update_counter <= 0:
+                self._soft_update(self.actor_target, self.actor)
+                self._soft_update(self.critic_target, self.critic)
+                self._soft_update_counter = self.config.soft_update_interval
+            else:
+                self._soft_update_counter -= 1
             critic_losses.append(float(critic_loss.item()))
             actor_losses.append(float(actor_loss.item()))
         return {"critic_loss": float(np.mean(critic_losses)), "actor_loss": float(np.mean(actor_losses))}

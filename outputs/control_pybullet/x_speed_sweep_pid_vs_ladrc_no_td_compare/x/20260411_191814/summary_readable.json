@@ -1,0 +1,90 @@
+{
+  "axis": "x",
+  "scenario_name": "x_speed_sweep_pid_vs_ladrc_no_td_compare",
+  "backend": "gym_env",
+  "speed_grid_mps": [
+    0.1,
+    0.2,
+    0.3,
+    0.4,
+    0.5,
+    0.6,
+    0.7,
+    0.8
+  ],
+  "typical_speeds_mps": [
+    0.1,
+    0.5,
+    0.8
+  ],
+  "route_definition": {
+    "duration_sec": 2.0,
+    "steps": 96,
+    "fixed_stage_lengths": [
+      96
+    ],
+    "mode": "single_forward_segment"
+  },
+  "controllers": {
+    "pid_pos_att": {
+      "variant": "pid_pos_att"
+    },
+    "ladrc_retuned_r63_no_td": {
+      "variant": "ladrc_x_pos_pid_att",
+      "b0": 24.3,
+      "omega_c": 2.95,
+      "omega_o": 21.875,
+      "k": 7.415254237288135,
+      "r": 63.0,
+      "use_td": false
+    },
+    "ladrc_retuned_no_r_search_no_td": {
+      "variant": "ladrc_x_pos_pid_att",
+      "b0": 29.75,
+      "omega_c": 6.6,
+      "omega_o": 31.679999999999996,
+      "k": 4.8,
+      "r": 10.0,
+      "use_td": false
+    }
+  },
+  "figures": [
+    "outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_no_td_compare\\x\\20260411_191814\\figures\\speed_rmse_curve.png",
+    "outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_no_td_compare\\x\\20260411_191814\\figures\\speed_mae_curve.png",
+    "outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_no_td_compare\\x\\20260411_191814\\figures\\speed_velocity_rmse_curve.png",
+    "outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_no_td_compare\\x\\20260411_191814\\figures\\speed_0.1_position_tracking.png",
+    "outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_no_td_compare\\x\\20260411_191814\\figures\\speed_0.1_velocity_tracking.png",
+    "outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_no_td_compare\\x\\20260411_191814\\figures\\speed_0.5_position_tracking.png",
+    "outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_no_td_compare\\x\\20260411_191814\\figures\\speed_0.5_velocity_tracking.png",
+    "outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_no_td_compare\\x\\20260411_191814\\figures\\speed_0.8_position_tracking.png",
+    "outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_no_td_compare\\x\\20260411_191814\\figures\\speed_0.8_velocity_tracking.png"
+  ],
+  "videos": {
+    "0.1": {
+      "pid_pos_att": "outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_no_td_compare\\x\\20260411_191814\\speeds\\0.1\\videos\\pid_pos_att\\episode.gif",
+      "ladrc_retuned_r63_no_td": "outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_no_td_compare\\x\\20260411_191814\\speeds\\0.1\\videos\\ladrc_retuned_r63_no_td\\episode.gif",
+      "ladrc_retuned_no_r_search_no_td": "outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_no_td_compare\\x\\20260411_191814\\speeds\\0.1\\videos\\ladrc_retuned_no_r_search_no_td\\episode.gif"
+    },
+    "0.5": {
+      "pid_pos_att": "outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_no_td_compare\\x\\20260411_191814\\speeds\\0.5\\videos\\pid_pos_att\\episode.gif",
+      "ladrc_retuned_r63_no_td": "outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_no_td_compare\\x\\20260411_191814\\speeds\\0.5\\videos\\ladrc_retuned_r63_no_td\\episode.gif",
+      "ladrc_retuned_no_r_search_no_td": "outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_no_td_compare\\x\\20260411_191814\\speeds\\0.5\\videos\\ladrc_retuned_no_r_search_no_td\\episode.gif"
+    },
+    "0.8": {
+      "pid_pos_att": "outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_no_td_compare\\x\\20260411_191814\\speeds\\0.8\\videos\\pid_pos_att\\episode.gif",
+      "ladrc_retuned_r63_no_td": "outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_no_td_compare\\x\\20260411_191814\\speeds\\0.8\\videos\\ladrc_retuned_r63_no_td\\episode.gif",
+      "ladrc_retuned_no_r_search_no_td": "outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_no_td_compare\\x\\20260411_191814\\speeds\\0.8\\videos\\ladrc_retuned_no_r_search_no_td\\episode.gif"
+    }
+  },
+  "metrics_by_speed_csv": "outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_no_td_compare\\x\\20260411_191814\\metrics_by_speed.csv",
+  "speed_dirs": {
+    "0.1": "outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_no_td_compare\\x\\20260411_191814\\speeds\\0.1",
+    "0.2": "outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_no_td_compare\\x\\20260411_191814\\speeds\\0.2",
+    "0.3": "outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_no_td_compare\\x\\20260411_191814\\speeds\\0.3",
+    "0.4": "outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_no_td_compare\\x\\20260411_191814\\speeds\\0.4",
+    "0.5": "outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_no_td_compare\\x\\20260411_191814\\speeds\\0.5",
+    "0.6": "outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_no_td_compare\\x\\20260411_191814\\speeds\\0.6",
+    "0.7": "outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_no_td_compare\\x\\20260411_191814\\speeds\\0.7",
+    "0.8": "outputs\\control_pybullet\\x_speed_sweep_pid_vs_ladrc_no_td_compare\\x\\20260411_191814\\speeds\\0.8"
+  }
+}

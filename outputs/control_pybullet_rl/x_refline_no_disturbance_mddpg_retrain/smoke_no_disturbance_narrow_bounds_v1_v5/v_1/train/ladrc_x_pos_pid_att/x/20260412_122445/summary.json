@@ -1,0 +1,56 @@
+{
+  "axis": "x",
+  "controller_variant": "ladrc_x_pos_pid_att",
+  "backend": "gym_env",
+  "shared_value": 1,
+  "action_dim": 4,
+  "stack_size": 1,
+  "action_hold_steps": 1,
+  "n_step": 1,
+  "checkpoint_path": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\smoke_no_disturbance_narrow_bounds_v1_v5\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_122445\\checkpoints\\x_policy.pt",
+  "best_checkpoint_path": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\smoke_no_disturbance_narrow_bounds_v1_v5\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_122445\\checkpoints\\x_policy_best.pt",
+  "best_reward": -418.57621333509536,
+  "best_eval_score": 1.967559651699302,
+  "best_eval_metrics": {
+    "episode": 20.0,
+    "rmse": 1.2999420427606403,
+    "mae": 1.1763619669736052,
+    "velocity_rmse": 1.279454602489499,
+    "reward": -2.174200815292174,
+    "score": 1.967559651699302
+  },
+  "average_reward": -516.2033528735088,
+  "snapshot_interval": 20,
+  "snapshot_figures": [
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\smoke_no_disturbance_narrow_bounds_v1_v5\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_122445\\figures\\episode_020\\axis_tracking.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\smoke_no_disturbance_narrow_bounds_v1_v5\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_122445\\figures\\episode_020\\axis_error.png",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\smoke_no_disturbance_narrow_bounds_v1_v5\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_122445\\figures\\episode_020\\axis_velocity.png"
+  ],
+  "eval_history_path": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\smoke_no_disturbance_narrow_bounds_v1_v5\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_122445\\eval_history.csv",
+  "reference_segments": [
+    {
+      "stage": 0.0,
+      "start": 0.0,
+      "stop": 96.0,
+      "velocity": 0.5
+    },
+    {
+      "stage": 1.0,
+      "start": 96.0,
+      "stop": 144.0,
+      "velocity": 0.0
+    },
+    {
+      "stage": 2.0,
+      "start": 144.0,
+      "stop": 240.0,
+      "velocity": -0.6
+    },
+    {
+      "stage": 3.0,
+      "start": 240.0,
+      "stop": 264.0,
+      "velocity": 0.0
+    }
+  ]
+}

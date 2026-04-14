@@ -25,6 +25,15 @@ class ControlTrainer:
     warmup_steps: int = 64
     batch_size: int = 128
     updates_per_step: int = 1
+    actor_lr: float = 3e-4
+    critic_lr: float = 3e-4
+    hidden_dim: int = 512
+    dropout_p: float = 0.2
+    tau: float = 0.05
+    soft_update_interval: int = 20
+    exploration_noise_schedule: str = "fixed"
+    exploration_noise_start: float = 0.1
+    exploration_noise_end: float = 0.1
     tuned_ladrc_params: dict[str, dict[str, float]] = field(default_factory=dict)
     refline_task_config: AxisRLRefLineTaskConfig | dict[str, AxisRLRefLineTaskConfig] | None = None
     refline_seed_strategy: str = "episode"
@@ -195,6 +204,15 @@ class ControlTrainer:
             action_hold_steps=hold_steps,
             n_step=n_step,
             batch_size=self.batch_size,
+            actor_lr=self.actor_lr,
+            critic_lr=self.critic_lr,
+            hidden_dim=self.hidden_dim,
+            dropout_p=self.dropout_p,
+            tau=self.tau,
+            soft_update_interval=self.soft_update_interval,
+            exploration_noise_schedule=self.exploration_noise_schedule,
+            exploration_noise_start=self.exploration_noise_start,
+            exploration_noise_end=self.exploration_noise_end,
             controller=AdaptiveLADRCController.from_action_bounds(get_axis_ladrc_action_bounds(axis_name)),
         )
         if axis_name in self.tuned_ladrc_params:
@@ -205,6 +223,7 @@ class ControlTrainer:
         train_history: list[dict[str, float]] = []
         train_snapshots: dict[int, dict[str, list[float]]] = {}
         for episode in range(train_episodes):
+            agent.policy.set_exploration_noise(self._episode_exploration_noise(episode, train_episodes))
             episode_seed = self.env.seed + seed_offset + episode
             obs = self.env.reset(
                 axis=axis_name,
@@ -226,7 +245,7 @@ class ControlTrainer:
                 if explore:
                     action = agent.act(stacked_state, explore=True)
                 else:
-                    action = np.random.uniform(-1.0, 1.0, size=3).astype(np.float32)
+                    action = np.random.uniform(-1.0, 1.0, size=4).astype(np.float32)
                 agent.controller.adapt(action)
                 control_signal = agent.controller.step(
                     self.env.reference,
@@ -259,6 +278,14 @@ class ControlTrainer:
             if snapshot_interval and (episode + 1) % snapshot_interval == 0:
                 train_snapshots[episode + 1] = self._collect_trajectory()
         return agent, train_history, train_snapshots
+
+    def _episode_exploration_noise(self, episode: int, train_episodes: int) -> float:
+        if self.exploration_noise_schedule != "linear" or train_episodes <= 1:
+            return float(self.exploration_noise_start)
+        progress = float(episode) / float(max(train_episodes - 1, 1))
+        start = float(self.exploration_noise_start)
+        end = float(self.exploration_noise_end)
+        return start + (end - start) * progress
 
     def _evaluate_agent(
         self,
@@ -380,8 +407,8 @@ class ControlTrainer:
 
     def _default_axis_params(self, axis: str) -> dict[str, float]:
         defaults = {
-            "x": {"b0": 1.0, "omega_c": 5.5, "k": 3.0},
-            "y": {"b0": 1.0, "omega_c": 5.5, "k": 3.2},
+            "x": {"b0": 30.5, "omega_c": 1.5, "k": 11.0},
+            "y": {"b0": 30.5, "omega_c": 1.5, "k": 11.0},
             "z": {"b0": 1.2, "omega_c": 4.5, "k": 3.8},
         }
         return defaults.get(axis, defaults["x"])

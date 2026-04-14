@@ -9,6 +9,8 @@ class ArtifactConfig:
     export_structured: bool = True
     export_legacy_logger: bool = True
     save_figures: bool = True
+    record_video: bool = False
+    video_output_dir: str | None = None
 
 
 @dataclass(frozen=True)
@@ -23,6 +25,11 @@ class AxisTrainingConfig:
     disturbance_scale: float = 0.0
     disturbance_axis_bias: float = 1.0
     stage_count: int = 4
+    fixed_stage_lengths: tuple[int, ...] | None = None
+    fixed_stage_velocities: tuple[float, ...] | None = None
+    disturbance_step_window: tuple[int, int] | None = None
+    disturbance_frequency_rad: float = 0.11
+    disturbance_mode: str = "sine"
 
 
 @dataclass(frozen=True)
@@ -106,8 +113,11 @@ class PyBulletControlExperimentConfig:
     warmup_steps: int = 32
     train_episodes: int = 8
     eval_episodes: int = 3
+    compare_episodes: int = 3
+    eval_seeds: tuple[int, ...] = (7,)
     updates_per_step: int = 1
     batch_size: int = 32
+    snapshot_interval: int = 20
     training_controller_variant: str = "ladrc_pos_pid_att"
     tuning: SingleAxisLADRCTuningConfig = field(default_factory=SingleAxisLADRCTuningConfig)
     artifact: ArtifactConfig = field(default_factory=ArtifactConfig)

@@ -1,0 +1,16 @@
+{
+  "figure": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\zero_delta_param_trajectories.png",
+  "csv": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\zero_delta_param_timeseries.csv",
+  "unique_r": [
+    65.0
+  ],
+  "unique_b0": [
+    30.0
+  ],
+  "unique_omega_c": [
+    2.25
+  ],
+  "unique_k": [
+    7.0
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "backend": "gym_env",
+  "message": "PyBullet four-parameter mDDPG-LADRC shared-value sweep completed.",
+  "runs": [
+    {
+      "shared_value": 3,
+      "output_dir": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_sine_disturbance_mddpg_v_sweep\\20260412_095539\\v_3\\train\\ladrc_x_pos_pid_att\\x\\20260412_095539",
+      "checkpoint_path": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_sine_disturbance_mddpg_v_sweep\\20260412_095539\\v_3\\train\\ladrc_x_pos_pid_att\\x\\20260412_095539\\checkpoints\\x_policy.pt",
+      "best_checkpoint_path": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_sine_disturbance_mddpg_v_sweep\\20260412_095539\\v_3\\train\\ladrc_x_pos_pid_att\\x\\20260412_095539\\checkpoints\\x_policy_best.pt",
+      "average_reward": -648.3153767777515,
+      "history_length": 2,
+      "backend": "gym_env",
+      "figures": [
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_sine_disturbance_mddpg_v_sweep\\20260412_095539\\v_3\\train\\ladrc_x_pos_pid_att\\x\\20260412_095539\\figures\\training_curves.png"
+      ]
+    }
+  ]
+}

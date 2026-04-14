@@ -1,0 +1,70 @@
+{
+  "backend": "gym_env",
+  "reference_segments": [
+    {
+      "stage": 0.0,
+      "start": 0.0,
+      "stop": 88.0,
+      "velocity": 0.0
+    },
+    {
+      "stage": 1.0,
+      "start": 88.0,
+      "stop": 201.0,
+      "velocity": 0.20453901588916779
+    },
+    {
+      "stage": 2.0,
+      "start": 201.0,
+      "stop": 310.0,
+      "velocity": 0.0
+    },
+    {
+      "stage": 3.0,
+      "start": 310.0,
+      "stop": 384.0,
+      "velocity": -0.2597709894180298
+    }
+  ],
+  "best_candidate": {
+    "name": "retuned_aggressive_best",
+    "b0": 36.6,
+    "omega_c": 0.8,
+    "k": 7.7
+  },
+  "pid_metrics": {
+    "mae": 0.007813837419996972,
+    "rmse": 0.014037669751487085,
+    "iae": 3.000513569278837,
+    "overshoot": 0.04959452152252197,
+    "settling_time": 0.0,
+    "steady_state_error": 0.002906201113211481,
+    "control_energy": 80404174695.1022,
+    "disturbance_recovery_time": 0.0,
+    "control_variation": 1.9413922262565275,
+    "velocity_rmse": 0.06903393198668378,
+    "reward": -0.2994341318761196,
+    "backend": "gym_env"
+  },
+  "ladrc_metrics": {
+    "mae": 0.08042805559882409,
+    "rmse": 0.1060950701198382,
+    "iae": 30.884373349948447,
+    "overshoot": 0.20815116167068481,
+    "settling_time": 383.0,
+    "steady_state_error": 0.20234355859850583,
+    "control_energy": 80352444441.01201,
+    "disturbance_recovery_time": 383.0,
+    "control_variation": 0.6222016257343342,
+    "velocity_rmse": 0.11659675781312968,
+    "reward": -0.36792214723661704,
+    "backend": "gym_env"
+  },
+  "ladrc_beats_pid": false,
+  "figures": [
+    "outputs\\control_pybullet\\aggressive_reference_retune\\x\\20260411_151754\\figures\\aggressive_pid_vs_retuned_ladrc_tracking.svg",
+    "outputs\\control_pybullet\\aggressive_reference_retune\\x\\20260411_151754\\figures\\aggressive_pid_vs_retuned_ladrc_tracking.png",
+    "outputs\\control_pybullet\\aggressive_reference_retune\\x\\20260411_151754\\figures\\aggressive_pid_vs_retuned_ladrc_error.svg",
+    "outputs\\control_pybullet\\aggressive_reference_retune\\x\\20260411_151754\\figures\\aggressive_pid_vs_retuned_ladrc_error.png"
+  ]
+}

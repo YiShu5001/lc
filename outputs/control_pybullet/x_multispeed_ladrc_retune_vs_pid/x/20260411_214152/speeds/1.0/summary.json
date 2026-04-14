@@ -1,0 +1,185 @@
+{
+  "speed_mps": 1.0,
+  "route_definition": {
+    "duration_sec": 2.5,
+    "steps": 120,
+    "fixed_stage_lengths": [
+      96,
+      24
+    ],
+    "fixed_stage_velocities": [
+      1.0,
+      0.0
+    ]
+  },
+  "reference_segments": [
+    {
+      "stage": 0.0,
+      "start": 0.0,
+      "stop": 96.0,
+      "velocity": 1.0
+    },
+    {
+      "stage": 1.0,
+      "start": 96.0,
+      "stop": 120.0,
+      "velocity": 0.0
+    }
+  ],
+  "default_repo_params": {
+    "b0": 30.5,
+    "omega_c": 1.5,
+    "omega_o": 16.5,
+    "k": 11.0,
+    "r": 10.0
+  },
+  "retuned_candidate": {
+    "name": "retuned_speed_1.0",
+    "b0": 32.940000000000005,
+    "omega_c": 3.7800000000000002,
+    "omega_o": 12.700800000000001,
+    "r": 42.5,
+    "k": 3.36
+  },
+  "controllers": {
+    "pid_pos_att": {
+      "mae": 0.07676228144978078,
+      "rmse": 0.11297977369843067,
+      "iae": 9.211473773973694,
+      "overshoot": 0.22341275215148926,
+      "settling_time": 119.0,
+      "steady_state_error": 0.20789188146591187,
+      "control_energy": 25800111186.69352,
+      "disturbance_recovery_time": 119.0,
+      "control_variation": 29.813484768907564,
+      "velocity_rmse": 0.45700405773148206,
+      "reward": -0.5005640523110539,
+      "backend": "gym_env",
+      "end_vx_mean": -0.34121462143957615,
+      "negative_tail_velocity": 1.0,
+      "max_tail_pitch_abs": 0.487211674451828,
+      "tail_rpm_edge_fraction": 0.0,
+      "tail_same_rpm_fraction": 0.0,
+      "unstable_tail": 1.0,
+      "hold_steady_state_error": 0.16105697552363077,
+      "controller": "pid_pos_att",
+      "speed_mps": 1.0,
+      "score": 35.17798725514963
+    },
+    "ladrc_x_pos_pid_att_default": {
+      "mae": 0.304921640261558,
+      "rmse": 0.33249963071336214,
+      "iae": 36.59059683138696,
+      "overshoot": 0.10612821578979492,
+      "settling_time": 119.0,
+      "steady_state_error": 0.05315957466761271,
+      "control_energy": 25270125668.477585,
+      "disturbance_recovery_time": 119.0,
+      "control_variation": 5.3623990611869745,
+      "velocity_rmse": 0.5597357059774722,
+      "reward": -0.7548813227947304,
+      "backend": "gym_env",
+      "end_vx_mean": 0.6624067239463329,
+      "negative_tail_velocity": 0.0,
+      "max_tail_pitch_abs": 0.2463231086730957,
+      "tail_rpm_edge_fraction": 0.0,
+      "tail_same_rpm_fraction": 0.0,
+      "unstable_tail": 0.0,
+      "hold_steady_state_error": 0.1288396418094635,
+      "controller": "ladrc_x_pos_pid_att_default",
+      "speed_mps": 1.0,
+      "score": 0.3713918530837297
+    },
+    "ladrc_x_pos_pid_att_retuned": {
+      "mae": 0.0872309159060156,
+      "rmse": 0.11052108328780401,
+      "iae": 10.467709908721872,
+      "overshoot": 0.10150146484375,
+      "settling_time": 119.0,
+      "steady_state_error": 0.09499533971150716,
+      "control_energy": 26353371387.475754,
+      "disturbance_recovery_time": 119.0,
+      "control_variation": 42.83910927652311,
+      "velocity_rmse": 0.5285076971618992,
+      "reward": -0.5126593556151042,
+      "backend": "gym_env",
+      "end_vx_mean": -0.03088254574686289,
+      "negative_tail_velocity": 0.0,
+      "max_tail_pitch_abs": 0.23688122630119324,
+      "tail_rpm_edge_fraction": 0.0,
+      "tail_same_rpm_fraction": 0.0,
+      "unstable_tail": 0.0,
+      "hold_steady_state_error": 0.06457219024499257,
+      "controller": "ladrc_x_pos_pid_att_retuned",
+      "speed_mps": 1.0,
+      "score": 0.16924378695483072
+    }
+  },
+  "stage_metrics": {
+    "pid_pos_att": [
+      {
+        "stage": 0,
+        "start": 0,
+        "stop": 96,
+        "velocity": 1.0,
+        "rmse": 0.09168974307876941,
+        "mae": 0.05568860793131828,
+        "velocity_rmse": 0.3940850106665886
+      },
+      {
+        "stage": 1,
+        "start": 96,
+        "stop": 120,
+        "velocity": 0.0,
+        "rmse": 0.17376452567005743,
+        "mae": 0.16105697552363077,
+        "velocity_rmse": 0.6504241396095766
+      }
+    ],
+    "ladrc_x_pos_pid_att_default": [
+      {
+        "stage": 0,
+        "start": 0,
+        "stop": 96,
+        "velocity": 1.0,
+        "rmse": 0.3630135523541601,
+        "mae": 0.3489421398745816,
+        "velocity_rmse": 0.4260938877392603
+      },
+      {
+        "stage": 1,
+        "start": 96,
+        "stop": 120,
+        "velocity": 0.0,
+        "rmse": 0.16020195177170843,
+        "mae": 0.1288396418094635,
+        "velocity_rmse": 0.9166767685806521
+      }
+    ],
+    "ladrc_x_pos_pid_att_retuned": [
+      {
+        "stage": 0,
+        "start": 0,
+        "stop": 96,
+        "velocity": 1.0,
+        "rmse": 0.11798420051915007,
+        "mae": 0.09289559732127135,
+        "velocity_rmse": 0.5708602414581885
+      },
+      {
+        "stage": 1,
+        "start": 96,
+        "stop": 120,
+        "velocity": 0.0,
+        "rmse": 0.07344019993829343,
+        "mae": 0.06457219024499257,
+        "velocity_rmse": 0.3050840354493554
+      }
+    ]
+  },
+  "acceptance": {
+    "tuned_beats_default": true,
+    "rmse_ratio_to_pid": 0.9782377824796368
+  },
+  "videos": {}
+}

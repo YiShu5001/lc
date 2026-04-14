@@ -1,0 +1,140 @@
+{
+  "backend": "gym_env",
+  "axis": "x",
+  "train_episodes": 20,
+  "compare_episodes": 5,
+  "action_dim": 4,
+  "shared_values": [
+    1,
+    5
+  ],
+  "action_order": [
+    "r",
+    "b0",
+    "omega_c",
+    "k"
+  ],
+  "action_bounds": {
+    "r": [
+      50.0,
+      78.0
+    ],
+    "b0": [
+      14.0,
+      36.0
+    ],
+    "omega_c": [
+      1.2,
+      4.4
+    ],
+    "k": [
+      2.5,
+      13.0
+    ]
+  },
+  "delta_bounds": {
+    "r": [
+      -13.0,
+      15.0
+    ],
+    "b0": [
+      -10.3,
+      11.7
+    ],
+    "omega_c": [
+      -1.75,
+      1.45
+    ],
+    "k": [
+      -4.915254237288136,
+      5.584745762711864
+    ]
+  },
+  "train_anchor": {
+    "r": 63.0,
+    "b0": 24.3,
+    "omega_c": 2.95,
+    "k": 7.415254237288136,
+    "omega_o": 21.875000000000004
+  },
+  "network_config": {
+    "hidden_dim": 768,
+    "dropout_p": 0.25,
+    "tau": 0.02,
+    "soft_update_interval": 10,
+    "exploration_noise_schedule": "three_phase",
+    "exploration_noise_start": 0.3,
+    "exploration_noise_end": 0.02,
+    "snapshot_interval": 20,
+    "batch_size": 128
+  },
+  "scenario_definition": {
+    "control_freq_hz": 48,
+    "duration_sec": 5.5,
+    "include_disturbance": false,
+    "fixed_stage_lengths": [
+      96,
+      48,
+      96,
+      24
+    ],
+    "fixed_stage_velocities": [
+      0.5,
+      0.0,
+      -0.6,
+      0.0
+    ]
+  },
+  "runs": [
+    {
+      "shared_value": 1,
+      "output_dir": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\smoke_no_disturbance_v1_v5\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_111454",
+      "checkpoint_path": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\smoke_no_disturbance_v1_v5\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_111454\\checkpoints\\x_policy.pt",
+      "best_checkpoint_path": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\smoke_no_disturbance_v1_v5\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_111454\\checkpoints\\x_policy_best.pt",
+      "average_reward": -548.1749751717346,
+      "best_eval_metrics": {
+        "episode": 20.0,
+        "rmse": 1.4458764959640829,
+        "mae": 1.329959147987143,
+        "velocity_rmse": 1.005419394717738,
+        "reward": -1.8530376926663616,
+        "score": 2.1124460767031303
+      },
+      "history_length": 20,
+      "backend": "gym_env",
+      "figures": [
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\smoke_no_disturbance_v1_v5\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_111454\\figures\\training_curves.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\smoke_no_disturbance_v1_v5\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_111454\\figures\\episode_020\\axis_tracking.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\smoke_no_disturbance_v1_v5\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_111454\\figures\\episode_020\\axis_error.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\smoke_no_disturbance_v1_v5\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_111454\\figures\\episode_020\\axis_velocity.png"
+      ]
+    },
+    {
+      "shared_value": 5,
+      "output_dir": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\smoke_no_disturbance_v1_v5\\v_5\\train\\ladrc_x_pos_pid_att\\x\\20260412_111512",
+      "checkpoint_path": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\smoke_no_disturbance_v1_v5\\v_5\\train\\ladrc_x_pos_pid_att\\x\\20260412_111512\\checkpoints\\x_policy.pt",
+      "best_checkpoint_path": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\smoke_no_disturbance_v1_v5\\v_5\\train\\ladrc_x_pos_pid_att\\x\\20260412_111512\\checkpoints\\x_policy_best.pt",
+      "average_reward": -408.60672016929794,
+      "best_eval_metrics": {
+        "episode": 20.0,
+        "rmse": 1.552277906421378,
+        "mae": 1.4307271637229957,
+        "velocity_rmse": 1.0297613206732312,
+        "reward": -1.9765869439894106,
+        "score": 2.2589846778590728
+      },
+      "history_length": 20,
+      "backend": "gym_env",
+      "figures": [
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\smoke_no_disturbance_v1_v5\\v_5\\train\\ladrc_x_pos_pid_att\\x\\20260412_111512\\figures\\training_curves.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\smoke_no_disturbance_v1_v5\\v_5\\train\\ladrc_x_pos_pid_att\\x\\20260412_111512\\figures\\episode_020\\axis_tracking.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\smoke_no_disturbance_v1_v5\\v_5\\train\\ladrc_x_pos_pid_att\\x\\20260412_111512\\figures\\episode_020\\axis_error.png",
+        "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\smoke_no_disturbance_v1_v5\\v_5\\train\\ladrc_x_pos_pid_att\\x\\20260412_111512\\figures\\episode_020\\axis_velocity.png"
+      ]
+    }
+  ],
+  "figures": [
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\smoke_no_disturbance_v1_v5\\figures\\reward_curves_by_shared_value.svg",
+    "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\smoke_no_disturbance_v1_v5\\figures\\average_reward_by_shared_value.png"
+  ]
+}

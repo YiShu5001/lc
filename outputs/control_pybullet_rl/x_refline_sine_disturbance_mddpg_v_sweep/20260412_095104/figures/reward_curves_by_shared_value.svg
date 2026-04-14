@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="420">
+<rect width="100%" height="100%" fill="white" />
+<line x1="60" y1="360" x2="660" y2="360" stroke="#333" />
+<line x1="60" y1="60" x2="60" y2="360" stroke="#333" />
+<polyline fill="none" stroke="#4f81bd" stroke-width="2" points="60.0,213.8 91.6,136.5 123.2,172.7 154.7,237.2 186.3,217.9 217.9,60.0 249.5,136.0 281.1,186.2 312.6,175.1 344.2,213.0 375.8,125.2 407.4,157.4 438.9,249.2 470.5,217.9 502.1,222.9 533.7,360.0 565.3,107.3 596.8,306.2 628.4,350.1 660.0,156.3" />
+<text x="360.0" y="28" text-anchor="middle" font-size="18">PyBullet RL-LADRC Reward Curves</text>
+<text x="540" y="50" font-size="12" fill="#4f81bd">v=1</text>
+</svg>

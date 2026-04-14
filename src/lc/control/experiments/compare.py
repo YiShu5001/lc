@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import shutil
 from typing import Any
 
 from lc.common.io import ensure_dir, write_json, write_metrics_csv
@@ -48,6 +49,15 @@ def _run_default_control_comparison(cfg: ControlExperimentConfig) -> dict[str, o
         warmup_steps=cfg.warmup_steps,
         batch_size=cfg.batch_size,
         updates_per_step=cfg.updates_per_step,
+        actor_lr=cfg.actor_lr,
+        critic_lr=cfg.critic_lr,
+        hidden_dim=cfg.hidden_dim,
+        dropout_p=cfg.dropout_p,
+        tau=cfg.tau,
+        soft_update_interval=cfg.soft_update_interval,
+        exploration_noise_schedule=cfg.exploration_noise_schedule,
+        exploration_noise_start=cfg.exploration_noise_start,
+        exploration_noise_end=cfg.exploration_noise_end,
     )
     ladrc_snapshots = trainer.tune_ladrc_axes(cfg.axes, cfg.episodes)
     pid_rows: list[dict[str, object]] = []
@@ -248,7 +258,16 @@ def _run_x_axis_rl_refline_comparison(cfg: ControlExperimentConfig) -> dict[str,
         warmup_steps=cfg.warmup_steps,
         batch_size=cfg.batch_size,
         updates_per_step=cfg.updates_per_step,
+        actor_lr=cfg.actor_lr,
+        critic_lr=cfg.critic_lr,
+        hidden_dim=cfg.hidden_dim,
+        dropout_p=cfg.dropout_p,
+        tau=cfg.tau,
+        soft_update_interval=cfg.soft_update_interval,
         refline_task_config=task_config,
+        exploration_noise_schedule=cfg.exploration_noise_schedule,
+        exploration_noise_start=cfg.exploration_noise_start,
+        exploration_noise_end=cfg.exploration_noise_end,
     )
     ladrc_snapshots = trainer.tune_ladrc_axes((axis,), cfg.episodes)
     pid_rows: list[dict[str, object]] = []
@@ -287,7 +306,7 @@ def _run_x_axis_rl_refline_comparison(cfg: ControlExperimentConfig) -> dict[str,
                 stack_size_override=shared_value,
                 action_hold_override=shared_value,
                 n_step_override=shared_value,
-                snapshot_interval=10,
+                snapshot_interval=cfg.snapshot_interval,
             )
             mddpg_rows_by_value[shared_value].append({"seed": seed_index, "axis": axis, "shared_value": shared_value, **bundle["metrics"]})
             mddpg_training_logs_by_value[shared_value].append(bundle["train_history"])
@@ -310,7 +329,7 @@ def _run_x_axis_rl_refline_comparison(cfg: ControlExperimentConfig) -> dict[str,
     }
     axis_results = {axis: dict(results)}
 
-    out_dir = ensure_dir(Path("outputs") / "control" / "x_axis_rl_refline")
+    out_dir = _prepare_output_dir(cfg.output_subdir or "x_axis_rl_refline", strict=cfg.output_subdir is not None)
     write_metrics_csv(
         out_dir / "metrics.csv",
         [{"method": name, **metrics} for name, metrics in results.items()],
@@ -372,6 +391,23 @@ def _run_x_axis_rl_refline_comparison(cfg: ControlExperimentConfig) -> dict[str,
             },
             "mddpg_shared_values": list(cfg.mddpg_shared_values),
             "mddpg_best_value": best_mddpg_value,
+            "snapshot_interval": cfg.snapshot_interval,
+            "saved_training_snapshots": list(range(cfg.snapshot_interval, cfg.train_episodes + 1, cfg.snapshot_interval)),
+            "reward_log": f"training_mddpg_v{best_mddpg_value}.csv",
+            "best_model": "best_model.pt",
+            "exploration_schedule": {
+                "type": cfg.exploration_noise_schedule,
+                "start": cfg.exploration_noise_start,
+                "end": cfg.exploration_noise_end,
+            },
+            "network_config": {
+                "hidden_dim": cfg.hidden_dim,
+                "dropout_p": cfg.dropout_p,
+                "actor_lr": cfg.actor_lr,
+                "critic_lr": cfg.critic_lr,
+                "tau": cfg.tau,
+                "soft_update_interval": cfg.soft_update_interval,
+            },
             "results": results,
             "axis_results": axis_results,
             "mddpg_shared_value_sweep": mddpg_sweep_rows,
@@ -425,7 +461,9 @@ def _run_x_axis_rl_refline_comparison(cfg: ControlExperimentConfig) -> dict[str,
     response_figures = plot_time_response(representative_trajectories, out_dir / "figures")
     sweep_figures = plot_mddpg_shared_value_sweep(mddpg_sweep_rows, out_dir / "figures")
     best_response_path = out_dir / "figures" / "best_mddpg_time_response.svg"
-    (out_dir / "figures" / "time_response_output.svg").replace(best_response_path)
+    output_response_path = out_dir / "figures" / "time_response_output.svg"
+    if output_response_path.exists():
+        shutil.copyfile(output_response_path, best_response_path)
     for shared_value, logs in all_training_logs.items():
         plot_reward_curve_collection({shared_value: logs}, out_dir / "figures" / f"reward_curve_{shared_value}.svg", f"Reward curve {shared_value}")
     return {
@@ -447,6 +485,13 @@ def _run_x_axis_rl_refline_comparison(cfg: ControlExperimentConfig) -> dict[str,
             "mddpg_shared_value_sweep": str(out_dir / "mddpg_shared_value_sweep.csv"),
         },
     }
+
+
+def _prepare_output_dir(subdir: str, strict: bool = False) -> Path:
+    out_dir = Path("outputs") / "control" / subdir
+    if strict and out_dir.exists() and any(out_dir.iterdir()):
+        raise FileExistsError(f"Output directory already exists and is not empty: {out_dir}")
+    return ensure_dir(out_dir)
 
 
 def run_control_generalization(config: ControlExperimentConfig | None = None) -> dict[str, object]:
@@ -519,12 +564,23 @@ def _serialize_config(cfg: ControlExperimentConfig) -> dict[str, object]:
         "warmup_steps": cfg.warmup_steps,
         "batch_size": cfg.batch_size,
         "updates_per_step": cfg.updates_per_step,
+        "actor_lr": cfg.actor_lr,
+        "critic_lr": cfg.critic_lr,
+        "hidden_dim": cfg.hidden_dim,
+        "dropout_p": cfg.dropout_p,
+        "tau": cfg.tau,
+        "soft_update_interval": cfg.soft_update_interval,
         "enhanced_stack_size": cfg.enhanced_stack_size,
         "enhanced_n_step": cfg.enhanced_n_step,
         "enhanced_action_hold_steps": cfg.enhanced_action_hold_steps,
         "mddpg_shared_values": list(cfg.mddpg_shared_values),
         "export_reference_preview": cfg.export_reference_preview,
         "reference_profile_mode": cfg.reference_profile_mode,
+        "output_subdir": cfg.output_subdir,
+        "snapshot_interval": cfg.snapshot_interval,
+        "exploration_noise_schedule": cfg.exploration_noise_schedule,
+        "exploration_noise_start": cfg.exploration_noise_start,
+        "exploration_noise_end": cfg.exploration_noise_end,
     }
 
 

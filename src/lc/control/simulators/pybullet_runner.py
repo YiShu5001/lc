@@ -5,11 +5,13 @@ from pathlib import Path
 from typing import Any
 import importlib.util
 import sys
+from collections import deque
 
 import numpy as np
 
-from lc.control.configs import PyBulletControlExperimentConfig
+from lc.control.configs import PyBulletControlExperimentConfig, get_axis_ladrc_action_bounds
 from lc.control.controllers import ControllerBundle
+from lc.control.policies.stacking import stack_state
 from lc.control.reference_generators.piecewise_velocity import ReferenceBundle
 
 
@@ -20,6 +22,74 @@ class SimulationArtifacts:
     rewards: list[float]
     final_state: np.ndarray
     backend: str
+
+
+def _recording_enabled(config: PyBulletControlExperimentConfig) -> bool:
+    return bool(getattr(config.artifact, "record_video", False))
+
+
+def _capture_real_frame(real_env: Any, output_dir: Path, frame_idx: int) -> None:
+    if importlib.util.find_spec("pybullet") is None or importlib.util.find_spec("PIL") is None:
+        return
+    import pybullet as p
+    from PIL import Image
+
+    client = getattr(real_env, "CLIENT", None)
+    if client is None:
+        return
+    width = int(getattr(real_env, "VID_WIDTH", 640))
+    height = int(getattr(real_env, "VID_HEIGHT", 480))
+    view = getattr(real_env, "CAM_VIEW", None)
+    proj = getattr(real_env, "CAM_PRO", None)
+    if view is None or proj is None:
+        view = p.computeViewMatrixFromYawPitchRoll(
+            distance=3.0,
+            yaw=-30.0,
+            pitch=-30.0,
+            roll=0.0,
+            cameraTargetPosition=[0.0, 0.0, 0.0],
+            upAxisIndex=2,
+            physicsClientId=client,
+        )
+        proj = p.computeProjectionMatrixFOV(
+            fov=60.0,
+            aspect=width / max(height, 1),
+            nearVal=0.1,
+            farVal=1000.0,
+        )
+    _, _, rgb, _, _ = p.getCameraImage(
+        width=width,
+        height=height,
+        viewMatrix=view,
+        projectionMatrix=proj,
+        renderer=p.ER_TINY_RENDERER,
+        physicsClientId=client,
+    )
+    image = np.asarray(rgb, dtype=np.uint8).reshape(height, width, 4)[..., :3]
+    Image.fromarray(image).save(output_dir / f"frame_{frame_idx:04d}.png")
+
+
+def _finalize_recording(output_dir: Path, fps: int) -> str | None:
+    if importlib.util.find_spec("PIL") is None:
+        return None
+    from PIL import Image
+
+    frame_paths = sorted(output_dir.glob("frame_*.png"))
+    if not frame_paths:
+        return None
+    images = [Image.open(path) for path in frame_paths]
+    gif_path = output_dir / "episode.gif"
+    duration_ms = max(int(round(1000 / max(fps, 1))), 1)
+    images[0].save(
+        gif_path,
+        save_all=True,
+        append_images=images[1:],
+        duration=duration_ms,
+        loop=0,
+    )
+    for image in images:
+        image.close()
+    return str(gif_path)
 
 
 def create_ctrl_aviary(config: PyBulletControlExperimentConfig) -> dict[str, Any]:
@@ -91,11 +161,58 @@ def run_training_episode(
     reference_bundle: ReferenceBundle,
     axis: str,
     action_hold_steps: int,
+    n_step: int,
     config: PyBulletControlExperimentConfig,
 ) -> SimulationArtifacts:
+    del action_hold_steps
+    return run_policy_episode(
+        env,
+        policy,
+        controller_bundle,
+        reference_bundle,
+        axis,
+        config,
+        explore=True,
+        store_transitions=True,
+        n_step=n_step,
+    )
+
+
+def run_policy_episode(
+    env: dict[str, Any],
+    policy: Any,
+    controller_bundle: ControllerBundle,
+    reference_bundle: ReferenceBundle,
+    axis: str,
+    config: PyBulletControlExperimentConfig,
+    *,
+    explore: bool,
+    store_transitions: bool,
+    n_step: int = 1,
+) -> SimulationArtifacts:
     if env["backend"] == "gym_env":
-        return _run_real_training_episode(env, policy, controller_bundle, reference_bundle, axis, action_hold_steps, config)
-    return _run_fallback_training_episode(env, policy, controller_bundle, reference_bundle, axis, action_hold_steps, config)
+        return _run_real_policy_episode(
+            env,
+            policy,
+            controller_bundle,
+            reference_bundle,
+            axis,
+            config,
+            explore=explore,
+            store_transitions=store_transitions,
+            n_step=n_step,
+        )
+    return _run_fallback_policy_episode(
+        env,
+        policy,
+        controller_bundle,
+        reference_bundle,
+        axis,
+        config,
+        explore=explore,
+        store_transitions=store_transitions,
+        n_step=n_step,
+    )
 
 
 def run_evaluation_episode(
@@ -117,7 +234,33 @@ def _run_real_training_episode(
     reference_bundle: ReferenceBundle,
     axis: str,
     action_hold_steps: int,
+    n_step: int,
     config: PyBulletControlExperimentConfig,
+) -> SimulationArtifacts:
+    return _run_real_policy_episode(
+        env,
+        policy,
+        controller_bundle,
+        reference_bundle,
+        axis,
+        config,
+        explore=True,
+        store_transitions=True,
+        n_step=n_step,
+    )
+
+
+def _run_real_policy_episode(
+    env: dict[str, Any],
+    policy: Any,
+    controller_bundle: ControllerBundle,
+    reference_bundle: ReferenceBundle,
+    axis: str,
+    config: PyBulletControlExperimentConfig,
+    *,
+    explore: bool,
+    store_transitions: bool,
+    n_step: int,
 ) -> SimulationArtifacts:
     real_env = _ensure_real_env(env, config, reference_bundle)
     obs, _ = real_env.reset(seed=config.seed)
@@ -129,20 +272,24 @@ def _run_real_training_episode(
     logger_rows: list[dict[str, float]] = []
     rewards: list[float] = []
     axis_index = {"x": 0, "y": 1, "z": 2}[axis]
-    hold_counter = 0
-    action = np.zeros(3, dtype=np.float32)
+    action = np.zeros(policy.config.action_dim, dtype=np.float32)
+    rollout: deque[tuple[np.ndarray, np.ndarray, float, np.ndarray, bool]] = deque()
+    history: list[np.ndarray] = []
     prev_rpm = np.full(4, 4300.0, dtype=np.float32)
+    prev_param_values: np.ndarray | None = None
+    recording_dir = Path(config.artifact.video_output_dir or Path(config.artifact.output_root) / "videos")
+    gif_path: str | None = None
+    if _recording_enabled(config):
+        recording_dir.mkdir(parents=True, exist_ok=True)
+        _capture_real_frame(real_env, recording_dir, 0)
     for step in range(config.step_count):
         target_pos = reference_bundle.positions[step]
         target_vel = reference_bundle.velocities[step]
         observation = _build_axis_observation(state, target_pos, target_vel, axis, step, config.step_count)
-        if hold_counter <= 0:
-            action = policy.select_action(observation, explore=True)
-            hold_counter = max(action_hold_steps - 1, 0)
-        else:
-            hold_counter -= 1
+        stacked_observation = stack_state(history, observation.copy(), policy.config.stack_size)
+        action = policy.select_action(stacked_observation, explore=explore)
+        applied_params = _apply_axis_action(controller_bundle, axis, action)
         checkpoint = controller_bundle.snapshot_params()
-        _apply_axis_action(controller_bundle, axis, action)
         disturbance = _disturbance_vector(axis_index, step, config, config.axis_config(axis))
         rpm, _, _ = controller_bundle.compute_control_from_state(
             control_timestep=config.control_dt,
@@ -158,10 +305,32 @@ def _run_real_training_episode(
         pos_error = float(target_pos[axis_index] - next_state[axis_index])
         vel_error = float(target_vel[axis_index] - next_state[10 + axis_index])
         rpm_delta = float(np.mean(np.abs(rpm - prev_rpm)))
-        reward = _compute_axis_reward(pos_error, vel_error, rpm_delta)
+        param_delta = 0.0 if prev_param_values is None else float(np.mean(np.abs(applied_params - prev_param_values)))
+        reward = _compute_axis_reward(
+            pos_error,
+            vel_error,
+            rpm_delta,
+            step=step,
+            step_count=config.step_count,
+            target_vel=float(target_vel[axis_index]),
+            param_delta=param_delta,
+        )
         done = bool(terminated or truncated or step == config.step_count - 1)
-        next_observation = _build_axis_observation(next_state, target_pos, target_vel, axis, step + 1, config.step_count)
-        policy.store_transition(observation, action, reward, next_observation, done)
+        next_target_pos = reference_bundle.positions[min(step + 1, config.step_count - 1)]
+        next_target_vel = reference_bundle.velocities[min(step + 1, config.step_count - 1)]
+        next_observation = _build_axis_observation(
+            next_state,
+            next_target_pos,
+            next_target_vel,
+            axis,
+            step + 1,
+            config.step_count,
+        )
+        next_history = list(history)
+        next_stacked_observation = stack_state(next_history, next_observation.copy(), policy.config.stack_size)
+        if store_transitions:
+            rollout.append((stacked_observation.copy(), action.copy(), reward, next_stacked_observation.copy(), done))
+            _flush_n_step_transitions(policy, rollout, n_step, policy.config.gamma, force=done)
         rewards.append(float(reward))
         timeseries.append(
             _timeseries_row(
@@ -180,9 +349,17 @@ def _run_real_training_episode(
         )
         logger_rows.append(_logger_row(step, config.control_dt, state, target_pos, target_vel))
         state = next_state
+        history = next_history
         prev_rpm = rpm
+        prev_param_values = applied_params
         if done:
             break
+        if _recording_enabled(config):
+            _capture_real_frame(real_env, recording_dir, step + 1)
+    if _recording_enabled(config):
+        gif_path = _finalize_recording(recording_dir, fps=config.control_freq_hz)
+        if gif_path is not None:
+            env["recording_gif"] = gif_path
     return SimulationArtifacts(timeseries=timeseries, logger_rows=logger_rows, rewards=rewards, final_state=state, backend=env["backend"])
 
 
@@ -202,6 +379,11 @@ def _run_real_evaluation_episode(
     rewards: list[float] = []
     axis_index = {"x": 0, "y": 1, "z": 2}[axis]
     prev_rpm = np.full(4, 4300.0, dtype=np.float32)
+    recording_dir = Path(config.artifact.video_output_dir or Path(config.artifact.output_root) / "videos")
+    gif_path: str | None = None
+    if _recording_enabled(config):
+        recording_dir.mkdir(parents=True, exist_ok=True)
+        _capture_real_frame(real_env, recording_dir, 0)
     for step in range(config.step_count):
         target_pos = reference_bundle.positions[step]
         target_vel = reference_bundle.velocities[step]
@@ -221,7 +403,15 @@ def _run_real_evaluation_episode(
         pos_error = float(target_pos[axis_index] - next_state[axis_index])
         vel_error = float(target_vel[axis_index] - next_state[10 + axis_index])
         rpm_delta = float(np.mean(np.abs(rpm - prev_rpm)))
-        reward = _compute_axis_reward(pos_error, vel_error, rpm_delta)
+        reward = _compute_axis_reward(
+            pos_error,
+            vel_error,
+            rpm_delta,
+            step=step,
+            step_count=config.step_count,
+            target_vel=float(target_vel[axis_index]),
+            param_delta=0.0,
+        )
         rewards.append(float(reward))
         timeseries.append(
             _timeseries_row(
@@ -243,6 +433,12 @@ def _run_real_evaluation_episode(
         prev_rpm = rpm
         if terminated or truncated:
             break
+        if _recording_enabled(config):
+            _capture_real_frame(real_env, recording_dir, step + 1)
+    if _recording_enabled(config):
+        gif_path = _finalize_recording(recording_dir, fps=config.control_freq_hz)
+        if gif_path is not None:
+            env["recording_gif"] = gif_path
     return SimulationArtifacts(timeseries=timeseries, logger_rows=logger_rows, rewards=rewards, final_state=state, backend=env["backend"])
 
 
@@ -253,7 +449,33 @@ def _run_fallback_training_episode(
     reference_bundle: ReferenceBundle,
     axis: str,
     action_hold_steps: int,
+    n_step: int,
     config: PyBulletControlExperimentConfig,
+) -> SimulationArtifacts:
+    return _run_fallback_policy_episode(
+        env,
+        policy,
+        controller_bundle,
+        reference_bundle,
+        axis,
+        config,
+        explore=True,
+        store_transitions=True,
+        n_step=n_step,
+    )
+
+
+def _run_fallback_policy_episode(
+    env: dict[str, Any],
+    policy: Any,
+    controller_bundle: ControllerBundle,
+    reference_bundle: ReferenceBundle,
+    axis: str,
+    config: PyBulletControlExperimentConfig,
+    *,
+    explore: bool,
+    store_transitions: bool,
+    n_step: int,
 ) -> SimulationArtifacts:
     del env
     state = _initial_state(reference_bundle)
@@ -264,20 +486,19 @@ def _run_fallback_training_episode(
     logger_rows: list[dict[str, float]] = []
     rewards: list[float] = []
     axis_index = {"x": 0, "y": 1, "z": 2}[axis]
-    hold_counter = 0
-    action = np.zeros(3, dtype=np.float32)
+    action = np.zeros(policy.config.action_dim, dtype=np.float32)
+    rollout: deque[tuple[np.ndarray, np.ndarray, float, np.ndarray, bool]] = deque()
+    history: list[np.ndarray] = []
     prev_rpm = np.full(4, 4300.0, dtype=np.float32)
+    prev_param_values: np.ndarray | None = None
     for step in range(config.step_count):
         target_pos = reference_bundle.positions[step]
         target_vel = reference_bundle.velocities[step]
         observation = _build_axis_observation(state, target_pos, target_vel, axis, step, config.step_count)
-        if hold_counter <= 0:
-            action = policy.select_action(observation, explore=True)
-            hold_counter = max(action_hold_steps - 1, 0)
-        else:
-            hold_counter -= 1
+        stacked_observation = stack_state(history, observation.copy(), policy.config.stack_size)
+        action = policy.select_action(stacked_observation, explore=explore)
+        applied_params = _apply_axis_action(controller_bundle, axis, action)
         checkpoint = controller_bundle.snapshot_params()
-        _apply_axis_action(controller_bundle, axis, action)
         disturbance = _disturbance_vector(axis_index, step, config, config.axis_config(axis))
         next_state, rpm, pos_error, _ = step_controller_loop(
             state,
@@ -287,11 +508,33 @@ def _run_fallback_training_episode(
             control_dt=config.control_dt,
             disturbance=disturbance,
         )
-        next_observation = _build_axis_observation(next_state, target_pos, target_vel, axis, step + 1, config.step_count)
+        next_target_pos = reference_bundle.positions[min(step + 1, config.step_count - 1)]
+        next_target_vel = reference_bundle.velocities[min(step + 1, config.step_count - 1)]
+        next_observation = _build_axis_observation(
+            next_state,
+            next_target_pos,
+            next_target_vel,
+            axis,
+            step + 1,
+            config.step_count,
+        )
         rpm_delta = float(np.mean(np.abs(rpm - prev_rpm)))
-        reward = _compute_axis_reward(pos_error[axis_index], target_vel[axis_index] - next_state[10 + axis_index], rpm_delta)
+        param_delta = 0.0 if prev_param_values is None else float(np.mean(np.abs(applied_params - prev_param_values)))
+        reward = _compute_axis_reward(
+            pos_error[axis_index],
+            target_vel[axis_index] - next_state[10 + axis_index],
+            rpm_delta,
+            step=step,
+            step_count=config.step_count,
+            target_vel=float(target_vel[axis_index]),
+            param_delta=param_delta,
+        )
         done = step == config.step_count - 1
-        policy.store_transition(observation, action, reward, next_observation, done)
+        next_history = list(history)
+        next_stacked_observation = stack_state(next_history, next_observation.copy(), policy.config.stack_size)
+        if store_transitions:
+            rollout.append((stacked_observation.copy(), action.copy(), reward, next_stacked_observation.copy(), done))
+            _flush_n_step_transitions(policy, rollout, n_step, policy.config.gamma, force=done)
         rewards.append(float(reward))
         timeseries.append(
             _timeseries_row(
@@ -310,7 +553,9 @@ def _run_fallback_training_episode(
         )
         logger_rows.append(_logger_row(step, config.control_dt, state, target_pos, target_vel))
         state = next_state
+        history = next_history
         prev_rpm = rpm
+        prev_param_values = applied_params
     return SimulationArtifacts(timeseries=timeseries, logger_rows=logger_rows, rewards=rewards, final_state=state, backend="fallback")
 
 
@@ -341,7 +586,15 @@ def _run_fallback_evaluation_episode(
             control_dt=config.control_dt,
             disturbance=disturbance,
         )
-        reward = _compute_axis_reward(pos_error[axis_index], target_vel[axis_index] - next_state[10 + axis_index], 0.0)
+        reward = _compute_axis_reward(
+            pos_error[axis_index],
+            target_vel[axis_index] - next_state[10 + axis_index],
+            0.0,
+            step=step,
+            step_count=config.step_count,
+            target_vel=float(target_vel[axis_index]),
+            param_delta=0.0,
+        )
         rewards.append(float(reward))
         timeseries.append(
             _timeseries_row(
@@ -388,8 +641,19 @@ def _build_axis_observation(
     )
 
 
-def _compute_axis_reward(pos_error: float, vel_error: float, rpm_delta: float) -> float:
-    return float(-abs(pos_error) - 0.15 * abs(vel_error) - 0.0008 * rpm_delta)
+def _compute_axis_reward(
+    pos_error: float,
+    vel_error: float,
+    rpm_delta: float,
+    *,
+    step: int,
+    step_count: int,
+    target_vel: float,
+    param_delta: float,
+) -> float:
+    del vel_error, rpm_delta, step, step_count, target_vel, param_delta
+    position_term = abs(float(pos_error))
+    return float(-position_term)
 
 
 def _initial_state(reference_bundle: ReferenceBundle) -> np.ndarray:
@@ -401,13 +665,56 @@ def _initial_state(reference_bundle: ReferenceBundle) -> np.ndarray:
     return state
 
 
-def _apply_axis_action(controller_bundle: ControllerBundle, axis: str, action: np.ndarray) -> None:
+def _apply_axis_action(controller_bundle: ControllerBundle, axis: str, action: np.ndarray) -> np.ndarray:
     axis_config = controller_bundle.parameter_set.axis_config(axis)
-    axis_config.b0 = float(np.clip(axis_config.b0 + 0.05 * action[0], 0.2, 4.0))
-    axis_config.omega_c = float(np.clip(axis_config.omega_c + 0.12 * action[1], 0.5, 12.0))
-    axis_config.k = float(np.clip(axis_config.k + 0.08 * action[2], 2.0, 6.0))
+    bounds = get_axis_ladrc_action_bounds(axis)
+    r, b0, omega_c, k = _decode_action_to_ladrc_params(action, bounds)
+    axis_config.r = float(r)
+    axis_config.b0 = float(b0)
+    axis_config.omega_c = float(omega_c)
+    axis_config.k = float(k)
     if hasattr(controller_bundle, "_sync_from_parameter_set"):
         controller_bundle._sync_from_parameter_set()
+    return np.asarray([axis_config.r, axis_config.b0, axis_config.omega_c, axis_config.k], dtype=np.float32)
+
+
+def _decode_action_to_ladrc_params(action: np.ndarray, bounds: Any) -> tuple[float, float, float, float]:
+    clipped = np.clip(np.asarray(action, dtype=np.float32), -1.0, 1.0)
+    r = np.clip(bounds.train_anchor.r + _map_to_bounds(clipped[0], bounds.delta_r), bounds.r[0], bounds.r[1])
+    b0 = np.clip(bounds.train_anchor.b0 + _map_to_bounds(clipped[1], bounds.delta_b0), bounds.b0[0], bounds.b0[1])
+    omega_c = np.clip(
+        bounds.train_anchor.wc + _map_to_bounds(clipped[2], bounds.delta_wc),
+        bounds.wc[0],
+        bounds.wc[1],
+    )
+    k = np.clip(bounds.train_anchor.k + _map_to_bounds(clipped[3], bounds.delta_k), bounds.k[0], bounds.k[1])
+    return float(r), float(b0), float(omega_c), float(k)
+
+
+def _flush_n_step_transitions(
+    policy: Any,
+    rollout: deque[tuple[np.ndarray, np.ndarray, float, np.ndarray, bool]],
+    n_step: int,
+    gamma: float,
+    force: bool = False,
+) -> None:
+    effective_n = max(int(n_step), 1)
+    while rollout and (force or len(rollout) >= effective_n):
+        reward = 0.0
+        next_state = rollout[0][3]
+        done = rollout[0][4]
+        for index, (_, _, step_reward, step_next_state, step_done) in enumerate(rollout):
+            if index >= effective_n:
+                break
+            reward += (gamma**index) * float(step_reward)
+            next_state = step_next_state
+            done = bool(step_done)
+            if step_done:
+                break
+        state, action, _, _, _ = rollout.popleft()
+        policy.store_transition(state, action, reward, next_state, done)
+        if not force:
+            break
 
 
 def _disturbance_vector(
@@ -418,7 +725,16 @@ def _disturbance_vector(
 ) -> np.ndarray:
     disturbance = np.zeros(3, dtype=np.float32)
     if axis_config.include_disturbance:
-        disturbance[axis_index] = axis_config.disturbance_scale * np.sin(0.11 * step) * axis_config.disturbance_axis_bias
+        window = getattr(axis_config, "disturbance_step_window", None)
+        if window is None or (int(window[0]) <= int(step) < int(window[1])):
+            mode = str(getattr(axis_config, "disturbance_mode", "sine")).lower()
+            if mode == "random_uniform":
+                rng = np.random.default_rng(int(config.seed) * 10007 + int(axis_index) * 1009 + int(step))
+                sample = rng.uniform(-1.0, 1.0)
+                disturbance[axis_index] = axis_config.disturbance_scale * sample * axis_config.disturbance_axis_bias
+            else:
+                omega = float(getattr(axis_config, "disturbance_frequency_rad", 0.11))
+                disturbance[axis_index] = axis_config.disturbance_scale * np.sin(omega * step) * axis_config.disturbance_axis_bias
     return disturbance
 
 
@@ -466,6 +782,12 @@ def _timeseries_row(
     }
     row.update(checkpoint)
     return row
+
+
+def _map_to_bounds(value: float, bounds: tuple[float, float]) -> float:
+    low, high = bounds
+    scaled = (float(value) + 1.0) * 0.5
+    return low + scaled * (high - low)
 
 
 def _apply_real_disturbance(real_env: Any, disturbance: np.ndarray) -> None:
@@ -539,6 +861,10 @@ def _ensure_real_env(env: dict[str, Any], config: PyBulletControlExperimentConfi
     from gym_pybullet_drones.utils.enums import DroneModel, Physics
 
     drone_model = DroneModel(config.drone_model)
+    video_output_dir = config.artifact.video_output_dir
+    if video_output_dir is None:
+        video_output_dir = str(Path(config.artifact.output_root) / "videos")
+    Path(video_output_dir).mkdir(parents=True, exist_ok=True)
     env["env"] = CtrlAviary(
         drone_model=drone_model,
         num_drones=1,
@@ -548,9 +874,10 @@ def _ensure_real_env(env: dict[str, Any], config: PyBulletControlExperimentConfi
         pyb_freq=config.simulation_freq_hz,
         ctrl_freq=config.control_freq_hz,
         gui=config.gui,
-        record=False,
+        record=config.artifact.record_video,
         obstacles=False,
         user_debug_gui=False,
+        output_folder=video_output_dir,
     )
     env["axis"] = reference_bundle.axis
     return env["env"]

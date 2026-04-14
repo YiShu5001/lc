@@ -1,0 +1,5 @@
+{
+  "seed": 7,
+  "figure": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\tracking_compare_zero_delta.png",
+  "checkpoint": "D:\\ZhangC\\lc\\outputs\\control_pybullet_rl\\x_refline_no_disturbance_mddpg_retrain\\20260412_v1_zero_delta\\v_1\\train\\ladrc_x_pos_pid_att\\x\\20260412_130722\\checkpoints\\x_policy_best.pt"
+}

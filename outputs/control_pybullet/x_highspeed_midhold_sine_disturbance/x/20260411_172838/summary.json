@@ -1,0 +1,223 @@
+{
+  "backend": "gym_env",
+  "scenario_name": "x_highspeed_midhold_sine_disturbance",
+  "scenario_definition": {
+    "speed_profile": {
+      "forward": 0.6,
+      "reverse": -0.6
+    },
+    "stage_lengths_steps": [
+      5,
+      120,
+      139,
+      120
+    ],
+    "stage_lengths_seconds": [
+      0.104167,
+      2.5,
+      2.895833,
+      2.5
+    ],
+    "disturbance_mode": "pybullet_external_force_sine",
+    "disturbance_axis": "x",
+    "disturbance_amplitude_n": 0.02,
+    "disturbance_step_window": [
+      125,
+      264
+    ],
+    "disturbance_frequency_rad": 0.2617993877991494
+  },
+  "reference_segments": [
+    {
+      "stage": 0.0,
+      "start": 0.0,
+      "stop": 5.0,
+      "velocity": 0.0
+    },
+    {
+      "stage": 1.0,
+      "start": 5.0,
+      "stop": 125.0,
+      "velocity": 0.6
+    },
+    {
+      "stage": 2.0,
+      "start": 125.0,
+      "stop": 264.0,
+      "velocity": 0.0
+    },
+    {
+      "stage": 3.0,
+      "start": 264.0,
+      "stop": 384.0,
+      "velocity": -0.6
+    }
+  ],
+  "controllers": {
+    "pid_pos_att": {
+      "mae": 0.6327717940464334,
+      "rmse": 0.8776517374054169,
+      "iae": 242.9843689138304,
+      "overshoot": 2.119684266857803,
+      "settling_time": 383.0,
+      "steady_state_error": 1.8884327834423043,
+      "control_energy": 50975293339.110275,
+      "disturbance_recovery_time": 383.0,
+      "control_variation": 74.96728388136422,
+      "velocity_rmse": 0.48955493198887645,
+      "reward": -0.8681956825475172,
+      "backend": "gym_env"
+    },
+    "ladrc_x_pos_pid_att_default": {
+      "mae": 0.7764329755225186,
+      "rmse": 0.9875055888803985,
+      "iae": 298.1502626006471,
+      "overshoot": 2.2675250051543117,
+      "settling_time": 383.0,
+      "steady_state_error": 2.035963389360787,
+      "control_energy": 51229069877.39559,
+      "disturbance_recovery_time": 383.0,
+      "control_variation": 77.5799149396214,
+      "velocity_rmse": 0.5861294569871905,
+      "reward": -1.0177413958410348,
+      "backend": "gym_env"
+    },
+    "ladrc_x_pos_pid_att_tuned": {
+      "mae": 0.3340469171933614,
+      "rmse": 0.4199530088932401,
+      "iae": 128.27401620225078,
+      "overshoot": 1.189501809887588,
+      "settling_time": 383.0,
+      "steady_state_error": 0.9582519671683641,
+      "control_energy": 37138402088.50577,
+      "disturbance_recovery_time": 383.0,
+      "control_variation": 152.55506996573106,
+      "velocity_rmse": 0.5471163998608702,
+      "reward": -0.5382396413968759,
+      "backend": "gym_env"
+    }
+  },
+  "stage_metrics": {
+    "pid_pos_att": [
+      {
+        "stage": 0,
+        "start": 0,
+        "stop": 5,
+        "velocity": 0.0,
+        "rmse": 0.0,
+        "mae": 0.0
+      },
+      {
+        "stage": 1,
+        "start": 5,
+        "stop": 125,
+        "velocity": 0.6,
+        "rmse": 0.041809321092603956,
+        "mae": 0.02343078252568489
+      },
+      {
+        "stage": 2,
+        "start": 125,
+        "stop": 264,
+        "velocity": 0.0,
+        "rmse": 0.5746071406251114,
+        "mae": 0.5400072722126255
+      },
+      {
+        "stage": 3,
+        "start": 264,
+        "stop": 384,
+        "velocity": -0.6,
+        "rmse": 1.442453949328383,
+        "mae": 1.3759305347766106
+      }
+    ],
+    "ladrc_x_pos_pid_att_default": [
+      {
+        "stage": 0,
+        "start": 0,
+        "stop": 5,
+        "velocity": 0.0,
+        "rmse": 0.0,
+        "mae": 0.0
+      },
+      {
+        "stage": 1,
+        "start": 5,
+        "stop": 125,
+        "velocity": 0.6,
+        "rmse": 0.2112020427435811,
+        "mae": 0.20372103758387444
+      },
+      {
+        "stage": 2,
+        "start": 125,
+        "stop": 264,
+        "velocity": 0.0,
+        "rmse": 0.6999421064261379,
+        "mae": 0.6538662859004178
+      },
+      {
+        "stage": 3,
+        "start": 264,
+        "stop": 384,
+        "velocity": -0.6,
+        "rmse": 1.583805406553557,
+        "mae": 1.5234693695868675
+      }
+    ],
+    "ladrc_x_pos_pid_att_tuned": [
+      {
+        "stage": 0,
+        "start": 0,
+        "stop": 5,
+        "velocity": 0.0,
+        "rmse": 0.0,
+        "mae": 0.0
+      },
+      {
+        "stage": 1,
+        "start": 5,
+        "stop": 125,
+        "velocity": 0.6,
+        "rmse": 0.2744265404747392,
+        "mae": 0.21632014466302393
+      },
+      {
+        "stage": 2,
+        "start": 125,
+        "stop": 264,
+        "velocity": 0.0,
+        "rmse": 0.297996045016926,
+        "mae": 0.29799604501655635
+      },
+      {
+        "stage": 3,
+        "start": 264,
+        "stop": 384,
+        "velocity": -0.6,
+        "rmse": 0.6214353271992594,
+        "mae": 0.5074512382115548
+      }
+    ]
+  },
+  "tuned_params": {
+    "b0": 0.8,
+    "omega_c": 6.6,
+    "k": 3.2,
+    "source": "current_disturbance_tuned"
+  },
+  "figures": [
+    "outputs\\control_pybullet\\x_highspeed_midhold_sine_disturbance\\x\\20260411_172838\\figures\\tracking_three_way.svg",
+    "outputs\\control_pybullet\\x_highspeed_midhold_sine_disturbance\\x\\20260411_172838\\figures\\tracking_three_way.png",
+    "outputs\\control_pybullet\\x_highspeed_midhold_sine_disturbance\\x\\20260411_172838\\figures\\tracking_error_three_way.svg",
+    "outputs\\control_pybullet\\x_highspeed_midhold_sine_disturbance\\x\\20260411_172838\\figures\\tracking_error_three_way.png",
+    "outputs\\control_pybullet\\x_highspeed_midhold_sine_disturbance\\x\\20260411_172838\\figures\\disturbance_zoom_three_way.svg",
+    "outputs\\control_pybullet\\x_highspeed_midhold_sine_disturbance\\x\\20260411_172838\\figures\\disturbance_zoom_three_way.png"
+  ],
+  "video_dirs": {
+    "pid_pos_att": "outputs\\control_pybullet\\x_highspeed_midhold_sine_disturbance\\x\\20260411_172838\\videos\\pid",
+    "ladrc_x_pos_pid_att_default": "outputs\\control_pybullet\\x_highspeed_midhold_sine_disturbance\\x\\20260411_172838\\videos\\ladrc_default",
+    "ladrc_x_pos_pid_att_tuned": "outputs\\control_pybullet\\x_highspeed_midhold_sine_disturbance\\x\\20260411_172838\\videos\\ladrc_tuned"
+  }
+}

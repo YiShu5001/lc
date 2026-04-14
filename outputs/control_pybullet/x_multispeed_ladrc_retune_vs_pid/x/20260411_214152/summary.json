@@ -1,0 +1,192 @@
+{
+  "axis": "x",
+  "scenario_name": "x_multispeed_ladrc_retune_vs_pid",
+  "backend": "gym_env",
+  "speed_grid_mps": [
+    0.2,
+    0.4,
+    0.6,
+    0.8,
+    1.0,
+    1.2,
+    1.4
+  ],
+  "typical_speeds_mps": [
+    0.2,
+    0.8,
+    1.4
+  ],
+  "route_definition": {
+    "duration_sec": 2.5,
+    "steps": 120,
+    "fixed_stage_lengths": [
+      96,
+      24
+    ],
+    "fixed_stage_velocities_template": [
+      "speed_mps",
+      0.0
+    ],
+    "mode": "forward_then_zero_hold"
+  },
+  "search_definition": {
+    "parameters": [
+      "r",
+      "b0",
+      "omega_c",
+      "k"
+    ],
+    "r_scan_values": [
+      10.0,
+      20.0,
+      30.0,
+      40.0,
+      50.0,
+      70.0,
+      90.0
+    ],
+    "b0_range": [
+      18.0,
+      45.0
+    ],
+    "omega_c_range": [
+      2.0,
+      9.0
+    ],
+    "k_range": [
+      2.0,
+      8.0
+    ]
+  },
+  "figures": [
+    "outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\figures\\speed_rmse_curve.png",
+    "outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\figures\\speed_mae_curve.png",
+    "outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\figures\\speed_velocity_rmse_curve.png",
+    "outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\figures\\speed_hold_error_curve.png",
+    "outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\figures\\speed_0.2_position_tracking.png",
+    "outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\figures\\speed_0.2_velocity_tracking.png",
+    "outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\figures\\speed_0.8_position_tracking.png",
+    "outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\figures\\speed_0.8_velocity_tracking.png",
+    "outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\figures\\speed_1.4_position_tracking.png",
+    "outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\figures\\speed_1.4_velocity_tracking.png"
+  ],
+  "videos": {
+    "0.2": {
+      "pid_pos_att": "outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\speeds\\0.2\\videos\\pid\\episode.gif",
+      "ladrc_x_pos_pid_att_default": "outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\speeds\\0.2\\videos\\ladrc_default\\episode.gif",
+      "ladrc_x_pos_pid_att_retuned": "outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\speeds\\0.2\\videos\\ladrc_retuned\\episode.gif"
+    },
+    "0.8": {
+      "pid_pos_att": "outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\speeds\\0.8\\videos\\pid\\episode.gif",
+      "ladrc_x_pos_pid_att_default": "outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\speeds\\0.8\\videos\\ladrc_default\\episode.gif",
+      "ladrc_x_pos_pid_att_retuned": "outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\speeds\\0.8\\videos\\ladrc_retuned\\episode.gif"
+    },
+    "1.4": {
+      "pid_pos_att": "outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\speeds\\1.4\\videos\\pid\\episode.gif",
+      "ladrc_x_pos_pid_att_default": "outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\speeds\\1.4\\videos\\ladrc_default\\episode.gif",
+      "ladrc_x_pos_pid_att_retuned": "outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\speeds\\1.4\\videos\\ladrc_retuned\\episode.gif"
+    }
+  },
+  "metrics_by_speed_csv": "outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\metrics_by_speed.csv",
+  "best_params_by_speed_csv": "outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\best_params_by_speed.csv",
+  "speed_summaries": {
+    "0.2": {
+      "speed_dir": "outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\speeds\\0.2",
+      "retuned_candidate": {
+        "name": "retuned_speed_0.2",
+        "b0": 17.64,
+        "omega_c": 3.7800000000000002,
+        "omega_o": 24.57,
+        "r": 59.5,
+        "k": 6.5
+      },
+      "pid_rmse": 0.017031458492388768,
+      "retuned_rmse": 0.01501674539290063,
+      "rmse_ratio_to_pid": 0.881706367050802
+    },
+    "0.4": {
+      "speed_dir": "outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\speeds\\0.4",
+      "retuned_candidate": {
+        "name": "retuned_speed_0.4",
+        "b0": 27.45,
+        "omega_c": 1.62,
+        "omega_o": 19.602000000000004,
+        "r": 70.0,
+        "k": 12.100000000000001
+      },
+      "pid_rmse": 0.03622001734732014,
+      "retuned_rmse": 0.07193657813812734,
+      "rmse_ratio_to_pid": 1.9861000465106022
+    },
+    "0.6": {
+      "speed_dir": "outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\speeds\\0.6",
+      "retuned_candidate": {
+        "name": "retuned_speed_0.6",
+        "b0": 27.45,
+        "omega_c": 3.15,
+        "omega_o": 9.702,
+        "r": 59.5,
+        "k": 3.08
+      },
+      "pid_rmse": 0.05447556365955142,
+      "retuned_rmse": 0.0644657252795637,
+      "rmse_ratio_to_pid": 1.18338794404123
+    },
+    "0.8": {
+      "speed_dir": "outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\speeds\\0.8",
+      "retuned_candidate": {
+        "name": "retuned_speed_0.8",
+        "b0": 32.940000000000005,
+        "omega_c": 3.4299999999999997,
+        "omega_o": 13.2055,
+        "r": 59.5,
+        "k": 3.8500000000000005
+      },
+      "pid_rmse": 0.08544364156844923,
+      "retuned_rmse": 0.08566159918079305,
+      "rmse_ratio_to_pid": 1.0025508932946077
+    },
+    "1.0": {
+      "speed_dir": "outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\speeds\\1.0",
+      "retuned_candidate": {
+        "name": "retuned_speed_1.0",
+        "b0": 32.940000000000005,
+        "omega_c": 3.7800000000000002,
+        "omega_o": 12.700800000000001,
+        "r": 42.5,
+        "k": 3.36
+      },
+      "pid_rmse": 0.11297977369843067,
+      "retuned_rmse": 0.11052108328780401,
+      "rmse_ratio_to_pid": 0.9782377824796368
+    },
+    "1.2": {
+      "speed_dir": "outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\speeds\\1.2",
+      "retuned_candidate": {
+        "name": "retuned_speed_1.2",
+        "b0": 19.44,
+        "omega_c": 1.8,
+        "omega_o": 7.920000000000001,
+        "r": 66.5,
+        "k": 4.4
+      },
+      "pid_rmse": 0.14366177154148752,
+      "retuned_rmse": 0.18480017698935072,
+      "rmse_ratio_to_pid": 1.2863559665626356
+    },
+    "1.4": {
+      "speed_dir": "outputs\\control_pybullet\\x_multispeed_ladrc_retune_vs_pid\\x\\20260411_214152\\speeds\\1.4",
+      "retuned_candidate": {
+        "name": "retuned_speed_1.4",
+        "b0": 24.0,
+        "omega_c": 2.16,
+        "omega_o": 9.504000000000001,
+        "r": 56.00000000000001,
+        "k": 4.4
+      },
+      "pid_rmse": 0.16633497944634548,
+      "retuned_rmse": 0.2025300381008321,
+      "rmse_ratio_to_pid": 1.2176034095471904
+    }
+  }
+}
