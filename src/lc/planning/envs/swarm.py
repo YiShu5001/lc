@@ -21,7 +21,7 @@ class PlanningSwarmEnv(BaseTaskEnv):
     obstacle_dim: int = 5
     neighbor_dim: int = 5
     action_limit: float = 0.8
-    delta_v_max: float = 0.1
+    delta_v_max: float = 2.4
     obstacle_observation_limit: int = 4
     uav_collision_radius: float = 0.10
     obstacle_collision_radius: float = 0.18
@@ -32,18 +32,25 @@ class PlanningSwarmEnv(BaseTaskEnv):
     control_hz: int = 48
     action_hz: int = 24
     horizon: int = 120
+    episode_step_cap_override: int | None = None
     step_dt: float = field(init=False, default=1.0 / 24.0)
     step_count: int = 0
     success: bool = False
     collisions: int = 0
     timed_out: bool = False
     out_of_bounds: bool = False
+    episode_step_cap_hit: bool = False
+    soft_timeout_steps: int = 0
     failure_reason: str = "running"
     occupancy_errors: list[float] = field(default_factory=list)
     formation_errors: list[float] = field(default_factory=list)
     reward_components: list[dict[str, float]] = field(default_factory=list)
     risk_history: list[float] = field(default_factory=list)
     action_history: list[np.ndarray] = field(default_factory=list)
+    commanded_action_history: list[np.ndarray] = field(default_factory=list)
+    executed_velocity_history: list[np.ndarray] = field(default_factory=list)
+    velocity_delta_history: list[float] = field(default_factory=list)
+    acceleration_clipped_history: list[float] = field(default_factory=list)
     trajectory: list[list[float]] = field(default_factory=list)
     target_trajectory: list[list[float]] = field(default_factory=list)
     _formation_history: list[float] = field(default_factory=list)
@@ -66,6 +73,9 @@ class PlanningSwarmEnv(BaseTaskEnv):
     _previous_slot_error: float = 0.0
     _previous_formation_error: float = 0.0
     _previous_angle_error: float = 0.0
+    _previous_obstacle_clearance: float = 10.0
+    _previous_neighbor_clearance: float = 10.0
+    _episode_obstacle_layout: str = ""
     _hold_counter_steps: int = 0
     _encircle_counter_steps: int = 0
     _max_hold_counter_steps: int = 0
@@ -147,12 +157,18 @@ class PlanningSwarmEnv(BaseTaskEnv):
         self.collisions = 0
         self.timed_out = False
         self.out_of_bounds = False
+        self.episode_step_cap_hit = False
+        self.soft_timeout_steps = 0
         self.failure_reason = "running"
         self.occupancy_errors.clear()
         self.formation_errors.clear()
         self.reward_components.clear()
         self.risk_history.clear()
         self.action_history.clear()
+        self.commanded_action_history.clear()
+        self.executed_velocity_history.clear()
+        self.velocity_delta_history.clear()
+        self.acceleration_clipped_history.clear()
         self.trajectory.clear()
         self.target_trajectory.clear()
         self._formation_history.clear()
@@ -163,6 +179,9 @@ class PlanningSwarmEnv(BaseTaskEnv):
         self._max_encircle_counter_steps = 0
         self._velocity = np.zeros(2, dtype=np.float32)
         self._previous_action = np.zeros(2, dtype=np.float32)
+        self._previous_obstacle_clearance = 10.0
+        self._previous_neighbor_clearance = 10.0
+        self._episode_obstacle_layout = ""
 
         self._initialize_scene()
         self._initial_obstacle_positions = self._obstacle_positions.copy()
@@ -172,6 +191,10 @@ class PlanningSwarmEnv(BaseTaskEnv):
         self._previous_slot_error = self._slot_error()
         self._previous_formation_error = self._compute_formation_error(np.zeros(2, dtype=np.float32))
         self._previous_angle_error = self._compute_angle_error()
+        _, _, initial_obstacle_clearance = self._nearest_obstacle()
+        _, initial_neighbor_clearance = self._nearest_neighbor_distance()
+        self._previous_obstacle_clearance = float(initial_obstacle_clearance)
+        self._previous_neighbor_clearance = float(initial_neighbor_clearance)
         self.trajectory.append(self._position.tolist())
         self.target_trajectory.append(self._target_position.tolist())
         return self._make_observation()
@@ -179,10 +202,17 @@ class PlanningSwarmEnv(BaseTaskEnv):
     def step(self, action: np.ndarray) -> tuple[dict[str, np.ndarray], float, bool, dict[str, float]]:
         self.step_count += 1
         desired_action = np.clip(np.asarray(action, dtype=np.float32), self.action_spec.low, self.action_spec.high)
-        clipped = desired_action
-        self._velocity = clipped.copy()
+        commanded_velocity = desired_action.astype(np.float32, copy=True)
+        previous_velocity = self._velocity.astype(np.float32, copy=True)
+        velocity_delta = commanded_velocity - previous_velocity
+        velocity_delta_norm = float(np.linalg.norm(velocity_delta, ord=2))
+        max_velocity_delta = float(max(1e-6, self.delta_v_max * self.action_dt))
+        acceleration_clipped = float(velocity_delta_norm > max_velocity_delta + 1e-9)
+        if acceleration_clipped > 0.5:
+            velocity_delta = velocity_delta * (max_velocity_delta / max(velocity_delta_norm, 1e-6))
+        executed_velocity = previous_velocity + velocity_delta
+        self._velocity = executed_velocity.astype(np.float32, copy=True)
         for _ in range(self.control_steps_per_action):
-            self._velocity = clipped.copy()
             for _ in range(self.physics_steps_per_control):
                 self._position = self._position + self._velocity * self.physics_dt
                 self._update_target_state(self.physics_dt)
@@ -192,7 +222,7 @@ class PlanningSwarmEnv(BaseTaskEnv):
         self.target_trajectory.append(self._target_position.tolist())
 
         slot_error = self._slot_error()
-        formation_error = self._compute_formation_error(clipped)
+        formation_error = self._compute_formation_error(self._velocity)
         angle_error = self._compute_angle_error()
         obstacle_distance, obstacle_radius, obstacle_clearance = self._nearest_obstacle()
         neighbor_distance, neighbor_clearance = self._nearest_neighbor_distance()
@@ -205,7 +235,13 @@ class PlanningSwarmEnv(BaseTaskEnv):
         encircle_satisfied = self._update_encircle_state(collision)
         success = self._is_success(collision, hold_satisfied, encircle_satisfied)
         self.timed_out = self.step_count >= self.horizon and not success and not collision and not self.out_of_bounds
-        done = bool(success or collision or self.out_of_bounds or self.timed_out)
+        if self.timed_out:
+            self.soft_timeout_steps += 1
+        self.episode_step_cap_hit = self._uses_soft_timeout_variant() and self.step_count >= self._episode_step_cap()
+        if self._uses_soft_timeout_variant():
+            done = bool(success or collision or self.out_of_bounds or self.episode_step_cap_hit)
+        else:
+            done = bool(success or collision or self.out_of_bounds or self.timed_out)
         self.success = bool(success)
         self.failure_reason = self._failure_reason(success, collision)
 
@@ -214,7 +250,11 @@ class PlanningSwarmEnv(BaseTaskEnv):
         self.formation_errors.append(formation_error)
         self._formation_history.append(formation_error)
         self.risk_history.append(risk)
-        self.action_history.append(clipped.copy())
+        self.action_history.append(commanded_velocity.copy())
+        self.commanded_action_history.append(commanded_velocity.copy())
+        self.executed_velocity_history.append(self._velocity.copy())
+        self.velocity_delta_history.append(float(np.linalg.norm(self._velocity - previous_velocity, ord=2)))
+        self.acceleration_clipped_history.append(acceleration_clipped)
         self._angle_history.append(angle_error)
 
         reward_breakdown = compute_planning_reward(
@@ -229,25 +269,35 @@ class PlanningSwarmEnv(BaseTaskEnv):
             boundary_distance=boundary_distance,
             obstacle_clearance=obstacle_clearance,
             neighbor_clearance=neighbor_clearance,
+            previous_obstacle_clearance=self._previous_obstacle_clearance,
+            previous_neighbor_clearance=self._previous_neighbor_clearance,
             obstacle_margin=max(0.0, obstacle_clearance),
             neighbor_margin=max(0.0, neighbor_clearance),
             collision=collision,
             out_of_bounds=self.out_of_bounds,
-            action=clipped,
+            timeout=self.timed_out,
+            action=commanded_velocity,
             previous_action=self._previous_action,
-            safe_action=self._previous_action if self.action_history else clipped,
+            safe_action=self._previous_action if self.commanded_action_history else commanded_velocity,
             success=success,
+            curriculum_env=self.scenario.curriculum_env,
         )
         self.reward_components.append(reward_breakdown.to_dict())
-        self._previous_action = clipped.copy()
+        self._previous_action = commanded_velocity.copy()
         self._previous_slot_error = slot_error
         self._previous_formation_error = formation_error
         self._previous_angle_error = angle_error
+        self._previous_obstacle_clearance = float(obstacle_clearance)
+        self._previous_neighbor_clearance = float(neighbor_clearance)
 
         info = {
             "collision": float(collision),
             "timeout": float(self.timed_out),
+            "soft_timeout_active": float(self.timed_out and not done),
+            "soft_timeout_steps": float(self.soft_timeout_steps),
+            "soft_timeout_step_ratio": float(self.soft_timeout_steps / max(1, self.step_count)),
             "out_of_bounds": float(self.out_of_bounds),
+            "episode_step_cap_hit": float(self.episode_step_cap_hit),
             "occupancy_error": slot_error,
             "formation_error": formation_error,
             "risk": risk,
@@ -259,6 +309,16 @@ class PlanningSwarmEnv(BaseTaskEnv):
             "smoothness_penalty": reward_breakdown.smoothness_penalty,
             "consistency_penalty": reward_breakdown.consistency_penalty,
             "success_bonus": reward_breakdown.success_bonus,
+            "progress_reward": reward_breakdown.progress_reward,
+            "risk_drop_reward": reward_breakdown.risk_drop_reward,
+            "clearance_gain_reward": reward_breakdown.clearance_gain_reward,
+            "detour_trend_reward": reward_breakdown.detour_trend_reward,
+            "near_collision_penalty": reward_breakdown.near_collision_penalty,
+            "severe_near_collision_penalty": reward_breakdown.severe_near_collision_penalty,
+            "critical_collision_margin_penalty": reward_breakdown.critical_collision_margin_penalty,
+            "action_saturation_penalty": reward_breakdown.action_saturation_penalty,
+            "timeout_penalty": reward_breakdown.timeout_penalty,
+            "action_change_penalty": reward_breakdown.action_change_penalty,
             "angle_error": angle_error,
             "target_distance": float(np.linalg.norm(self._target_position - self._position)),
             "obstacle_center_distance": obstacle_distance,
@@ -267,6 +327,9 @@ class PlanningSwarmEnv(BaseTaskEnv):
             "neighbor_clearance": neighbor_clearance,
             "boundary_distance": boundary_distance,
             "hold_progress_seconds": float(self._hold_counter_steps * self.step_dt),
+            "within_target_radius": float(
+                np.linalg.norm(self._target_position - self._position) <= self.scenario.target_hold_radius
+            ),
             "encircle_hold_progress_seconds": float(self._encircle_counter_steps * self.step_dt),
             "encircle_completion": float(self.encircle_completion),
             "hold_completion": float(self.hold_completion),
@@ -274,9 +337,14 @@ class PlanningSwarmEnv(BaseTaskEnv):
             "physics_hz": float(self.physics_hz),
             "control_hz": float(self.control_hz),
             "action_hz": float(self.action_hz),
+            "commanded_action": commanded_velocity.tolist(),
+            "executed_velocity": self._velocity.tolist(),
+            "velocity_delta_norm": float(self.velocity_delta_history[-1]),
+            "acceleration_clipped": acceleration_clipped,
             "stage_index": float(self.scenario.stage_index),
             "stage_name": self.scenario.stage_name,
             "curriculum_env": self.scenario.curriculum_env,
+            "sampled_obstacle_layout": self._episode_obstacle_layout,
             "failure_reason": self.failure_reason,
             "success_mode": self.scenario.success_mode,
             "rare_event_score": float(self._rare_recovery_score(risk, slot_error, formation_error, angle_error, success)),
@@ -297,8 +365,15 @@ class PlanningSwarmEnv(BaseTaskEnv):
                 "risk_history": list(self.risk_history),
                 "occupancy_errors": list(self.occupancy_errors),
                 "formation_errors": list(self.formation_errors),
+                "commanded_action_history": [item.tolist() for item in self.commanded_action_history],
+                "executed_velocity_history": [item.tolist() for item in self.executed_velocity_history],
+                "velocity_delta_history": list(self.velocity_delta_history),
+                "acceleration_clipped_history": list(self.acceleration_clipped_history),
                 "success": float(self.success),
                 "collisions": float(self.collisions),
+                "timed_out": float(self.timed_out),
+                "soft_timeout_steps": float(self.soft_timeout_steps),
+                "episode_step_cap_hit": float(self.episode_step_cap_hit),
                 "delta_v_max": float(self.delta_v_max),
                 "uav_collision_radius": float(self.uav_collision_radius),
                 "physics_hz": float(self.physics_hz),
@@ -331,6 +406,7 @@ class PlanningSwarmEnv(BaseTaskEnv):
             "obstacle_positions_initial": self._initial_obstacle_positions.tolist(),
             "obstacle_positions_final": self._obstacle_positions.tolist(),
             "obstacle_radii_initial": self._initial_obstacle_radii.tolist(),
+            "sampled_obstacle_layout": self._episode_obstacle_layout,
             "obstacle_safe_radii_initial": (self._initial_obstacle_radii + self.scenario.obstacle_safe_buffer).tolist(),
             "encircle_radius": float(self.scenario.encircle_radius),
             "target_is_dynamic": bool(self.scenario.target_is_dynamic),
@@ -463,18 +539,32 @@ class PlanningSwarmEnv(BaseTaskEnv):
         radii = self._sample_obstacle_radii(count)
         layouts = self.scenario.obstacle_layout_modes or (self.scenario.obstacle_layout,)
         positions = np.zeros((count, 2), dtype=np.float32)
+        sampled_layout = self._sample_obstacle_layout(layouts)
         for _ in range(80):
-            layout = str(np.random.choice(layouts))
+            layout = sampled_layout
             positions = self._sample_obstacle_positions(layout, radii)
             if self._obstacles_valid(positions, radii):
-                velocities = np.zeros((count, 2), dtype=np.float32)
+                self._episode_obstacle_layout = layout
+                velocities = self._sample_obstacle_velocities(count)
                 return positions.astype(np.float32), velocities, radii.astype(np.float32)
         for _ in range(256):
             positions = self._sample_random_obstacle_positions(radii)
             if self._obstacles_valid(positions, radii):
-                velocities = np.zeros((count, 2), dtype=np.float32)
+                self._episode_obstacle_layout = f"{sampled_layout}_fallback_random"
+                velocities = self._sample_obstacle_velocities(count)
                 return positions.astype(np.float32), velocities, radii.astype(np.float32)
         raise RuntimeError("Failed to sample a valid obstacle layout")
+
+    def _sample_obstacle_velocities(self, count: int) -> np.ndarray:
+        if count <= 0 or not self.scenario.obstacle_is_dynamic:
+            return np.zeros((count, 2), dtype=np.float32)
+        speed_scale = float(max(0.0, self.scenario.obstacle_speed_scale))
+        velocities: list[np.ndarray] = []
+        for _ in range(count):
+            heading = float(np.random.uniform(0.0, 2.0 * np.pi))
+            speed = float(np.random.uniform(0.35, 1.0) * speed_scale)
+            velocities.append(np.array([speed * np.cos(heading), speed * np.sin(heading)], dtype=np.float32))
+        return np.asarray(velocities, dtype=np.float32)
 
     def _sample_random_obstacle_positions(self, radii: np.ndarray) -> np.ndarray:
         xmin, xmax, ymin, ymax = self._workspace_bounds()
@@ -513,6 +603,17 @@ class PlanningSwarmEnv(BaseTaskEnv):
         np.random.shuffle(radii)
         return np.asarray(radii, dtype=np.float32)
 
+    def _sample_obstacle_layout(self, layouts: tuple[str, ...]) -> str:
+        if (
+            self.scenario.stage_name == "avoidance"
+            and self.scenario.a1_blocking_layout in layouts
+            and self.scenario.a1_nonblocking_layout in layouts
+        ):
+            if float(np.random.uniform(0.0, 1.0)) < float(self.scenario.a1_direct_block_ratio):
+                return self.scenario.a1_blocking_layout
+            return self.scenario.a1_nonblocking_layout
+        return str(np.random.choice(layouts))
+
     def _sample_count_range(self, bounds: tuple[int, int]) -> int:
         low, high = bounds
         if high <= low:
@@ -545,6 +646,19 @@ class PlanningSwarmEnv(BaseTaskEnv):
                 alpha = 0.5 if len(radii) == 1 else 0.42 + 0.16 * (index / max(len(radii) - 1, 1))
                 offset = float(np.random.uniform(-0.12, 0.12))
                 point = start + unit * alpha * norm + tangent * offset
+                positions.append(self._clip_inside_workspace(point, float(radius)))
+        elif layout == "path_center_blocking":
+            for index, radius in enumerate(radii):
+                alpha = 0.5 if len(radii) == 1 else 0.45 + 0.1 * (index / max(len(radii) - 1, 1))
+                offset = float(np.random.uniform(-0.03, 0.03))
+                point = start + unit * alpha * norm + tangent * offset
+                positions.append(self._clip_inside_workspace(point, float(radius)))
+        elif layout == "path_center_offset_nonblocking":
+            for index, radius in enumerate(radii):
+                alpha = 0.5 if len(radii) == 1 else 0.42 + 0.16 * (index / max(len(radii) - 1, 1))
+                offset_sign = -1.0 if np.random.uniform(0.0, 1.0) < 0.5 else 1.0
+                offset_mag = float(np.random.uniform(0.18, 0.28))
+                point = start + unit * alpha * norm + tangent * (offset_sign * offset_mag)
                 positions.append(self._clip_inside_workspace(point, float(radius)))
         elif layout == "mid_left_block":
             center = 0.5 * (start + target) + tangent * 0.18
@@ -634,6 +748,11 @@ class PlanningSwarmEnv(BaseTaskEnv):
         count = max(0, self.scenario.num_uavs - 1)
         if count == 0 or self._stage_name() != "cooperation":
             return []
+        if self.scenario.success_mode == "cooperative_approach_target":
+            if self.scenario.num_uavs <= 2:
+                return [self._target_position + np.array([-self.scenario.encircle_radius, 0.0], dtype=np.float32)]
+            offsets = np.linspace(-self.scenario.encircle_radius, self.scenario.encircle_radius, count + 1)[:-1]
+            return [self._target_position + np.array([float(offset), 0.0], dtype=np.float32) for offset in offsets]
         slots = []
         for index in range(1, self.scenario.num_uavs):
             angle = 2.0 * np.pi * index / max(self.scenario.num_uavs, 1)
@@ -645,6 +764,8 @@ class PlanningSwarmEnv(BaseTaskEnv):
 
     def _slot_error(self) -> float:
         if self._stage_name() == "cooperation":
+            if self.scenario.success_mode == "cooperative_approach_target":
+                return float(np.linalg.norm(self._position - self._desired_self_slot()))
             radius_error = abs(np.linalg.norm(self._position - self._target_position) - self.scenario.encircle_radius)
             return float(radius_error)
         return float(np.linalg.norm(self._target_position - self._position))
@@ -698,6 +819,15 @@ class PlanningSwarmEnv(BaseTaskEnv):
             desired_norm = max(float(np.linalg.norm(desired)), 1e-6)
             action_norm = max(float(np.linalg.norm(action)), 1e-6)
             return float(0.5 * (1.0 - np.dot(desired / desired_norm, action / action_norm)))
+        if self.scenario.success_mode == "cooperative_approach_target":
+            positions = [self._position, *list(self._neighbor_positions_state)]
+            slots = [self._desired_self_slot(), *self._desired_neighbor_slots()]
+            slot_errors = [
+                float(np.linalg.norm(position - slot))
+                for position, slot in zip(positions, slots, strict=False)
+            ]
+            spacing_error = max(0.0, self.scenario.encircle_min_spacing - self._min_pair_distance())
+            return float(np.mean(slot_errors) + spacing_error)
         radii_errors = self._encircle_radius_errors()
         angle_error = self._compute_angle_error()
         spacing_error = max(0.0, self.scenario.encircle_min_spacing - self._min_pair_distance())
@@ -721,14 +851,30 @@ class PlanningSwarmEnv(BaseTaskEnv):
         return float(np.mean(np.abs(gaps - target_gap)))
 
     def _update_hold_state(self, collision: bool) -> bool:
-        if self.scenario.success_mode != "hold_at_target" or collision:
+        if self.scenario.success_mode not in {"hold_at_target", "cooperative_approach_target"} or collision:
             self._hold_counter_steps = 0
             return False
-        target_distance = float(np.linalg.norm(self._target_position - self._position))
-        within = target_distance <= self.scenario.target_hold_radius
-        self._hold_counter_steps = 1 if within else 0
+        if self.scenario.success_mode == "cooperative_approach_target":
+            positions = [self._position, *list(self._neighbor_positions_state)]
+            slots = [self._desired_self_slot(), *self._desired_neighbor_slots()]
+            slot_errors = [
+                float(np.linalg.norm(position - slot))
+                for position, slot in zip(positions, slots, strict=False)
+            ]
+            within = bool(
+                slot_errors
+                and max(slot_errors) <= self.scenario.target_hold_radius
+                and self._min_pair_distance() >= self.scenario.encircle_min_spacing
+            )
+        else:
+            target_distance = float(np.linalg.norm(self._target_position - self._position))
+            within = target_distance <= self.scenario.target_hold_radius
+        self._hold_counter_steps = self._hold_counter_steps + 1 if within else 0
         self._max_hold_counter_steps = max(self._max_hold_counter_steps, self._hold_counter_steps)
-        return within
+        if self.scenario.success_mode == "hold_at_target":
+            return within
+        required = max(1, int(round(self.scenario.target_hold_seconds / self.step_dt)))
+        return self._hold_counter_steps >= required
 
     def _update_encircle_state(self, collision: bool) -> bool:
         if self.scenario.success_mode != "encircle_target" or collision:
@@ -749,7 +895,7 @@ class PlanningSwarmEnv(BaseTaskEnv):
     def _is_success(self, collision: bool, hold_satisfied: bool, encircle_satisfied: bool) -> bool:
         if collision or self.out_of_bounds:
             return False
-        if self.scenario.success_mode == "hold_at_target":
+        if self.scenario.success_mode in {"hold_at_target", "cooperative_approach_target"}:
             return hold_satisfied
         return encircle_satisfied
 
@@ -762,9 +908,19 @@ class PlanningSwarmEnv(BaseTaskEnv):
             return "collision"
         if self.out_of_bounds:
             return "out_of_bounds"
+        if self.episode_step_cap_hit:
+            return "episode_step_cap"
         if self.timed_out:
             return "timeout"
         return "running"
+
+    def _uses_soft_timeout_variant(self) -> bool:
+        return str(self.scenario.curriculum_env).startswith("avoidance_A1_gmix_softtimeout")
+
+    def _episode_step_cap(self) -> int:
+        if self.episode_step_cap_override is not None and int(self.episode_step_cap_override) > 0:
+            return int(self.episode_step_cap_override)
+        return max(4 * int(self.horizon), 12000)
 
     def _compute_risk(self, slot_error: float, obstacle_clearance: float, neighbor_clearance: float) -> float:
         return float(
