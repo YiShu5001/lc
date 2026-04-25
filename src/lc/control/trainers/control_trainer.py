@@ -122,6 +122,7 @@ class ControlTrainer:
         action_hold_override: int | None = None,
         n_step_override: int | None = None,
         snapshot_interval: int | None = None,
+        initial_checkpoint: dict[str, object] | None = None,
     ) -> dict[str, object]:
         """Run one RL-LADRC experiment and return training/eval bundles."""
         method = "mddpg_ladrc" if enhanced else "ddpg_ladrc"
@@ -134,6 +135,7 @@ class ControlTrainer:
             action_hold_override=action_hold_override,
             n_step_override=n_step_override,
             snapshot_interval=snapshot_interval,
+            initial_checkpoint=initial_checkpoint,
         )
         metrics, representative_trajectory = self._evaluate_agent(
             agent,
@@ -151,8 +153,14 @@ class ControlTrainer:
             "checkpoint": {
                 "actor": agent.policy.actor.state_dict(),
                 "critic": agent.policy.critic.state_dict(),
+                "actor_target": agent.policy.actor_target.state_dict(),
+                "critic_target": agent.policy.critic_target.state_dict(),
                 "axis": axis or self.env.axis,
                 "ladrc_baseline": self.tuned_ladrc_params.get(axis or self.env.axis, {}),
+                "normalizer": agent.policy._normalizer.copy(),
+                "last_action": agent.policy._last_action.copy(),
+                "hold_counter": int(agent.policy._hold_counter),
+                "current_expl_noise": float(agent.policy._current_expl_noise),
             },
         }
 
@@ -188,6 +196,7 @@ class ControlTrainer:
         action_hold_override: int | None = None,
         n_step_override: int | None = None,
         snapshot_interval: int | None = None,
+        initial_checkpoint: dict[str, object] | None = None,
     ) -> tuple[ControlLADRLAgent, list[dict[str, float]], dict[int, dict[str, list[float]]]]:
         axis_name = axis or self.env.axis
         stack_size = stack_size_override if stack_size_override is not None else (self.stack_size if enhanced else 1)
@@ -218,6 +227,8 @@ class ControlTrainer:
         if axis_name in self.tuned_ladrc_params:
             tuned = self.tuned_ladrc_params[axis_name]
             agent.controller.base.set_parameters(b0=tuned["b0"], omega_c=tuned["omega_c"], k=tuned["k"])
+        if initial_checkpoint is not None:
+            self.load_checkpoint_into_agent(agent, initial_checkpoint)
         total_steps = 0
         gamma = agent.policy.config.gamma
         train_history: list[dict[str, float]] = []
@@ -378,7 +389,38 @@ class ControlTrainer:
             "disturbance": list(self.env.disturbances),
             "pitch": list(self.env.pitches),
             "pitch_rate": list(self.env.pitch_rates),
+            "roll": list(self.env.rolls),
+            "roll_rate": list(self.env.roll_rates),
+            "external_coupling": list(self.env.external_couplings),
         }
+
+    def load_checkpoint_into_agent(self, agent: ControlLADRLAgent, checkpoint: dict[str, object]) -> None:
+        actor_state = checkpoint.get("actor")
+        critic_state = checkpoint.get("critic")
+        if actor_state is not None:
+            agent.policy.actor.load_state_dict(actor_state)
+            agent.policy.actor_target.load_state_dict(checkpoint.get("actor_target", actor_state))
+        if critic_state is not None:
+            agent.policy.critic.load_state_dict(critic_state)
+            agent.policy.critic_target.load_state_dict(checkpoint.get("critic_target", critic_state))
+        normalizer = checkpoint.get("normalizer")
+        if normalizer is not None:
+            agent.policy._normalizer = np.asarray(normalizer, dtype=np.float32)
+        last_action = checkpoint.get("last_action")
+        if last_action is not None:
+            agent.policy._last_action = np.asarray(last_action, dtype=np.float32)
+        if "hold_counter" in checkpoint:
+            agent.policy._hold_counter = int(checkpoint["hold_counter"])
+        if "current_expl_noise" in checkpoint:
+            agent.policy.set_exploration_noise(float(checkpoint["current_expl_noise"]))
+        ladrc_baseline = checkpoint.get("ladrc_baseline")
+        if isinstance(ladrc_baseline, dict):
+            agent.controller.base.set_parameters(
+                r=float(ladrc_baseline.get("r", agent.controller.base.r)),
+                b0=float(ladrc_baseline.get("b0", agent.controller.base.b0)),
+                omega_c=float(ladrc_baseline.get("omega_c", agent.controller.base.omega_c)),
+                k=float(ladrc_baseline.get("k", agent.controller.base.k)),
+            )
 
     def _flush_n_step(
         self,

@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import argparse
 import json
@@ -106,7 +106,7 @@ def _build_policy_config(
     batch_size: int,
 ) -> MDDPGConfig:
     return MDDPGConfig(
-        state_dim=8,
+        state_dim=6,
         action_dim=4,
         hidden_dim=hidden_dim,
         batch_size=batch_size,
@@ -295,3 +295,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+.pytest_cache/
+.mypy_cache/
+
+outputs/.matplotlib*/
+outputs/.mpl_probe*/
+outputs/*.py
+outputs/chapter3_redraw/
+outputs/chapter3_paper_assets/
+outputs/chapter3_result_data/
+outputs/control_pybullet/
+outputs/control_pybullet_rl/
+outputs/control/x_axis_rl_refline/

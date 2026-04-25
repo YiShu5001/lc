@@ -112,6 +112,9 @@ class ControllerBundle:
             "z_r": self.parameter_set.z.r,
         }
 
+    def disturbance_estimate(self, axis: str) -> float:
+        return 0.0
+
 
 class _NativeSingleAxisHybridControl(DSLPIDControl):
     def __init__(
@@ -181,61 +184,55 @@ class _NativeSingleAxisHybridControl(DSLPIDControl):
         target_rpy: np.ndarray,
         target_vel: np.ndarray,
     ) -> tuple[float, np.ndarray, np.ndarray]:
-        self.integral_pos_e = self.integral_pos_e + (target_pos - cur_pos) * control_timestep
+        pos_e = target_pos - cur_pos
+        vel_e = target_vel - cur_vel
+        self.integral_pos_e = self.integral_pos_e + pos_e * control_timestep
         self.integral_pos_e = np.clip(self.integral_pos_e, -2.0, 2.0)
         self.integral_pos_e[2] = np.clip(self.integral_pos_e[2], -0.15, 0.15)
 
-        cur_rotation = np.array(p.getMatrixFromQuaternion(cur_quat)).reshape(3, 3)
-        pos_e = target_pos - cur_pos
-        vel_e = target_vel - cur_vel
-        target_thrust = (
-            np.multiply(self.P_COEFF_FOR, pos_e)
-            + np.multiply(self.I_COEFF_FOR, self.integral_pos_e)
-            + np.multiply(self.D_COEFF_FOR, vel_e)
-            + np.array([0.0, 0.0, self.GRAVITY])
-        )
-
+        position_signal = np.zeros(3, dtype=np.float64)
         for index, axis_name in enumerate(("x", "y", "z")):
-            if axis_name not in self.ladrc_axes:
-                continue
-            controller = getattr(self, f"con_{axis_name.upper()}")
-            controller.cfg.step_size = control_timestep
-            controller.td.cfg.step_size = control_timestep
-            controller.leso.cfg.step_size = control_timestep
-            ladrc_output = float(controller.update(float(target_pos[index]), float(cur_pos[index])))
-            if axis_name == "z":
-                # Keep the native PID hover/thrust baseline on altitude and let LADRC
-                # act as an additive correction term. Replacing the whole z thrust
-                # proved too aggressive for the PyBullet vertical channel.
-                target_thrust[index] = target_thrust[index] + ladrc_output
+            pid_signal = (
+                float(self.P_COEFF_FOR[index]) * float(pos_e[index])
+                + float(self.I_COEFF_FOR[index]) * float(self.integral_pos_e[index])
+                + float(self.D_COEFF_FOR[index]) * float(vel_e[index])
+            )
+            if axis_name in self.ladrc_axes:
+                controller = getattr(self, f"con_{axis_name.upper()}")
+                controller.cfg.step_size = control_timestep
+                controller.td.cfg.step_size = control_timestep
+                controller.leso.cfg.step_size = control_timestep
+                signal = float(controller.update(float(target_pos[index]), float(cur_pos[index])))
+                if axis_name == "z":
+                    # Match the historical x-axis tuning chain: horizontal LADRC
+                    # replaces the scalar position channel, while vertical LADRC
+                    # remains only an additive correction to the hover PID term.
+                    position_signal[index] = pid_signal + signal
+                else:
+                    position_signal[index] = signal
             else:
-                target_thrust[index] = ladrc_output
+                position_signal[index] = pid_signal
 
-        scalar_thrust = max(0.0, np.dot(target_thrust, cur_rotation[:, 2]))
+        # Keep the outer-loop axes independent, but preserve DSLPID's original
+        # force-vector-to-attitude mapping so the inner attitude PID remains the
+        # only module that converts the attitude target into motor RPMs.
+        cur_rotation = np.array(p.getMatrixFromQuaternion(cur_quat)).reshape(3, 3)
+        target_thrust = position_signal + np.array([0.0, 0.0, self.GRAVITY], dtype=np.float64)
+        scalar_thrust = max(0.0, float(np.dot(target_thrust, cur_rotation[:, 2])))
         thrust = (math.sqrt(scalar_thrust / (4 * self.KF)) - self.PWM2RPM_CONST) / self.PWM2RPM_SCALE
+        thrust = float(np.clip(thrust, self.MIN_PWM, self.MAX_PWM))
 
         thrust_norm = float(np.linalg.norm(target_thrust))
-        if thrust_norm < 1e-8 or not np.isfinite(thrust_norm):
-            target_z_ax = np.array([0.0, 0.0, 1.0], dtype=np.float64)
-        else:
-            target_z_ax = target_thrust / thrust_norm
-        target_x_c = np.array([math.cos(target_rpy[2]), math.sin(target_rpy[2]), 0.0])
-        cross = np.cross(target_z_ax, target_x_c)
-        if np.linalg.norm(cross) < 1e-8:
-            target_y_ax = np.array([0.0, 1.0, 0.0])
-        else:
-            target_y_ax = cross / np.linalg.norm(cross)
+        target_z_ax = target_thrust / thrust_norm if thrust_norm > 1e-9 else np.array([0.0, 0.0, 1.0])
+        target_x_c = np.array([math.cos(float(target_rpy[2])), math.sin(float(target_rpy[2])), 0.0])
+        target_y_cross = np.cross(target_z_ax, target_x_c)
+        target_y_norm = float(np.linalg.norm(target_y_cross))
+        target_y_ax = target_y_cross / target_y_norm if target_y_norm > 1e-9 else np.array([0.0, 1.0, 0.0])
         target_x_ax = np.cross(target_y_ax, target_z_ax)
-        if np.linalg.norm(target_x_ax) < 1e-8 or not np.all(np.isfinite(target_x_ax)):
-            target_x_ax = np.array([1.0, 0.0, 0.0], dtype=np.float64)
-        else:
-            target_x_ax = target_x_ax / np.linalg.norm(target_x_ax)
-        if np.linalg.norm(target_y_ax) < 1e-8 or not np.all(np.isfinite(target_y_ax)):
-            target_y_ax = np.array([0.0, 1.0, 0.0], dtype=np.float64)
-        else:
-            target_y_ax = target_y_ax / np.linalg.norm(target_y_ax)
-        target_rotation = np.vstack([target_x_ax, target_y_ax, target_z_ax]).transpose()
+        target_rotation = (np.vstack([target_x_ax, target_y_ax, target_z_ax])).transpose()
         target_euler = Rotation.from_matrix(target_rotation).as_euler("XYZ", degrees=False)
+        if np.any(np.abs(target_euler) > math.pi):
+            print("\n[ERROR] ctrl it", self.control_counter, "in Control._dslPIDPositionControl(), values outside range [-pi,pi]")
         return thrust, target_euler, pos_e
 
 
@@ -352,6 +349,20 @@ class _NativeBundle(ControllerBundle):
         if isinstance(self.controller, _NativeSingleAxisHybridControl):
             self.controller.sync_from_parameter_set()
 
+    def disturbance_estimate(self, axis: str) -> float:
+        if not isinstance(self.controller, _NativeSingleAxisHybridControl):
+            return 0.0
+        channel = getattr(self.controller, f"con_{axis.upper()}", None)
+        if channel is None:
+            return 0.0
+        if hasattr(channel, "x3"):
+            return float(channel.x3)
+        leso = getattr(channel, "leso", None)
+        z = getattr(leso, "z", None)
+        if z is not None and len(z) >= 3:
+            return float(z[2])
+        return 0.0
+
 
 @dataclass
 class _FallbackBundle(ControllerBundle):
@@ -454,6 +465,12 @@ class _FallbackBundle(ControllerBundle):
         self.att_ladrc_pitch.set_parameters(r=self.parameter_set.pitch.r, b0=self.parameter_set.pitch.b0, omega_c=self.parameter_set.pitch.omega_c, k=self.parameter_set.pitch.k)
         self.att_ladrc_yaw.set_parameters(r=self.parameter_set.yaw.r, b0=self.parameter_set.yaw.b0, omega_c=self.parameter_set.yaw.omega_c, k=self.parameter_set.yaw.k)
 
+    def disturbance_estimate(self, axis: str) -> float:
+        controller = getattr(self, f"ladrc_{axis}", None)
+        if controller is None:
+            return 0.0
+        return float(getattr(controller, "disturbance_estimate", 0.0))
+
 
 @dataclass
 class PIDPositionAttitudeController(_FallbackBundle):
@@ -524,6 +541,14 @@ def _create_native_bundle(name: str, checkpoint: dict[str, Any] | None = None) -
             position_ladrc_axes=("x", "y", "z"),
             parameter_set=clone_parameter_set(load_default_ladrc_parameter_set("ladrc_pos_att")),
         )
+    elif name == "ladrc_xy_pos_pid_att":
+        bundle = _NativeBundle(
+            name=name,
+            use_ladrc_position=True,
+            use_ladrc_attitude=False,
+            position_ladrc_axes=("x", "y"),
+            parameter_set=clone_parameter_set(load_default_ladrc_parameter_set(name)),
+        )
     elif name in {"ladrc_x_pos_pid_att", "ladrc_y_pos_pid_att", "ladrc_z_pos_pid_att"}:
         axis = name.split("_")[1]
         bundle = _NativeBundle(
@@ -569,6 +594,12 @@ def create_controller_bundle(name: str, checkpoint: dict[str, Any] | None = None
         bundle = SingleAxisLADRCPositionPIDAttitudeController(
             name=name,
             position_ladrc_axes=("y",),
+            parameter_set=clone_parameter_set(load_default_ladrc_parameter_set(name)),
+        )
+    elif name == "ladrc_xy_pos_pid_att":
+        bundle = SingleAxisLADRCPositionPIDAttitudeController(
+            name=name,
+            position_ladrc_axes=("x", "y"),
             parameter_set=clone_parameter_set(load_default_ladrc_parameter_set(name)),
         )
     elif name == "ladrc_z_pos_pid_att":

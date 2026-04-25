@@ -53,6 +53,12 @@ class ControlTrackingEnv(BaseTaskEnv):
     pitch_rate: float = 0.0
     pitches: list[float] = field(default_factory=list)
     pitch_rates: list[float] = field(default_factory=list)
+    roll: float = 0.0
+    roll_rate: float = 0.0
+    rolls: list[float] = field(default_factory=list)
+    roll_rates: list[float] = field(default_factory=list)
+    external_couplings: list[float] = field(default_factory=list)
+    cross_axis_coupling_gain: float = 1.1
 
     @property
     def obs_spec(self) -> ObservationSpec:
@@ -60,6 +66,11 @@ class ControlTrackingEnv(BaseTaskEnv):
             return ObservationSpec(
                 shape=(4,),
                 description="x, vx, pitch, pitch_rate",
+            )
+        if self.reference_profile_mode == "rl_refline_six_phase" and self.axis == "y":
+            return ObservationSpec(
+                shape=(4,),
+                description="y, vy, roll, roll_rate",
             )
         return ObservationSpec(
             shape=(8,),
@@ -123,6 +134,11 @@ class ControlTrackingEnv(BaseTaskEnv):
         self.pitch_rates.clear()
         self.pitch = 0.0
         self.pitch_rate = 0.0
+        self.rolls.clear()
+        self.roll_rates.clear()
+        self.roll = 0.0
+        self.roll_rate = 0.0
+        self.external_couplings.clear()
         self.reference_schedule = self.reference_profile_mode
         self.external_reference_position = tuple()
         self.external_reference_velocity = tuple()
@@ -131,7 +147,7 @@ class ControlTrackingEnv(BaseTaskEnv):
         self.reference_bundle = self._build_reference_bundle()
         return self._obs()
 
-    def step(self, control_signal: float) -> tuple[np.ndarray, float, bool, dict[str, Any]]:
+    def step(self, control_signal: float, external_coupling: float = 0.0) -> tuple[np.ndarray, float, bool, dict[str, Any]]:
         """Advance one control step for the active axis."""
         dt = 1.0 / self.scenario.control_frequency_hz
         axis_index = self.axis_index
@@ -145,6 +161,17 @@ class ControlTrackingEnv(BaseTaskEnv):
             self.pitch_rate += pitch_accel * dt
             self.pitch += self.pitch_rate * dt
             accel = 4.2 * self.pitch - damping * float(self.velocity[axis_index]) + self.disturbance
+        elif self.reference_profile_mode == "rl_refline_six_phase" and self.axis == "y":
+            roll_target = float(np.clip(0.14 * control_signal, -0.35, 0.35))
+            roll_accel = 16.0 * (roll_target - self.roll) - 5.5 * self.roll_rate
+            self.roll_rate += roll_accel * dt
+            self.roll += self.roll_rate * dt
+            accel = (
+                4.2 * self.roll
+                - damping * float(self.velocity[axis_index])
+                + self.disturbance
+                + self.cross_axis_coupling_gain * float(external_coupling)
+            )
         else:
             accel = control_signal - damping * float(self.velocity[axis_index]) + self.disturbance
         self.velocity[axis_index] += accel * dt
@@ -167,6 +194,9 @@ class ControlTrackingEnv(BaseTaskEnv):
         self.outputs.append(float(self.state[axis_index]))
         self.pitches.append(float(self.pitch))
         self.pitch_rates.append(float(self.pitch_rate))
+        self.rolls.append(float(self.roll))
+        self.roll_rates.append(float(self.roll_rate))
+        self.external_couplings.append(float(external_coupling))
         done = self.t >= self.episode_length
         info = {
             "axis": self.axis,
@@ -176,6 +206,9 @@ class ControlTrackingEnv(BaseTaskEnv):
             "reference_velocity": float(reference_velocity),
             "pitch": float(self.pitch),
             "pitch_rate": float(self.pitch_rate),
+            "roll": float(self.roll),
+            "roll_rate": float(self.roll_rate),
+            "external_coupling": float(external_coupling),
         }
         return self._obs(), reward, done, info
 
@@ -198,6 +231,16 @@ class ControlTrackingEnv(BaseTaskEnv):
                     float(self.velocity[axis_index]),
                     float(self.pitch),
                     float(self.pitch_rate),
+                ],
+                dtype=np.float32,
+            )
+        if self.reference_profile_mode == "rl_refline_six_phase" and self.axis == "y":
+            return np.asarray(
+                [
+                    float(self.state[axis_index]),
+                    float(self.velocity[axis_index]),
+                    float(self.roll),
+                    float(self.roll_rate),
                 ],
                 dtype=np.float32,
             )

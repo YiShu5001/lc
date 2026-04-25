@@ -285,7 +285,16 @@ def _run_real_policy_episode(
     for step in range(config.step_count):
         target_pos = reference_bundle.positions[step]
         target_vel = reference_bundle.velocities[step]
-        observation = _build_axis_observation(state, target_pos, target_vel, axis, step, config.step_count)
+        observation = _build_axis_observation(
+            state,
+            target_pos,
+            target_vel,
+            axis,
+            controller_bundle,
+            step=step,
+            step_count=config.step_count,
+            state_dim=int(policy.config.state_dim),
+        )
         stacked_observation = stack_state(history, observation.copy(), policy.config.stack_size)
         action = policy.select_action(stacked_observation, explore=explore)
         applied_params = _apply_axis_action(controller_bundle, axis, action)
@@ -323,8 +332,10 @@ def _run_real_policy_episode(
             next_target_pos,
             next_target_vel,
             axis,
-            step + 1,
-            config.step_count,
+            controller_bundle,
+            step=min(step + 1, config.step_count - 1),
+            step_count=config.step_count,
+            state_dim=int(policy.config.state_dim),
         )
         next_history = list(history)
         next_stacked_observation = stack_state(next_history, next_observation.copy(), policy.config.stack_size)
@@ -494,7 +505,16 @@ def _run_fallback_policy_episode(
     for step in range(config.step_count):
         target_pos = reference_bundle.positions[step]
         target_vel = reference_bundle.velocities[step]
-        observation = _build_axis_observation(state, target_pos, target_vel, axis, step, config.step_count)
+        observation = _build_axis_observation(
+            state,
+            target_pos,
+            target_vel,
+            axis,
+            controller_bundle,
+            step=step,
+            step_count=config.step_count,
+            state_dim=int(policy.config.state_dim),
+        )
         stacked_observation = stack_state(history, observation.copy(), policy.config.stack_size)
         action = policy.select_action(stacked_observation, explore=explore)
         applied_params = _apply_axis_action(controller_bundle, axis, action)
@@ -515,8 +535,10 @@ def _run_fallback_policy_episode(
             next_target_pos,
             next_target_vel,
             axis,
-            step + 1,
-            config.step_count,
+            controller_bundle,
+            step=min(step + 1, config.step_count - 1),
+            step_count=config.step_count,
+            state_dim=int(policy.config.state_dim),
         )
         rpm_delta = float(np.mean(np.abs(rpm - prev_rpm)))
         param_delta = 0.0 if prev_param_values is None else float(np.mean(np.abs(applied_params - prev_param_values)))
@@ -621,21 +643,53 @@ def _build_axis_observation(
     target_pos: np.ndarray,
     target_vel: np.ndarray,
     axis: str,
-    step: int,
-    step_count: int,
+    controller_bundle: ControllerBundle,
+    *,
+    step: int = 0,
+    step_count: int = 1,
+    state_dim: int = 6,
 ) -> np.ndarray:
     axis_index = {"x": 0, "y": 1, "z": 2}[axis]
-    residual = target_pos[axis_index] - state[axis_index] - 0.2 * state[10 + axis_index]
+    pos_error = float(target_pos[axis_index] - state[axis_index])
+    vel_error = float(target_vel[axis_index] - state[10 + axis_index])
+    if int(state_dim) == 8:
+        progress = 0.0 if step_count <= 1 else float(step) / float(step_count - 1)
+        residual = pos_error
+        return np.asarray(
+            [
+                pos_error,
+                vel_error,
+                float(state[axis_index]),
+                float(state[10 + axis_index]),
+                float(target_pos[axis_index]),
+                float(target_vel[axis_index]),
+                residual,
+                progress,
+            ],
+            dtype=np.float32,
+        )
+    accel_proxy = 1.6 * pos_error + 0.55 * vel_error
+    if axis == "x":
+        coupled_attitude = float(state[8])
+        coupled_angular_rate = float(state[14])
+        attitude_ref = float(np.clip(0.16 * accel_proxy, -0.4, 0.4))
+    elif axis == "y":
+        coupled_attitude = float(state[7])
+        coupled_angular_rate = float(state[13])
+        attitude_ref = float(np.clip(-0.16 * accel_proxy, -0.4, 0.4))
+    else:
+        coupled_attitude = float(state[2])
+        coupled_angular_rate = float(state[12])
+        attitude_ref = float(target_pos[axis_index])
+    disturbance_estimate = float(controller_bundle.disturbance_estimate(axis))
     return np.asarray(
         [
-            target_pos[axis_index] - state[axis_index],
-            target_vel[axis_index] - state[10 + axis_index],
-            state[axis_index],
-            state[10 + axis_index],
-            target_pos[axis_index],
-            target_vel[axis_index],
-            residual,
-            min(step / max(step_count - 1, 1), 1.0),
+            pos_error,
+            vel_error,
+            coupled_attitude,
+            coupled_angular_rate,
+            attitude_ref - coupled_attitude,
+            disturbance_estimate,
         ],
         dtype=np.float32,
     )
@@ -703,16 +757,18 @@ def _flush_n_step_transitions(
         reward = 0.0
         next_state = rollout[0][3]
         done = rollout[0][4]
+        used_n = 0
         for index, (_, _, step_reward, step_next_state, step_done) in enumerate(rollout):
             if index >= effective_n:
                 break
             reward += (gamma**index) * float(step_reward)
             next_state = step_next_state
             done = bool(step_done)
+            used_n = index + 1
             if step_done:
                 break
         state, action, _, _, _ = rollout.popleft()
-        policy.store_transition(state, action, reward, next_state, done)
+        policy.store_transition(state, action, reward, next_state, done, effective_n=used_n)
         if not force:
             break
 

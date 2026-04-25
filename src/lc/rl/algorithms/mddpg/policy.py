@@ -70,20 +70,29 @@ class _Critic(nn.Module):
 
 class _ReplayBuffer:
     def __init__(self, capacity: int):
-        self.rows: deque[tuple[np.ndarray, np.ndarray, float, np.ndarray, float]] = deque(maxlen=capacity)
+        self.rows: deque[tuple[np.ndarray, np.ndarray, float, np.ndarray, float, float]] = deque(maxlen=capacity)
 
-    def push(self, state: np.ndarray, action: np.ndarray, reward: float, next_state: np.ndarray, done: bool) -> None:
-        self.rows.append((state.copy(), action.copy(), float(reward), next_state.copy(), float(done)))
+    def push(
+        self,
+        state: np.ndarray,
+        action: np.ndarray,
+        reward: float,
+        next_state: np.ndarray,
+        done: bool,
+        effective_n: int = 1,
+    ) -> None:
+        self.rows.append((state.copy(), action.copy(), float(reward), next_state.copy(), float(done), float(effective_n)))
 
-    def sample(self, batch_size: int) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    def sample(self, batch_size: int) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         batch = random.sample(self.rows, k=min(batch_size, len(self.rows)))
-        state, action, reward, next_state, done = zip(*batch)
+        state, action, reward, next_state, done, effective_n = zip(*batch)
         return (
             np.asarray(state, dtype=np.float32),
             np.asarray(action, dtype=np.float32),
             np.asarray(reward, dtype=np.float32).reshape(-1, 1),
             np.asarray(next_state, dtype=np.float32),
             np.asarray(done, dtype=np.float32).reshape(-1, 1),
+            np.asarray(effective_n, dtype=np.float32).reshape(-1, 1),
         )
 
     def __len__(self) -> int:
@@ -131,7 +140,13 @@ class MDDPGPolicy:
         norm_state = stacked_state / self._normalizer
         state_t = torch.as_tensor(norm_state, dtype=torch.float32, device=self.device).view(1, -1)
         # Keep the current normalized [-1, 1] action semantics for chapter-3 LADRC tuning.
-        action = self.actor(state_t).detach().cpu().numpy().reshape(-1)
+        was_training = self.actor.training
+        if not explore:
+            self.actor.eval()
+        with torch.no_grad():
+            action = self.actor(state_t).detach().cpu().numpy().reshape(-1)
+        if was_training:
+            self.actor.train()
         if explore:
             noise = np.random.uniform(-self._current_expl_noise, self._current_expl_noise, size=action.shape)
             action = np.clip(action + noise, -1.0, 1.0)
@@ -139,10 +154,18 @@ class MDDPGPolicy:
         self._hold_counter = self.config.action_hold_steps - 1
         return self._last_action.copy()
 
-    def store_transition(self, state: np.ndarray, action: np.ndarray, reward: float, next_state: np.ndarray, done: bool) -> None:
+    def store_transition(
+        self,
+        state: np.ndarray,
+        action: np.ndarray,
+        reward: float,
+        next_state: np.ndarray,
+        done: bool,
+        effective_n: int = 1,
+    ) -> None:
         self._update_normalizer(state)
         self._update_normalizer(next_state)
-        self.replay.push(state / self._normalizer, action, reward, next_state / self._normalizer, done)
+        self.replay.push(state / self._normalizer, action, reward, next_state / self._normalizer, done, effective_n)
 
     def update(self, updates: int = 1) -> dict[str, float]:
         """执行一次或多次 actor-critic 参数更新。"""
@@ -151,16 +174,18 @@ class MDDPGPolicy:
         critic_losses = []
         actor_losses = []
         for _ in range(updates):
-            state, action, reward, next_state, done = self.replay.sample(self.config.batch_size)
+            state, action, reward, next_state, done, effective_n = self.replay.sample(self.config.batch_size)
             state_t = torch.as_tensor(state, dtype=torch.float32, device=self.device)
             action_t = torch.as_tensor(action, dtype=torch.float32, device=self.device)
             reward_t = torch.as_tensor(reward, dtype=torch.float32, device=self.device)
             next_state_t = torch.as_tensor(next_state, dtype=torch.float32, device=self.device)
             done_t = torch.as_tensor(done, dtype=torch.float32, device=self.device)
+            effective_n_t = torch.as_tensor(effective_n, dtype=torch.float32, device=self.device)
 
             with torch.no_grad():
                 next_action = self.actor_target(next_state_t)
-                target_q = reward_t + (1.0 - done_t) * self.config.gamma * self.critic_target(next_state_t, next_action)
+                bootstrap_discount = torch.pow(torch.full_like(effective_n_t, self.config.gamma), effective_n_t)
+                target_q = reward_t + (1.0 - done_t) * bootstrap_discount * self.critic_target(next_state_t, next_action)
             current_q = self.critic(state_t, action_t)
             critic_loss = nn.functional.mse_loss(current_q, target_q)
             self.critic_optimizer.zero_grad()

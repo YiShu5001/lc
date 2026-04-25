@@ -49,6 +49,7 @@ def load_default_ladrc_parameter_set(variant: str) -> AxiswiseLADRCParameterSet:
         "ladrc_pos_att",
         "ladrc_x_pos_pid_att",
         "ladrc_y_pos_pid_att",
+        "ladrc_xy_pos_pid_att",
         "ladrc_z_pos_pid_att",
     }:
         return base

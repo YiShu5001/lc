@@ -63,6 +63,45 @@ class LADRCActionBounds:
     fast_anchor: LADRCAnchorParameters
     steady_anchor: LADRCAnchorParameters
 
+    @property
+    def fixed_r(self) -> float:
+        return float(self.fast_anchor.r)
+
+
+@dataclass(frozen=True)
+class AxisTransferExperimentConfig:
+    difficulty: str = "medium"
+    source_axis: str = "x"
+    target_axis: str = "y"
+    seed: int = 7
+    baseline_episodes: int = 3
+    eval_episodes: int = 3
+    warm_start_episodes: int = 80
+    warmup_steps: int = 32
+    batch_size: int = 128
+    updates_per_step: int = 1
+    actor_lr: float = 3e-4
+    critic_lr: float = 3e-4
+    hidden_dim: int = 768
+    dropout_p: float = 0.25
+    tau: float = 0.02
+    soft_update_interval: int = 10
+    compare_shared_values: tuple[int, ...] = (1, 7)
+    reference_shared_value: int = 4
+    exploration_noise_schedule: str = "linear"
+    exploration_noise_start: float = 0.1
+    exploration_noise_end: float = 0.04
+    output_subdir: str | None = None
+    source_output_roots: tuple[str, ...] = (
+        "outputs/control",
+        "D:/ZhangC/lc_codex_ch4_run/outputs/control",
+    )
+    source_experiment_subdirs: tuple[str, ...] = (
+        "x_axis_rl_refline__exp-bestcfg-scan-v1-to-v10__ep-500__v-1-10__noise-linear-0.1-to-0.04__net-768__drop-0.25",
+        "x_axis_rl_refline",
+    )
+    coupling_gain: float = 1.1
+
 
 _XY_FAST_ANCHOR = LADRCAnchorParameters(b0=30.5, wc=1.5, k=11.0, r=10.0)
 _XY_STEADY_ANCHOR = LADRCAnchorParameters(b0=30.5, wc=1.5, k=11.0, r=10.0)

@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
@@ -25,6 +25,7 @@ from lc.control.plotting import (
     plot_axis_velocity,
     plot_control_effort,
     plot_controller_comparison,
+    plot_ladrc_parameter_trajectory,
     plot_metric_heatmap,
     plot_pid_vs_best_ladrc_response,
     plot_single_factor_sensitivity,
@@ -68,7 +69,7 @@ class PyBulletAxisTrainer:
         eval_history_rows: list[dict[str, float]] = []
         best_eval_snapshot_paths: list[str] = []
         policy_cfg = policy_config or MDDPGConfig(
-            state_dim=8,
+            state_dim=6,
             action_dim=4,
             stack_size=1,
             action_hold_steps=self.config.action_hold_steps,
@@ -157,6 +158,18 @@ class PyBulletAxisTrainer:
                 "controller_variant": self.config.training_controller_variant,
                 "backend": backend_name,
                 "shared_value": shared_value,
+                "state_dim": int(policy_cfg.state_dim),
+                "state_terms": [
+                    "pos_error",
+                    "vel_error",
+                    "coupled_attitude",
+                    "coupled_angular_rate",
+                    "coupled_attitude_error",
+                    "ladrc_disturbance_estimate",
+                ],
+                "progress_removed": True,
+                "no_time_or_stage_input": True,
+                "no_true_disturbance_input": True,
                 "action_dim": int(policy_cfg.action_dim),
                 "stack_size": int(policy_cfg.stack_size),
                 "action_hold_steps": int(policy_cfg.action_hold_steps),
@@ -263,11 +276,14 @@ class PyBulletAxisTrainer:
         return float(policy_config.expl_noise_start + progress * (policy_config.expl_noise_end - policy_config.expl_noise_start))
 
     def _serialize_policy_state(self, policy: MDDPGPolicy) -> dict[str, object]:
+        def _clone_state_dict(module: torch.nn.Module) -> dict[str, torch.Tensor]:
+            return {key: value.detach().cpu().clone() for key, value in module.state_dict().items()}
+
         return {
-            "actor": policy.actor.state_dict(),
-            "critic": policy.critic.state_dict(),
-            "actor_target": policy.actor_target.state_dict(),
-            "critic_target": policy.critic_target.state_dict(),
+            "actor": _clone_state_dict(policy.actor),
+            "critic": _clone_state_dict(policy.critic),
+            "actor_target": _clone_state_dict(policy.actor_target),
+            "critic_target": _clone_state_dict(policy.critic_target),
             "config": dict(policy.config.__dict__),
             "normalizer": policy._normalizer.copy(),
             "last_action": policy._last_action.copy(),
@@ -282,6 +298,7 @@ class PyBulletAxisTrainer:
             str(plot_axis_tracking(projected_rows, snapshot_dir)),
             str(plot_axis_error(projected_rows, snapshot_dir)),
             str(plot_axis_velocity(projected_rows, snapshot_dir)),
+            str(plot_ladrc_parameter_trajectory(rows, axis, snapshot_dir)),
         ]
 
     def _save_best_eval_snapshot(self, axis: str, run_dir: Path, episode: int, rows: list[dict[str, float]]) -> list[str]:
@@ -291,6 +308,7 @@ class PyBulletAxisTrainer:
             str(plot_axis_tracking(projected_rows, snapshot_dir)),
             str(plot_axis_error(projected_rows, snapshot_dir)),
             str(plot_axis_velocity(projected_rows, snapshot_dir)),
+            str(plot_ladrc_parameter_trajectory(rows, axis, snapshot_dir)),
         ]
 
     def _project_axis_rows(self, rows: list[dict[str, float]], axis: str) -> list[dict[str, float]]:
@@ -909,3 +927,4 @@ class PyBulletAxisTrainer:
         target = Path("outputs") / "control_pybullet_tuning" / axis / stamp
         target.mkdir(parents=True, exist_ok=True)
         return target
+

@@ -69,6 +69,21 @@ def plot_control_effort(run_rows: list[dict[str, float]], output_dir: str | Path
     )
 
 
+def plot_ladrc_parameter_trajectory(run_rows: list[dict[str, float]], axis: str, output_dir: str | Path) -> Path:
+    return _line_plot(
+        run_rows,
+        output_dir,
+        "axis_ladrc_parameters.svg",
+        f"LADRC Parameter Trajectory ({axis})",
+        [
+            (f"{axis}_r", None),
+            (f"{axis}_b0", None),
+            (f"{axis}_omega_c", None),
+            (f"{axis}_k", None),
+        ],
+    )
+
+
 def plot_controller_comparison(metric_rows: list[dict[str, float]], output_dir: str | Path) -> Path:
     target = ensure_dir(output_dir)
     labels = [str(row["controller"]) for row in metric_rows]

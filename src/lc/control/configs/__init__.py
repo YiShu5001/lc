@@ -1,6 +1,7 @@
 """Control configs."""
 
 from .control_config import (
+    AxisTransferExperimentConfig,
     ControlExperimentConfig,
     LADRCActionBounds,
     LADRCAnchorParameters,
@@ -18,6 +19,7 @@ from .pybullet_control_config import (
 
 __all__ = [
     "ControlExperimentConfig",
+    "AxisTransferExperimentConfig",
     "LADRCActionBounds",
     "LADRCAnchorParameters",
     "get_axis_ladrc_action_bounds",
