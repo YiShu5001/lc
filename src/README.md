@@ -186,9 +186,8 @@
 
 负责控制环境封装。
 
-当前包括两类：
+当前包括：
 
-- 轻量主链环境：如 `tracking.py`
 - PyBullet 评测/训练环境：如 `pybullet_axis_env.py`、`pybullet_eval_env.py`
 
 #### `reference_generators/`
@@ -239,7 +238,6 @@
 
 当前包括：
 
-- 轻量主链 trainer
 - PyBullet 单轴训练/评测/整定 trainer
 
 #### `experiments/`
@@ -271,7 +269,7 @@
 
 当前已经有：
 
-- 轻量控制主链
+- PyBullet 控制主链
 - `PID / LADRC / DDPG-LADRC / mDDPG-LADRC` 对比结构
 - PyBullet 单轴递推轨迹实验链
 - 单轴 LADRC 参数整定实验
@@ -294,10 +292,10 @@
 - 当前 `b0 / wc / k` 的可学习范围推导还带有旧尺度残留
 - 需要完全按真实 PyBullet 参数尺度重新定义
 
-3. 轻量主链和 PyBullet 主实验之间仍需统一口径
+3. 第三章正式实验口径固定为 PyBullet
 
-- 轻量 `tracking.py` 环境仍是抽象对象
-- 正式结论应更多依赖 PyBullet 真实结果
+- 原轻量 `tracking.py` 环境已退役，不再作为第三章底层控制主环境
+- 正式结论应基于 PyBullet 真实结果
 
 4. 第三章最终图表仍需筛选
 

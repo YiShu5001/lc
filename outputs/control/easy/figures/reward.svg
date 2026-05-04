@@ -4,15 +4,15 @@
 <line x1="60" y1="60" x2="60" y2="360" stroke="#333" />
 <rect x="60" y="1099433150" width="78" height="-1099432790" fill="#4f81bd" />
 <rect x="177" y="584558220" width="78" height="-584557860" fill="#4f81bd" />
-<rect x="294" y="1095807314" width="78" height="-1095806954" fill="#4f81bd" />
-<rect x="411" y="669216466" width="78" height="-669216106" fill="#4f81bd" />
+<rect x="294" y="1517587407" width="78" height="-1517587047" fill="#4f81bd" />
+<rect x="411" y="1244202615" width="78" height="-1244202255" fill="#4f81bd" />
 <text x="320.0" y="28" text-anchor="middle" font-size="18">Control comparison: reward</text>
 <text x="99.0" y="380" text-anchor="middle" font-size="12">pid</text>
 <text x="99.0" y="1099433142" text-anchor="middle" font-size="12">-3.665</text>
 <text x="216.0" y="380" text-anchor="middle" font-size="12">ladrc</text>
 <text x="216.0" y="584558212" text-anchor="middle" font-size="12">-1.949</text>
 <text x="333.0" y="380" text-anchor="middle" font-size="12">ddpg_ladrc</text>
-<text x="333.0" y="1095807306" text-anchor="middle" font-size="12">-3.653</text>
+<text x="333.0" y="1517587399" text-anchor="middle" font-size="12">-5.059</text>
 <text x="450.0" y="380" text-anchor="middle" font-size="12">mddpg_ladrc</text>
-<text x="450.0" y="669216458" text-anchor="middle" font-size="12">-2.231</text>
+<text x="450.0" y="1244202607" text-anchor="middle" font-size="12">-4.147</text>
 </svg>

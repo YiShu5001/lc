@@ -1,0 +1,49 @@
+{
+  "reference_params": {
+    "b0": 0.8,
+    "wc": 6.8,
+    "k": 4.8,
+    "r": 10.0,
+    "wo": 32.64
+  },
+  "candidate_params": {
+    "b0": 4.0,
+    "wc": 4.0,
+    "k": 5.0,
+    "r": 10.0,
+    "wo": 20.0
+  },
+  "reference_metrics": {
+    "mae": 0.028720825873057503,
+    "rmse": 0.02929067834921135,
+    "iae": 11.02879713525408,
+    "overshoot": 0.032202597707509995,
+    "settling_time": 0.0,
+    "steady_state_error": 0.030147462137392722,
+    "control_energy": 40427962542.16995,
+    "disturbance_recovery_time": 0.0,
+    "control_variation": 0.0,
+    "velocity_rmse": 0.05306284606064729,
+    "reward": -0.2581087512377295,
+    "backend": "gym_env",
+    "final_error_std": 1.009366626437226e-06,
+    "final_error_span": 3.475695848464966e-06
+  },
+  "candidate_metrics": {
+    "mae": 0.0030332966689705643,
+    "rmse": 0.00830960316746751,
+    "iae": 1.1647859208846967,
+    "overshoot": 0.008981437422335148,
+    "settling_time": 0.0,
+    "steady_state_error": 0.000135003930381572,
+    "control_energy": 38522558383.89694,
+    "disturbance_recovery_time": 0.0,
+    "control_variation": 0.0,
+    "velocity_rmse": 0.08596215670964377,
+    "reward": -0.34652596394090646,
+    "backend": "gym_env",
+    "final_error_std": 4.3484036691342185e-06,
+    "final_error_span": 1.4884237316437066e-05
+  },
+  "beats_reference": false
+}

@@ -1,0 +1,33 @@
+{
+  "axis": "x",
+  "mode": "x_hold_sine_disturbance_hold",
+  "parameter_file": "C:\\Users\\lucy\\AppData\\Local\\Temp\\tmpgghdinwi\\new_params.json",
+  "pid_metrics": {
+    "mae": 0.23592508389546296,
+    "rmse": 0.24108019175663256,
+    "iae": 90.59523221585778,
+    "overshoot": 6.0641782511083875e-06,
+    "settling_time": 383.0,
+    "steady_state_error": 0.24829572792115964,
+    "control_energy": 37812835522.09072,
+    "disturbance_recovery_time": 383.0,
+    "control_variation": 396.1929514115535,
+    "velocity_rmse": 0.1471905057921086,
+    "reward": -0.5830168509690105,
+    "backend": "gym_env"
+  },
+  "ladrc_metrics": {
+    "mae": 0.0030332966689705643,
+    "rmse": 0.00830960316746751,
+    "iae": 1.1647859208846967,
+    "overshoot": 0.008981437422335148,
+    "settling_time": 0.0,
+    "steady_state_error": 0.00012970210694842726,
+    "control_energy": 38522558383.89694,
+    "disturbance_recovery_time": 0.0,
+    "control_variation": 396.1929514115535,
+    "velocity_rmse": 0.08596215670964377,
+    "reward": -0.34652596394090646,
+    "backend": "gym_env"
+  }
+}

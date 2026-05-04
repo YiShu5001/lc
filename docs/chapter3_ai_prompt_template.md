@@ -79,9 +79,10 @@ reward = -|position_error|
 - `docs/chapter3_readme.md`
 - `docs/chapter3_experiment_matrix.md`
 - `docs/chapter3_method_figures.md`
-- `src/lc/control/trainers/control_trainer.py`
+- `src/lc/control/trainers/pybullet_axis_trainer.py`
 - `src/lc/control/experiments/compare.py`
-- `src/lc/control/envs/tracking.py`
+- `src/lc/control/envs/pybullet_axis_env.py`
+- `src/lc/control/envs/pybullet_eval_env.py`
 - `src/lc/control/controllers/ladrc.py`
 - `src/lc/control/controllers/adaptive_ladrc.py`
 - `src/lc/control/policies/mddpg_control.py`

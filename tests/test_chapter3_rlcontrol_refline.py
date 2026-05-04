@@ -11,8 +11,6 @@ from lc.control.RLcontrolRefLine import (
     build_refline_episode,
     sample_phase_plan,
 )
-from lc.control.envs import ControlTrackingEnv
-from lc.envs.scenarios import build_control_scenario
 
 
 class TestChapter3RLControlRefLine(unittest.TestCase):
@@ -45,23 +43,15 @@ class TestChapter3RLControlRefLine(unittest.TestCase):
         self.assertEqual(len(episode.time), len(episode.reference_position))
         self.assertEqual(len(episode.reference_position), len(episode.disturbance))
 
-    def test_tracking_env_consumes_external_episode_bundle(self) -> None:
+    def test_adapt_episode_outputs_consistent_arrays(self) -> None:
         config = build_default_xy_task_config("x")
         episode = build_refline_episode(config, seed=5)
         adapted = adapt_episode_to_tracking_inputs(episode)
-        env = ControlTrackingEnv(
-            scenario=build_control_scenario("medium"),
-            axis="x",
-            seed=5,
-            episode_length=len(episode.time),
-            reference_profile_mode="rl_refline_six_phase",
-            external_episode_bundle=episode,
-        )
-        obs = env.reset()
-        self.assertEqual(obs.shape[0], 4)
-        self.assertEqual(env.reference_schedule, "rl_refline_six_phase")
-        self.assertTrue(np.allclose(adapted["reference_velocity"], np.asarray(env.external_reference_velocity, dtype=np.float32)))
-        self.assertTrue(np.allclose(adapted["disturbance"], np.asarray(env.external_disturbance, dtype=np.float32)))
+        self.assertEqual(adapted["phase_table"][0]["phase_name"], "hold_start")
+        self.assertEqual(len(adapted["reference_position"]), len(episode.time))
+        self.assertTrue(np.allclose(adapted["reference_position"], np.asarray(episode.reference_position, dtype=np.float32)))
+        self.assertTrue(np.allclose(adapted["reference_velocity"], np.asarray(episode.reference_velocity, dtype=np.float32)))
+        self.assertTrue(np.allclose(adapted["disturbance"], np.asarray(episode.disturbance, dtype=np.float32)))
 
 
 if __name__ == "__main__":
